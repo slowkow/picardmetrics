@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# make_refFlat
+# Kamil Slowikowski
+
+set -o xtrace
+
+# Download the Gencode GTF file.
+GENCODE=gencode.v19.annotation.gtf.gz
+GENCODE_URL="ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_19/${GENCODE}"
+[[ ! -s $GENCODE ]] && wget -q $GENCODE_URL
+
+# Download a program for converting GTF to refFlat.
+gtfToGenePred='http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/gtfToGenePred'
+[[ ! -s gtfToGenePred ]] && wget -q $gtfToGenePred && chmod +x gtfToGenePred
+
+# Create the refFlat file suitable for use with Picard CollectRnaSeqMetrics.
+REF_FLAT=gencode.v19.annotation.refFlat
+if [[ ! -s $REF_FLAT ]]; then
+	./gtfToGenePred \
+		-ignoreGroupsWithoutExons <(gunzip -c $GENCODE) $REF_FLAT \
+	&& perl -i -lane 'print join "\t", ($F[0], @F)' $REF_FLAT
+fi

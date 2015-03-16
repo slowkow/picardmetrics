@@ -1,0 +1,20 @@
+# ~/.picardmetricsrc
+# Change the values of these variables to match your system configuration.
+
+# Run all jobs with niceness, to avoid interrupting interactive sessions.
+NICENESS=20
+
+# Picard Tools jar file.
+PICARD_JAR="/home/unix/slowikow/src/picard-tools-1.126/picard.jar"
+
+# Java invocation of Picard Tools.
+PICARD="java -Xms5g -Xmx5g -jar $PICARD_JAR"
+
+# Reference genome sequence.
+REFERENCE_SEQUENCE="/medpop/rnaseq/genome/hg19.genome.fa"
+
+# Only for RNA-seq: annotations of all gene features.
+REF_FLAT="/medpop/rnaseq/genome/gencode.v19.annotation.refFlat"
+
+# Only for RNA-seq: all genomic intervals for ribosomal RNA genes.
+RIBOSOMAL_INTERVALS="/medpop/rnaseq/genome/gencode.v19.rRNA.interval_list"

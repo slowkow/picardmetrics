@@ -1,0 +1,761 @@
+#!/usr/bin/env bash
+# picardmetrics
+# Kamil Slowikowski
+
+# Main functions. ------------------------------------------------------------
+
+main() {
+  if [[ "$1" == "collate" ]]; then
+    shift
+    main_collate $@
+  elif [[ "$1" == "run" ]]; then
+    shift
+    main_run $@
+  else
+    echo "picardmetrics v0.1 - 2015-03-16"
+    echo "Usage: picardmetrics COMMAND"
+    echo "  run         Run the Picard tools on a given BAM file."
+    echo "  collate     Collate metrics files for multiple BAM files."
+  fi
+}
+
+main_run() {
+  # Ensure that the script was called with correct arguments.
+  if [[ "$1" == "" ]]; then
+    echo "Usage: picardmetrics run [-f FILE] [-r] <file.bam>"
+    echo "  -f FILE     The configuration file. (Default: ~/.picardmetricsrc)"
+    echo "  -r          The BAM file has RNA-seq reads. (Default: false)"
+    return 0
+  fi
+
+  # Assume the input .bam file does not come from an RNA-seq experiment.
+  PICARDMETRICS_CONFIG=~/.picardmetricsrc
+  RNASEQ=""
+  while getopts ":f:r" opt; do
+    case "$opt" in
+      f)
+        PICARDMETRICS_CONFIG="$OPTARG"
+        ;;
+      r)
+        RNASEQ=1
+        ;;
+      \?)
+        echo "Invalid option: -$OPTARG" >&2
+        exit 1
+        ;;
+      :)
+        echo "Option -$OPTARG requires an argument." >&2
+        ;;
+    esac
+  done
+
+  # Load the configuration variables.
+  configure_run
+
+  # Get the first positional argument after the option flags.
+  bam=${@:$OPTIND:1}
+
+  # Ensure the BAM file is valid.
+  if ! is_bam "$bam"; then
+    echo "ERROR: Not a .bam file: '$bam'" >&2
+    exit 1
+  elif bam_incomplete "$bam"; then
+    echo "ERROR: Missing EOF marker: '$bam'" >&2
+    exit 1
+  fi
+
+  dir="$(dirname $bam)"
+  bam="$(basename $bam)"
+  echo -e "$(DATE)\tSTART\t$dir/$bam"
+
+  # Perform all actions in the BAM file's directory.
+  if ! cd "$dir"; then
+    echo "ERROR: cd '$dir'" >&2
+    exit 1
+  fi
+
+  # Sort the BAM file if it is not already sorted.
+  if ! bam_sorted "$bam"; then
+    local sorted="${bam%.bam}.sorted.bam"
+
+    # Picard tools require a coordinate-sorted BAM file.
+    if [[ ! -s "$sorted" || "$bam" -nt "$sorted" ]] \
+    || bam_incomplete "$sorted"; then
+      sort_sam "$bam" "$sorted"
+    fi
+  else
+    sorted="$bam"
+  fi
+
+  # Run all of the Picard tools.
+  compute_metrics "$sorted" "$RNASEQ"
+
+  echo -e "$(DATE)\tDONE\t$dir/$bam"
+}
+
+main_collate() {
+  if [[ "$1" == "" || "$2" == "" ]]; then
+    echo "Usage: picardmetrics collate PREFIX <file.bam> [<file.bam> ...]"
+    return 0
+  fi
+
+  local prefix="$1"
+  shift
+  local bams=($@)
+
+  echo -e "$(DATE)\tSTART\t$prefix" >&2
+  
+  # CollectAlignmentMetrics
+  collate_alignment_metrics "$prefix-alignment-metrics.tsv" ${bams[*]}
+
+  # CollectQualityMetrics
+  collate_quality_metrics \
+    "$prefix-quality-distribution-metrics.tsv" ${bams[*]}
+
+  # CollectRnaSeqMetrics
+  collate_rnaseq_metrics "$prefix-rnaseq-metrics.tsv" ${bams[*]}
+  collate_rnaseq_coverage "$prefix-rnaseq-coverage.tsv" ${bams[*]}
+
+  # CollectGcBiasMetrics
+  collate_gc_bias_metrics "$prefix-gc-bias-metrics.tsv" ${bams[*]}
+  collate_gc_bias_summary "$prefix-gc-bias-summary.tsv" ${bams[*]}
+
+  # MarkDuplicates
+  collate_duplicate_metrics "$prefix-duplicate-metrics.tsv" ${bams[*]}
+
+  # CollectInsertSizeMetrics
+  collate_insert_size_metrics "$prefix-insert-size-metrics.tsv" ${bams[*]}
+
+  # EstimateLibraryComplexity
+  collate_library_complexity "$prefix-library-complexity.tsv" ${bams[*]}
+  collate_library_complexity_histogram \
+    "$prefix-library-complexity-histogram.tsv" ${bams[*]}
+
+  # MAPQ statistics.
+  collate_mapq_stats "$prefix-mapq-stats.tsv" ${bams[*]}
+
+  # Merge all collated files into one master file "$prefix-all-metrics.tsv".
+  collate_all "$prefix"
+
+  echo -e "$(DATE)\tDONE\t$prefix" >&2
+}
+
+# Check for correct configuration. -------------------------------------------
+
+configure_run() {
+  # In order of preference:
+  #     1. The user's specified config.
+  #     2. The config in the current directory.
+  #     3. The config in the home directory.
+  if [[ -f "$PICARDMETRICS_CONFIG" ]]; then
+    source "$PICARDMETRICS_CONFIG"
+  elif [[ -f .picardmetricsrc ]]; then
+    source .picardmetricsrc
+  elif [[ -f ~/.picardmetricsrc ]]; then
+    source ~/.picardmetricsrc
+  else
+    echo "WARNING: Config file '$PICARDMETRICS_CONFIG' not found" >&2
+  fi
+
+  # All jobs will be launched with niceness=20 by default.
+  if [[ -z "$NICENESS" ]]; then
+    NICENESS=20
+  fi
+  NICE="nice -n$NICENESS"
+
+  if [[ ! -e "$PICARD_JAR" ]]; then
+    echo "ERROR: Please download the 'picard.jar' file" >&2
+    echo "         https://broadinstitute.github.io/picard/" >&2
+    echo "       and define PICARD_JAR=/path/to/picard.jar" >&2
+    exit 1
+  fi
+
+  if [[ -z "$PICARD" ]]; then
+    echo "ERROR: Please define the variable PICARD" >&2
+    echo '       For example: PICARD="java -jar $PICARD_JAR"' >&2
+  fi
+
+  if ! which samtools &> /dev/null; then
+    echo "ERROR: Please install the 'samtools' program" >&2
+    echo "         https://github.com/samtools/samtools" >&2
+    exit 1
+  fi
+
+  if ! which stats &> /dev/null; then
+    echo "ERROR: Please install the 'stats' program" >&2
+    echo "         https://github.com/arq5x/filo" >&2
+    exit 1
+  fi
+
+  if [[ ! -f "$REFERENCE_SEQUENCE" ]]; then
+    echo "ERROR: FASTA file not found: '$REFERENCE_SEQUENCE'"
+    echo "       Please define REFERENCE_SEQUENCE" >&2
+    echo '       For example: REFERENCE_SEQUENCE=~/data/hg19.fasta' >&2
+    exit 1
+  fi
+
+  # If the input BAM file comes from an RNA-seq experiment.
+  if [[ "$RNASEQ" ]]; then
+    if [[ ! -s "$REF_FLAT" ]]; then
+      echo "ERROR: refFlat file not found: '$REF_FLAT'"
+      echo "       Please define REF_FLAT" >&2
+      echo '       For example: REF_FLAT=~/data/genes.refFlat' >&2
+      exit 1
+    fi
+
+    if [[ ! -s "$RIBOSOMAL_INTERVALS" ]]; then
+      echo "ERROR: Ribosomal intervals not found: '$RIBOSOMAL_INTERVALS'"
+      echo "       Please define RIBOSOMAL_INTERVALS" >&2
+      echo '       For example: RIBOSOMAL_INTERVALS=~/data/rRNA.txt' >&2
+      exit 1
+    fi
+  fi
+
+  # Copy the genome FASTA into RAM to speed things up a bit.
+  RAM="/dev/shm/$USER"
+  [[ -d "$RAM" ]] || mkdir -p $RAM
+  RAM_REFERENCE_SEQUENCE="$RAM/$(basename $REFERENCE_SEQUENCE)"
+
+  if [[ ! -e "$RAM_REFERENCE_SEQUENCE" ]]; then
+    if ! cp -f "$REFERENCE_SEQUENCE" "$RAM/"; then
+      echo "ERROR: Failed to copy '$REFERENCE_SEQUENCE' to '$RAM/'" >&2
+      exit 1
+    fi
+  else
+    REFERENCE_SEQUENCE="$RAM_REFERENCE_SEQUENCE"
+  fi
+}
+
+# Call the Picard tools. -----------------------------------------------------
+
+compute_metrics() {
+  local bam="$1" rnaseq="$2"
+  if [[ ! -s "$bam" ]]; then
+    echo "BAM file not found '$bam'" >&2
+    return 0
+  fi
+  
+  if ! bam_sorted "$bam"; then
+    echo "Cannot compute metrics on an unsorted bam file '$bam'" >&2
+    return 0
+  fi
+
+  # Check if the BAM file is newer or if the metrics file is absent.
+  mapq_stats="${bam%.bam}.mapq_stats"
+  if [[ "$bam" -nt "$mapq_stats" || ! -s "$mapq_stats" ]]; then
+    if ! ( $NICE samtools view "$bam" | cut -f5 | stats > "$mapq_stats" );
+    then
+      echo "ERROR: mapq_stats failed" >&2
+    fi
+  fi
+
+  metrics="${bam%.bam}.duplicate_metrics"
+  if [[ "$bam" -nt "$metrics" || ! -s "$metrics" ]]; then
+    # featureCounts can ignore the marked duplicate reads with --ignoreDup
+    mark_duplicates "$bam"
+  fi
+
+  metrics="${bam%.bam}.alignment_summary_metrics"
+  if [[ "$bam" -nt "$metrics" || ! -s "$metrics" ]]; then
+    multiple_metrics "$bam"
+  fi
+
+  if [[ "$rnaseq" ]]; then
+    metrics="${bam%.bam}.rnaseq_metrics"
+    if [[ "$bam" -nt "$metrics" || ! -s "$metrics" ]]; then
+      rnaseq_metrics "$bam"
+    fi
+  fi
+
+  metrics="${bam%.bam}.gc_bias_metrics"
+  if [[ "$bam" -nt "$metrics" || ! -s "$metrics" ]]; then
+    gcbias_metrics "$bam"
+  fi
+
+  metrics="${bam%.bam}.library_complexity"
+  if [[ "$bam" -nt "$metrics" || ! -s "$metrics" ]]; then
+    library_complexity "$bam"
+  fi
+}
+
+# Picard tools. --------------------------------------------------------------
+
+run_picard() {
+  local tool="$1"; shift
+  local args=($@)
+  echo -e "$(DATE)\t$tool"
+  if ! $NICE $PICARD $tool ${args[*]} &> ${tool}.log; then
+    echo "ERROR: $tool failed" >&2
+    echo "       See $(pwd)/${tool}.log for details" >&2
+    exit 1
+  fi
+}
+
+sort_sam() {
+  local bam="$1" sorted_bam="$2"
+  local args=(
+    SortSam
+    INPUT="$bam"
+    OUTPUT="$sorted_bam"
+    SORT_ORDER=coordinate
+    VALIDATION_STRINGENCY=LENIENT
+  )
+  run_picard ${args[*]}
+}
+
+mark_duplicates() {
+  local bam="$1"
+  local out="${bam%.bam}.MarkDuplicates.bam"
+  local args=(
+    MarkDuplicates
+    INPUT="$bam"
+    OUTPUT="$out"
+    METRICS_FILE="${bam%.bam}.duplicate_metrics"
+    REMOVE_DUPLICATES=false
+    READ_NAME_REGEX=null
+    VALIDATION_STRINGENCY=LENIENT
+  )
+  run_picard ${args[*]}
+  if ! mv -f "$out" "$bam"; then
+    echo "ERROR: Failed to move '$out' to '$bam'" >&2
+    exit 1
+  fi
+}
+
+multiple_metrics() {
+  local bam="$1"
+  local args=(
+    CollectMultipleMetrics
+    INPUT="$bam"
+    OUTPUT="${bam%.bam}"
+    REFERENCE_SEQUENCE="$REFERENCE_SEQUENCE"
+    VALIDATION_STRINGENCY=LENIENT
+    PROGRAM=CollectAlignmentSummaryMetrics
+    PROGRAM=CollectInsertSizeMetrics
+    PROGRAM=QualityScoreDistribution
+  )
+  run_picard ${args[*]}
+}
+
+rnaseq_metrics() {
+  local bam="$1"
+  local args=(
+    CollectRnaSeqMetrics
+    INPUT="$bam"
+    OUTPUT="${bam%.bam}.rnaseq_metrics"
+    CHART_OUTPUT="${bam%.bam}.rnaseq_metrics.pdf"
+    REFERENCE_SEQUENCE="$REFERENCE_SEQUENCE"
+    REF_FLAT="$REF_FLAT"
+    RIBOSOMAL_INTERVALS="$RIBOSOMAL_INTERVALS"
+    STRAND_SPECIFICITY=NONE
+    VALIDATION_STRINGENCY=LENIENT
+  )
+  run_picard ${args[*]}
+}
+
+gcbias_metrics() {
+  local bam="$1"
+  local args=(
+    CollectGcBiasMetrics
+    INPUT="$bam"
+    OUTPUT="${bam%.bam}.gc_bias_metrics"
+    CHART_OUTPUT="${bam%.bam}.gc_bias_metrics.pdf"
+    SUMMARY_OUTPUT="${bam%.bam}.gc_bias_metrics_summary"
+    REFERENCE_SEQUENCE="$REFERENCE_SEQUENCE"
+    VALIDATION_STRINGENCY=LENIENT
+  )
+  run_picard ${args[*]}
+}
+
+library_complexity() {
+  local bam="$1"
+  local args=(
+    EstimateLibraryComplexity
+    INPUT="$bam"
+    OUTPUT="${bam%.bam}.library_complexity"
+    VALIDATION_STRINGENCY=LENIENT
+  )
+  run_picard ${args[*]}
+}
+
+# Collate functions. ---------------------------------------------------------
+
+collate_alignment_metrics() {
+  local out="$1"
+  shift
+  local bams=($@)
+  local files=( $(replace_ext .bam .alignment_summary_metrics ${bams[*]}) )
+  [[ ${#files[@]} == 0 ]] && return 1
+  echo -e "$(DATE)\tCollating ${#files[@]} alignment_summary_metrics files" >&2
+  (
+    echo -ne "SAMPLE\t"
+    tail -n+7 "${files[0]}" | head -n1 | cut -f1-22
+    local f
+    for f in ${files[*]}
+    do
+      local sample=$(basename $f)
+      sample=${sample%%.*}
+      tail -n+8 $f | grep -Pv '^\s' | cut -f1-22 \
+        | perl -pe 's{^}{'$sample'\t}'
+    done
+  ) > "$out"
+}
+
+# Get the metrics line from CollectRnaSeqMetrics.
+collate_rnaseq_metrics() {
+  local out="$1"
+  shift
+  local bams=($@)
+  local files=( $(replace_ext .bam .rnaseq_metrics ${bams[*]}) )
+  [[ ${#files[@]} == 0 ]] && return 1
+  echo -e "$(DATE)\tCollating ${#files[@]} rnaseq_metrics files (summary)" >&2
+  (
+    echo -ne "SAMPLE\t"
+    tail -n+7 "${files[0]}" | head -n1 | cut -f1-22
+    local f
+    for f in ${files[*]}
+    do
+      local sample=$(basename "$f")
+      sample=${sample%%.*}
+      tail -n+8 "$f" | head -n1 | cut -f1-22 | perl -pe 's{^}{'$sample'\t}'
+    done
+  ) > "$out"
+}
+
+# Get the coverage table from CollectRnaSeqMetrics.
+collate_rnaseq_coverage() {
+  local out="$1"
+  shift
+  local bams=($@)
+  local files=( $(replace_ext .bam .rnaseq_metrics ${bams[*]}) )
+  [[ ${#files[@]} == 0 ]] && return 1
+  echo -e "$(DATE)\tCollating ${#files[@]} rnaseq_metrics files (coverage)" >&2
+  (
+    echo -ne "SAMPLE\t"
+    tail -n+11 "${files[0]}" | head -n1 | perl -pe 's/\s+$/\n/'
+    local f
+    for f in ${files[*]}
+    do
+      local sample=$(basename "$f")
+      sample=${sample%%.*}
+      tail -n+12 "$f" | grep -Pv '^\s' | perl -pe 's{^}{'$sample'\t}'
+    done
+  ) > "$out"
+}
+
+collate_quality_metrics() {
+  local out="$1"
+  shift
+  local bams=($@)
+  local files=( $(replace_ext .bam .quality_distribution_metrics ${bams[*]}) )
+  [[ ${#files[@]} == 0 ]] && return 1
+  echo -e "$(DATE)\tCollating ${#files[@]} quality_distribution_metrics files" >&2
+  (
+    echo -ne "SAMPLE\t"
+    tail -n+8 "${files[0]}" | head -n1 | perl -pe 's/\s+$/\n/'
+    local f
+    for f in ${files[*]}
+    do
+      sample=$(basename "$f")
+      sample=${sample%%.*}
+      tail -n+9 "$f" | grep -Pv '^\s' | perl -pe 's{^}{'$sample'\t}'
+    done
+  ) > "$out"
+}
+
+collate_gc_bias_metrics() {
+  local out="$1"
+  shift
+  local bams=($@)
+  local files=( $(replace_ext .bam .gc_bias_metrics ${bams[*]}) )
+  [[ ${#files[@]} == 0 ]] && return 1
+  echo -e "$(DATE)\tCollating ${#files[@]} gc_bias_metrics files" >&2
+  (
+    echo -ne "SAMPLE\t"
+    tail -n+7 "${files[0]}" | head -n1 | perl -pe 's/\s+$/\n/'
+    local f
+    for f in ${files[*]}
+    do
+      sample=$(basename "$f")
+      sample=${sample%%.*}
+      tail -n+8 "$f" | grep -Pv '^\s' | perl -pe 's{^}{'$sample'\t}' \
+        | perl -pe 's/\s+$/\n/'
+    done
+  ) > "$out"
+}
+
+collate_gc_bias_summary() {
+  local out="$1"
+  shift
+  local bams=($@)
+  local files=( $(replace_ext .bam .gc_bias_metrics_summary ${bams[*]}) )
+  [[ ${#files[@]} == 0 ]] && return 1
+  echo -e "$(DATE)\tCollating ${#files[@]} gc_bias_metrics_summary files" >&2
+  (
+    echo -ne "SAMPLE\t"
+    tail -n+7 "${files[0]}" | head -n1 | perl -pe 's/\s+$/\n/'
+    local f
+    for f in ${files[*]}
+    do
+      sample=$(basename "$f")
+      sample=${sample%%.*}
+      tail -n+8 "$f" | head -n1 | perl -pe 's{^}{'$sample'\t}' \
+        | perl -pe 's/\s+$/\n/'
+    done
+  ) > "$out"
+}
+
+collate_insert_size_metrics() {
+  local out="$1"
+  shift
+  local bams=($@)
+  local files=( $(replace_ext .bam .insert_size_metrics ${bams[*]}) )
+  echo -e "$(DATE)\tCollating ${#files[@]} insert_size_metrics files" >&2
+  (
+    echo -ne "SAMPLE\t"
+    tail -n+7 "${files[0]}" | head -n1 | cut -f1-18
+    local f
+    for f in ${files[*]}
+    do
+      sample=$(basename "$f")
+      sample=${sample%%.*}
+      tail -n+8 "$f" | head -n1 | cut -f1-18 | perl -pe 's{^}{'$sample'\t}'
+    done
+  ) > "$out"
+}
+
+collate_duplicate_metrics() {
+  local out="$1"
+  shift
+  local bams=($@)
+  local files=( $(replace_ext .bam .duplicate_metrics ${bams[*]}) )
+  [[ ${#files[@]} == 0 ]] && return 1
+  echo -e "$(DATE)\tCollating ${#files[@]} duplicate_metrics files" >&2
+  (
+    echo -ne "SAMPLE\t"
+    tail -n+7 "${files[0]}" | head -n1 | cut -f1-9
+    local f
+    for f in ${files[*]}
+    do
+      sample=$(basename "$f")
+      sample=${sample%%.*}
+      tail -n+8 "$f" | head -n1 | cut -f1-9 \
+        | perl -pe 's/\t$//g; s{^}{'$sample'\t}'
+    done
+  ) > "$out"
+}
+
+collate_library_complexity() {
+  local out="$1"
+  shift
+  local bams=($@)
+  local files=( $(replace_ext .bam .library_complexity ${bams[*]}) )
+  [[ ${#files[@]} == 0 ]] && return 1
+  echo -e "$(DATE)\tCollating ${#files[@]} library_complexity files" >&2
+  (
+    echo -ne "SAMPLE\t"
+    tail -n+7 "${files[0]}" | head -n1 | cut -f1-9
+    local f
+    for f in ${files[*]}
+    do
+      sample=$(basename "$f")
+      sample=${sample%%.*}
+      tail -n+8 "$f" | head -n1 | cut -f1-9 \
+        | perl -pe 's/\t$//g; s{^}{'$sample'\t}'
+    done
+  ) > "$out"
+}
+
+# Get the histogram.
+collate_library_complexity_histogram() {
+  local out="$1"
+  shift
+  local bams=($@)
+  local files=( $(replace_ext .bam .library_complexity ${bams[*]}) )
+  [[ ${#files[@]} == 0 ]] && return 1
+  echo -e "$(DATE)\tCollating ${#files[@]} library_complexity files (histogram)" >&2
+  (
+    echo -ne "SAMPLE\t"
+    tail -n+11 "${files[0]}" | head -n1 | cut -f1 \
+      | perl -pe 's/\s+$/\n/; s/(\S+)/$1\tread_pairs/;'
+    local f
+    for f in ${files[*]}
+    do
+      local sample=$(basename "$f")
+      sample=${sample%%.*}
+      tail -n+12 "$f" | grep -Pv '^\s' | perl -pe 's{^}{'$sample'\t}'
+    done
+  ) > "$out"
+}
+
+collate_mapq_stats() {
+  local out="$1"
+  shift
+  local bams=($@)
+  local files=( $(replace_ext .bam .mapq_stats ${bams[*]}) )
+  [[ ${#files[@]} == 0 ]] && return 1
+  echo -e "$(DATE)\tCollating ${#files[@]} mapq_stats files" >&2
+  (
+    echo -e \
+    "SAMPLE\tMAPQ_Mean\tMAPQ_Median\tMAPQ_SD\tMAPQ_Mode\tMAPQ_ModePercent"
+    local f
+    for f in ${files[*]}
+    do
+      sample=$(basename "$f")
+      sample=${sample%%.*}
+      echo -ne "$sample\t"
+      cat $f | perl -lne '
+      BEGIN{ $n = 0; $mean = 0; $median = 0; $sd = 0; $mode = 0; $m = 0; }
+      /Total lines:\s+(\S+)/  && ($n = $1);
+      /Ari. Mean:\s+(\S+)/  && ($mean = $1);
+      /Median:\s+(\S+)/     && ($median = $1);
+      /^Mode:\s+(\S+) \(N=(\d+)\)/  && ($mode = $1, $m = 100 * $2 / $n);
+      /StdDev:\s+(\S+)/     && ($sd = $1);
+      END{ print join "\t", ($mean, $median, $sd, $mode, $m) }
+      '
+    done
+  ) > "$out"
+}
+
+collate_all() {
+  local prefix="$1"
+  echo -e "$(DATE)\tJoining all files into '$prefix-all-metrics.tsv'" >&2
+  # This code is also present in scripts/plot-picardmetrics.R
+  Rscript --vanilla <(echo '
+main <- function() {
+  args <- commandArgs(trailingOnly = TRUE)
+  prefix <- args[1]
+  dat <- read_metrics(prefix)
+  write_tsv(x = dat, file = sprintf("%s-all-metrics.tsv", prefix))
+}
+
+write_tsv <- function(...) {
+  write.table(sep = "\t", quote = FALSE, row.names = FALSE, ...)  
+}
+
+read_metrics <- function(prefix) {
+  dat_align_metrics = read.delim(
+    sprintf("%s-alignment-metrics.tsv", prefix),
+    stringsAsFactors = FALSE
+  )
+  dat_duplicate_metrics = read.delim(
+    sprintf("%s-duplicate-metrics.tsv", prefix),
+    stringsAsFactors = FALSE
+  )
+  dat_gcbias_metrics = read.delim(
+    sprintf("%s-gc-bias-summary.tsv", prefix),
+    stringsAsFactors = FALSE
+  )
+  dat_insert_size_metrics = read.delim(
+    sprintf("%s-insert-size-metrics.tsv", prefix),
+    stringsAsFactors = FALSE
+  )
+  dat_library_complexity = read.delim(
+    sprintf("%s-library-complexity.tsv", prefix),
+    stringsAsFactors = FALSE
+  )
+  dat_rnaseq_metrics = read.delim(
+    sprintf("%s-rnaseq-metrics.tsv", prefix),
+    stringsAsFactors = FALSE,
+  )
+  dat_mapq_stats <- read.delim(
+    sprintf("%s-mapq-stats.tsv", prefix),
+    stringsAsFactors = FALSE
+  )
+
+  # Exclude FIRST_OF_PAIR and SECOND_OF_PAIR.
+  idx = dat_align_metrics$CATEGORY %in% c("PAIR", "UNPAIRED")
+  dat_align_metrics = dat_align_metrics[idx, ]
+
+  # alignment_metrics and rnaseq_metrics both have this column.
+  idx <- colnames(dat_rnaseq_metrics) == "PF_ALIGNED_BASES"
+  colnames(dat_rnaseq_metrics)[idx] <- "PF_ALIGNED_BASES_rnaseq_metrics"
+  
+  # duplicate_metrics and library_complexity share columns
+  cnames <- colnames(dat_library_complexity)
+  cnames[2:length(cnames)] <- paste0(
+    cnames[2:length(cnames)], "_library_complexity"
+  )
+  colnames(dat_library_complexity) <- cnames
+
+  # Ensure the files are describing the same samples.
+  stopifnot( all(dat_align_metrics$SAMPLE == dat_rnaseq_metrics$SAMPLE) )
+  stopifnot( all(dat_align_metrics$SAMPLE == dat_duplicate_metrics$SAMPLE) )
+  stopifnot( all(dat_align_metrics$SAMPLE == dat_gcbias_metrics$SAMPLE) )
+  stopifnot( all(dat_align_metrics$SAMPLE == dat_insert_size_metrics$SAMPLE) )
+  stopifnot( all(dat_align_metrics$SAMPLE == dat_library_complexity$SAMPLE) )
+  stopifnot( all(dat_align_metrics$SAMPLE == dat_mapq_stats$SAMPLE) )
+
+  dat = merge(dat_align_metrics, dat_rnaseq_metrics, by = "SAMPLE")
+  dat = merge(dat, dat_duplicate_metrics, by = "SAMPLE")
+  dat = merge(dat, dat_gcbias_metrics, by = "SAMPLE")
+  dat = merge(dat, dat_insert_size_metrics, by = "SAMPLE")
+  dat = merge(dat, dat_library_complexity, by = "SAMPLE")
+  dat = merge(dat, dat_mapq_stats, by = "SAMPLE")
+
+  colnames(dat)
+
+  return(dat)
+} 
+
+main()
+  ') $prefix
+}
+
+# Extra functions. -----------------------------------------------------------
+
+DATE() {
+  command date +'%Y-%m-%d %H:%M:%S'
+}
+
+is_bam() {
+  [[ -s "$1" && "$1" =~ "\.bam$" ]]
+}
+
+bam_incomplete() {
+  if [[ ! -s "$1" ]]; then
+    return 0
+  fi
+  samtools view -H "$1" 2>&1 | grep -q 'EOF marker is absent'
+  return "$?"
+}
+
+bam_sorted() {
+  if [[ ! -s "$1" ]]; then
+    return 0
+  fi
+  samtools view -H "$1" 2>&1 | grep -q 'SO:coordinate'
+  return "$?"
+}
+
+# Replace the file extension for each item in an array.
+# Return 1 if any of the new file names do not exist on the filesystem.
+# arg1  The file extension to replace, e.g. ".bam"
+# arg2  The new file extension, e.g. ".gc_bias_metrics"
+# rest  An array of file names.
+replace_ext() {
+  local ext="$1" new="$2"
+  shift
+  shift
+  local files=($@)
+  local retval=()
+  for f in ${files[*]}; do
+    # Replace the old extension with a new one.
+    local newf="${f%$ext}$new"
+    # Complain if the file does not exist.
+    if [[ ! -f "$newf" ]]; then
+      echo "WARNING: File not found '$newf'" >&2
+    else
+      # Add the file to the returned list if it does exist.
+      retval+=("$newf")
+    fi
+  done
+  if [[ ${#retval[@]} == 0 ]]; then
+    echo "ERROR: Found 0 files with extension '$new'" >&2
+    return 1
+  fi
+  # This is the hacky way to "return" an array in Bash. Should've used Perl.
+  echo ${retval[*]}
+}
+
+main "$@"

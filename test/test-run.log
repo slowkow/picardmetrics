@@ -1,0 +1,16 @@
+2015-03-16 09:50:06	START	data/project1/sample1/sample1.bam
+2015-03-16 09:50:06	SortSam
+2015-03-16 09:50:08	MarkDuplicates
+2015-03-16 09:50:13	CollectMultipleMetrics
+2015-03-16 09:51:02	CollectRnaSeqMetrics
+2015-03-16 09:51:30	CollectGcBiasMetrics
+2015-03-16 09:52:58	EstimateLibraryComplexity
+2015-03-16 09:52:59	DONE	data/project1/sample1/sample1.bam
+2015-03-16 09:52:59	START	data/project1/sample2/sample2.bam
+2015-03-16 09:52:59	SortSam
+2015-03-16 09:53:00	MarkDuplicates
+2015-03-16 09:53:05	CollectMultipleMetrics
+2015-03-16 09:53:55	CollectRnaSeqMetrics
+2015-03-16 09:54:24	CollectGcBiasMetrics
+2015-03-16 09:55:52	EstimateLibraryComplexity
+2015-03-16 09:55:53	DONE	data/project1/sample2/sample2.bam

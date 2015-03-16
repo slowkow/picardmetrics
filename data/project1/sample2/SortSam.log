@@ -1,0 +1,5 @@
+[Mon Mar 16 09:52:59 EDT 2015] picard.sam.SortSam INPUT=sample2.bam OUTPUT=sample2.sorted.bam SORT_ORDER=coordinate VALIDATION_STRINGENCY=LENIENT    VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
+[Mon Mar 16 09:52:59 EDT 2015] Executing as slowikow@lorax on Linux 2.6.18-194.8.1.el5 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
+INFO	2015-03-16 09:53:00	SortSam	Finished reading inputs, merging and writing to output now.
+[Mon Mar 16 09:53:00 EDT 2015] picard.sam.SortSam done. Elapsed time: 0.02 minutes.
+Runtime.totalMemory()=5145034752
