@@ -66,17 +66,26 @@ main_run() {
 
   dir="$(dirname $bam)"
   bam="$(basename $bam)"
-  echo -e "$(DATE)\tSTART\t$dir/$bam"
+  work_dir="$dir/picardmetrics"
 
-  # Perform all actions in the BAM file's directory.
-  if ! cd "$dir"; then
-    echo "ERROR: cd '$dir'" >&2
+  if ! mkdir -p "$work_dir"; then
+    echo "ERROR mkdir '$work_dir'" >&2
     exit 1
   fi
 
+  # Perform all actions in a folder inside the BAM file's directory.
+  if ! cd "$work_dir"; then
+    echo "ERROR: cd '$work_dir'" >&2
+    exit 1
+  fi
+
+  bam="../$bam"
+
+  echo -e "$(DATE)\tSTART\t$(readlink -f $bam)"
+
   # Sort the BAM file if it is not already sorted.
   if ! bam_sorted "$bam"; then
-    local sorted="${bam%.bam}.sorted.bam"
+    local sorted="$(basename $bam .bam).sorted.bam"
 
     # Picard tools require a coordinate-sorted BAM file.
     if [[ ! -s "$sorted" || "$bam" -nt "$sorted" ]] \
@@ -90,7 +99,7 @@ main_run() {
   # Run all of the Picard tools.
   compute_metrics "$sorted" "$RNASEQ"
 
-  echo -e "$(DATE)\tDONE\t$dir/$bam"
+  echo -e "$(DATE)\tDONE\t$(readlink -f $bam)"
 }
 
 main_collate() {
@@ -456,7 +465,7 @@ collate_quality_metrics() {
     local f
     for f in ${files[*]}
     do
-      sample=$(basename "$f")
+      local sample=$(basename "$f")
       sample=${sample%%.*}
       tail -n+9 "$f" | grep -Pv '^\s' | perl -pe 's{^}{'$sample'\t}'
     done
@@ -476,7 +485,7 @@ collate_gc_bias_metrics() {
     local f
     for f in ${files[*]}
     do
-      sample=$(basename "$f")
+      local sample=$(basename "$f")
       sample=${sample%%.*}
       tail -n+8 "$f" | grep -Pv '^\s' | perl -pe 's{^}{'$sample'\t}' \
         | perl -pe 's/\s+$/\n/'
@@ -497,7 +506,7 @@ collate_gc_bias_summary() {
     local f
     for f in ${files[*]}
     do
-      sample=$(basename "$f")
+      local sample=$(basename "$f")
       sample=${sample%%.*}
       tail -n+8 "$f" | head -n1 | perl -pe 's{^}{'$sample'\t}' \
         | perl -pe 's/\s+$/\n/'
@@ -517,7 +526,7 @@ collate_insert_size_metrics() {
     local f
     for f in ${files[*]}
     do
-      sample=$(basename "$f")
+      local sample=$(basename "$f")
       sample=${sample%%.*}
       tail -n+8 "$f" | head -n1 | cut -f1-18 | perl -pe 's{^}{'$sample'\t}'
     done
@@ -537,7 +546,7 @@ collate_duplicate_metrics() {
     local f
     for f in ${files[*]}
     do
-      sample=$(basename "$f")
+      local sample=$(basename "$f")
       sample=${sample%%.*}
       tail -n+8 "$f" | head -n1 | cut -f1-9 \
         | perl -pe 's/\t$//g; s{^}{'$sample'\t}'
@@ -558,7 +567,7 @@ collate_library_complexity() {
     local f
     for f in ${files[*]}
     do
-      sample=$(basename "$f")
+      local sample=$(basename "$f")
       sample=${sample%%.*}
       tail -n+8 "$f" | head -n1 | cut -f1-9 \
         | perl -pe 's/\t$//g; s{^}{'$sample'\t}'
@@ -601,7 +610,7 @@ collate_mapq_stats() {
     local f
     for f in ${files[*]}
     do
-      sample=$(basename "$f")
+      local sample=$(basename "$f")
       sample=${sample%%.*}
       echo -ne "$sample\t"
       cat $f | perl -lne '

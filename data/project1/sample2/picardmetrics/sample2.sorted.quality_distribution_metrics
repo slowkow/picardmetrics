@@ -1,0 +1,47 @@
+## htsjdk.samtools.metrics.StringHeader
+# picard.analysis.CollectMultipleMetrics INPUT=sample2.sorted.bam REFERENCE_SEQUENCE=/dev/shm/slowikow/hg19.genome.fa OUTPUT=sample2.sorted PROGRAM=[CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution, MeanQualityByCycle, CollectBaseDistributionByCycle, CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution] VALIDATION_STRINGENCY=LENIENT    ASSUME_SORTED=true STOP_AFTER=0 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
+## htsjdk.samtools.metrics.StringHeader
+# Started on: Fri Mar 20 08:00:06 EDT 2015
+
+
+## HISTOGRAM	java.lang.Byte
+QUALITY	COUNT_OF_Q
+2	148081
+5	174
+6	431
+7	2744
+8	4133
+9	2132
+10	3389
+11	1069
+12	734
+13	1695
+14	601
+15	1987
+16	2568
+17	3023
+18	4355
+19	2887
+20	3129
+21	1927
+22	4137
+23	5094
+24	6186
+25	8998
+26	11571
+27	13179
+28	12865
+29	17316
+30	27700
+31	32882
+32	30696
+33	39980
+34	59559
+35	111730
+36	46420
+37	68243
+38	50456
+39	73301
+40	88422
+41	111356
+

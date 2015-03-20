@@ -4,8 +4,7 @@
 # Test picardmetrics
 
 # Clean up previous runs.
-rm -f data/project1/sample?/*.log
-rm -f data/project1/sample?/sample?.sorted.*
+rm -rf data/project1/sample?/picardmetrics
 rm -f data/*.tsv
 rm -f test/test-run.log
 rm -f test/test-collate.log
@@ -19,5 +18,5 @@ done
 # Collate the generated tables into project summary tables.
 ./picardmetrics collate \
   data/project1 \
-  data/project1/sample?/sample?.sorted.bam \
+  data/project1/sample?/picardmetrics/sample?.sorted.bam \
   &> test/test-collate.log

@@ -1,0 +1,19 @@
+[Fri Mar 20 08:00:06 EDT 2015] picard.analysis.CollectMultipleMetrics INPUT=sample2.sorted.bam REFERENCE_SEQUENCE=/dev/shm/slowikow/hg19.genome.fa OUTPUT=sample2.sorted PROGRAM=[CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution, MeanQualityByCycle, CollectBaseDistributionByCycle, CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution] VALIDATION_STRINGENCY=LENIENT    ASSUME_SORTED=true STOP_AFTER=0 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
+[Fri Mar 20 08:00:06 EDT 2015] Executing as slowikow@lorax on Linux 2.6.18-194.8.1.el5 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
+INFO	2015-03-20 08:00:28	RExecutor	Executing R script via command: Rscript /tmp/slowikow/script1068941402795659046.R /medpop/srlab/slowikow/work/picardmetrics/data/project1/sample2/picardmetrics/sample2.sorted.quality_distribution_metrics /medpop/srlab/slowikow/work/picardmetrics/data/project1/sample2/picardmetrics/sample2.sorted.quality_distribution.pdf sample2.sorted.bam 
+ERROR	2015-03-20 08:00:28	ProcessExecutor	Bioconductor version 3.0 (BiocInstaller 1.16.2), ?biocLite for help
+INFO	2015-03-20 08:00:28	ProcessExecutor	null device 
+INFO	2015-03-20 08:00:28	ProcessExecutor	          1 
+INFO	2015-03-20 08:00:54	RExecutor	Executing R script via command: Rscript /tmp/slowikow/script5807182886866784384.R /medpop/srlab/slowikow/work/picardmetrics/data/project1/sample2/picardmetrics/sample2.sorted.insert_size_metrics /medpop/srlab/slowikow/work/picardmetrics/data/project1/sample2/picardmetrics/sample2.sorted.insert_size_Histogram.pdf sample2.sorted.bam
+ERROR	2015-03-20 08:00:54	ProcessExecutor	Bioconductor version 3.0 (BiocInstaller 1.16.2), ?biocLite for help
+INFO	2015-03-20 08:00:54	ProcessExecutor	[1] "Not creating insert size PDF as there are duplicated header names: All_Reads"
+INFO	2015-03-20 08:00:54	RExecutor	Executing R script via command: Rscript /tmp/slowikow/script2288744344386533276.R /medpop/srlab/slowikow/work/picardmetrics/data/project1/sample2/picardmetrics/sample2.sorted.quality_by_cycle_metrics /medpop/srlab/slowikow/work/picardmetrics/data/project1/sample2/picardmetrics/sample2.sorted.quality_by_cycle.pdf sample2.sorted.bam 
+ERROR	2015-03-20 08:00:54	ProcessExecutor	Bioconductor version 3.0 (BiocInstaller 1.16.2), ?biocLite for help
+INFO	2015-03-20 08:00:54	ProcessExecutor	null device 
+INFO	2015-03-20 08:00:54	ProcessExecutor	          1 
+INFO	2015-03-20 08:00:55	RExecutor	Executing R script via command: Rscript /tmp/slowikow/script5124610488002323514.R /medpop/srlab/slowikow/work/picardmetrics/data/project1/sample2/picardmetrics/sample2.sorted.base_distribution_by_cycle_metrics /medpop/srlab/slowikow/work/picardmetrics/data/project1/sample2/picardmetrics/sample2.sorted.base_distribution_by_cycle.pdf sample2.sorted.bam 
+ERROR	2015-03-20 08:00:55	ProcessExecutor	Bioconductor version 3.0 (BiocInstaller 1.16.2), ?biocLite for help
+INFO	2015-03-20 08:00:55	ProcessExecutor	null device 
+INFO	2015-03-20 08:00:55	ProcessExecutor	          1 
+[Fri Mar 20 08:00:55 EDT 2015] picard.analysis.CollectMultipleMetrics done. Elapsed time: 0.82 minutes.
+Runtime.totalMemory()=5254414336
