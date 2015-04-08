@@ -22,19 +22,26 @@ main() {
 main_run() {
   # Ensure that the script was called with correct arguments.
   if [[ "$1" == "" ]]; then
-    echo "Usage: picardmetrics run [-f FILE] [-r] <file.bam>"
+    echo "Usage: picardmetrics run [-f FILE] [-r] [-o DIR] <file.bam>"
     echo "  -f FILE     The configuration file. (Default: ~/.picardmetricsrc)"
+    echo "  -o DIR      Base directory for all output files."
+    echo "              (Default: Write outputs in a folder called"
+    echo "              'picardmetrics' in the BAM file's folder.)"
     echo "  -r          The BAM file has RNA-seq reads. (Default: false)"
     return 0
   fi
 
   # Assume the input .bam file does not come from an RNA-seq experiment.
   PICARDMETRICS_CONFIG=~/.picardmetricsrc
+  OUT_DIR=""
   RNASEQ=""
-  while getopts ":f:r" opt; do
+  while getopts ":f:o:r" opt; do
     case "$opt" in
       f)
         PICARDMETRICS_CONFIG="$OPTARG"
+        ;;
+      o)
+        OUT_DIR="$OPTARG"
         ;;
       r)
         RNASEQ=1
@@ -66,7 +73,7 @@ main_run() {
 
   dir="$(dirname $bam)"
   bam="$(basename $bam)"
-  work_dir="$dir/picardmetrics"
+  work_dir="$OUT_DIR/$dir/picardmetrics"
 
   if ! mkdir -p "$work_dir"; then
     echo "ERROR mkdir '$work_dir'" >&2
