@@ -37,12 +37,15 @@ Usage: picardmetrics COMMAND
   collate     Collate metrics files for multiple BAM files.
 
 $ picardmetrics run
-Usage: picardmetrics run [-f FILE] [-r] <file.bam>
-  -f FILE   The configuration file. (Default: ~/.picardmetricsrc)
-  -r        The BAM file has RNA-seq reads. (Default: false)
+Usage: picardmetrics run [-f FILE] [-o DIR] [-r] <file.bam>
+  -f FILE     The configuration file. (Default: ~/.picardmetricsrc)
+  -o DIR      Write output files in this directory. (Default: .)
+  -r          The BAM file has RNA-seq reads. (Default: false)
 
 $ picardmetrics collate
-Usage: picardmetrics collate PREFIX <file.bam> [<file.bam> ...]
+Usage: picardmetrics collate PREFIX DIR
+  All picardmetrics output files in DIR will be collated.
+  A file named 'PREFIX-all-metrics.tsv' will be written in DIR.
 ```
 
 ## Installation
@@ -53,7 +56,7 @@ git clone git@github.com:slowkow/picardmetrics.git
 
 # Install the script to your preferred location.
 cd picardmetrics
-cp picardmetrics ~/bin/
+ln -s picardmetrics ~/bin/
 
 # Copy and edit the configuration file to match your system.
 cp picardmetricsrc ~/.picardmetricsrc
@@ -68,8 +71,9 @@ You also need to install these dependencies:
 
 ## Examples
 
-I've included two BAM files, each with 10,000 mapped reads, to illustrate the
-usage of `picardmetrics`. Please see the [data/][data] folder.
+I included two BAM files in the [data/][data] folder, each with 10,000 mapped
+reads, to illustrate the usage of `picardmetrics`. Please see the outputs in
+the [out/][out] folder.
 
 Here are three examples of how you can run the program:
 
@@ -85,13 +89,15 @@ Here are three examples of how you can run the program:
 Run the Picard tools on the provided example BAM files:
 
 ```bash
-$ for f in data/project1/sample?/sample?.bam; do picardmetrics run -r $f; done
+for f in data/project1/sample?/sample?.bam; do
+  picardmetrics run -o out -r $f
+done
 ```
 
 Collate the generated metrics files:
 
 ```bash
-$ picardmetrics collate data/project1 data/project1/sample?/sample?.sorted.bam
+picardmetrics collate out/project1 out
 ```
 
 ### Example 2: GNU parallel
@@ -99,7 +105,7 @@ $ picardmetrics collate data/project1 data/project1/sample?/sample?.sorted.bam
 Run 2 jobs in parallel:
 
 ```bash
-$ parallel -j2 picardmetrics run -r {} ::: data/project1/sample?/sample?.bam
+parallel -j2 picardmetrics run -r {} ::: data/project1/sample?/sample?.bam
 ```
 
 If you have many files, or if you want to run jobs on multiple servers, it's
@@ -110,8 +116,8 @@ on `server1` and 8 jobs on `server2`. You'll have to make sure that
 `picardmetrics` is in your `PATH` on all servers.
 
 ```bash
-$ ls /full/path/to/data/project1/sample*/sample*.bam > bams.txt
-$ parallel -S 16/server1,8/server2 picardmetrics :::: bams.txt
+ls /full/path/to/data/project1/sample*/sample*.bam > bams.txt
+parallel -S 16/server1,8/server2 picardmetrics run -r {} :::: bams.txt
 ```
 
 ### Example 3: LSF
@@ -120,7 +126,8 @@ I recommend you install and use [asub] to submit jobs easily. This command
 will submit a job for each BAM file to the `myqueue` LSF queue.
 
 ```bash
-$ cat bams.txt | xargs -i echo picardmetrics run -r {} | asub -j picardmetrics -q myqueue
+cat bams.txt | xargs -i echo picardmetrics run -r {} \
+  | asub -j picardmetrics_jobs -q myqueue
 ```
 
 [Picard]: https://broadinstitute.github.io/picard/
@@ -135,6 +142,7 @@ $ cat bams.txt | xargs -i echo picardmetrics run -r {} | asub -j picardmetrics -
 [asub]: https://github.com/lh3/asub
 [scripts]: https://github.com/slowkow/picardmetrics/tree/master/scripts
 [data]: https://github.com/slowkow/picardmetrics/tree/master/data
+[out]: https://github.com/slowkow/picardmetrics/tree/master/out
 
 [SortSam]: https://broadinstitute.github.io/picard/command-line-overview.html#SortSam
 [MarkDuplicates]: https://broadinstitute.github.io/picard/command-line-overview.html#MarkDuplicates
