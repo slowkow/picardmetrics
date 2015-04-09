@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-# plot-picardmetrics.R
+# plot_picardmetrics.R
 # Kamil Slowikowski
 
 library(ggplot2, quietly = TRUE)
@@ -11,7 +11,7 @@ main <- function(prefix, outdir) {
   args <- commandArgs(trailingOnly = TRUE)
 
   if (length(args) < 1 || length(args) > 2) {
-    cat("Usage: plot-picardmetrics PREFIX [OUTDIR]\n")
+    cat("Usage: plot_picardmetrics.R PREFIX [OUTDIR]\n")
     cat("    Default OUTDIR is figures/\n")
     quit()
   }
@@ -28,6 +28,7 @@ main <- function(prefix, outdir) {
   dat <- read_metrics(prefix)
   write_tsv(x = dat, file = sprintf("%s-all-metrics.tsv", prefix))
 
+  # Some example plots. Feel free to explore and add your own!
   ggplot(dat) +
     geom_point(aes(PF_READS, PF_ALIGNED_BASES))
 
@@ -43,43 +44,49 @@ write_tsv <- function(...) {
   write.table(sep = "\t", quote = FALSE, row.names = FALSE, ...)  
 }
 
+read_tsv <- function(filename, ...) {
+  if (!file.exists(filename)) {
+    stop(sprintf("File not found: %s", filename))
+  }
+  read.delim(filename, stringsAsFactors = FALSE, ...)
+}
+
 read_metrics <- function(prefix) {
-  dat_align_metrics = read.delim(
-    sprintf("%s-alignment-metrics.tsv", prefix),
-    stringsAsFactors = FALSE
+  is_rnaseq <- file.exists(sprintf("%s-rnaseq-metrics.tsv", prefix))
+
+  dat_align_metrics = read_tsv(
+    sprintf("%s-alignment-metrics.tsv", prefix)
   )
-  dat_duplicate_metrics = read.delim(
-    sprintf("%s-duplicate-metrics.tsv", prefix),
-    stringsAsFactors = FALSE
+  dat_duplicate_metrics = read_tsv(
+    sprintf("%s-duplicate-metrics.tsv", prefix)
   )
-  dat_gcbias_metrics = read.delim(
-    sprintf("%s-gc-bias-summary.tsv", prefix),
-    stringsAsFactors = FALSE
+  dat_gcbias_metrics = read_tsv(
+    sprintf("%s-gc-bias-summary.tsv", prefix)
   )
-  dat_insert_size_metrics = read.delim(
-    sprintf("%s-insert-size-metrics.tsv", prefix),
-    stringsAsFactors = FALSE
+  dat_insert_size_metrics = read_tsv(
+    sprintf("%s-insert-size-metrics.tsv", prefix)
   )
-  dat_library_complexity = read.delim(
-    sprintf("%s-library-complexity.tsv", prefix),
-    stringsAsFactors = FALSE
+  dat_library_complexity = read_tsv(
+    sprintf("%s-library-complexity.tsv", prefix)
   )
-  dat_rnaseq_metrics = read.delim(
-    sprintf("%s-rnaseq-metrics.tsv", prefix),
-    stringsAsFactors = FALSE,
-  )
-  dat_mapq_stats <- read.delim(
-    sprintf("%s-mapq-stats.tsv", prefix),
-    stringsAsFactors = FALSE
+  if (is_rnaseq) {
+    dat_rnaseq_metrics = read_tsv(
+      sprintf("%s-rnaseq-metrics.tsv", prefix)
+    )
+  }
+  dat_mapq_stats <- read_tsv(
+    sprintf("%s-mapq-stats.tsv", prefix)
   )
 
   # Exclude FIRST_OF_PAIR and SECOND_OF_PAIR.
-  idx = dat_align_metrics$CATEGORY %in% c("PAIR", "UNPAIRED")
+  idx = !dat_align_metrics$CATEGORY %in% c("FIRST_OF_PAIR", "SECOND_OF_PAIR")
   dat_align_metrics = dat_align_metrics[idx, ]
 
-  # alignment_metrics and rnaseq_metrics both have this column.
-  idx <- colnames(dat_rnaseq_metrics) == "PF_ALIGNED_BASES"
-  colnames(dat_rnaseq_metrics)[idx] <- "PF_ALIGNED_BASES_rnaseq_metrics"
+  if (is_rnaseq) {
+    # alignment_metrics and rnaseq_metrics both have this column.
+    idx <- colnames(dat_rnaseq_metrics) == "PF_ALIGNED_BASES"
+    colnames(dat_rnaseq_metrics)[idx] <- "PF_ALIGNED_BASES_rnaseq_metrics"
+  }
   
   # duplicate_metrics and library_complexity share columns
   cnames <- colnames(dat_library_complexity)
@@ -89,24 +96,29 @@ read_metrics <- function(prefix) {
   colnames(dat_library_complexity) <- cnames
 
   # Ensure the files are describing the same samples.
-  stopifnot( all(dat_align_metrics$SAMPLE == dat_rnaseq_metrics$SAMPLE) )
+  if (is_rnaseq) {
+    stopifnot( all(dat_align_metrics$SAMPLE == dat_rnaseq_metrics$SAMPLE) )
+  }
   stopifnot( all(dat_align_metrics$SAMPLE == dat_duplicate_metrics$SAMPLE) )
   stopifnot( all(dat_align_metrics$SAMPLE == dat_gcbias_metrics$SAMPLE) )
   stopifnot( all(dat_align_metrics$SAMPLE == dat_insert_size_metrics$SAMPLE) )
   stopifnot( all(dat_align_metrics$SAMPLE == dat_library_complexity$SAMPLE) )
   stopifnot( all(dat_align_metrics$SAMPLE == dat_mapq_stats$SAMPLE) )
 
-  dat = merge(dat_align_metrics, dat_rnaseq_metrics, by = "SAMPLE")
-  dat = merge(dat, dat_duplicate_metrics, by = "SAMPLE")
-  dat = merge(dat, dat_gcbias_metrics, by = "SAMPLE")
-  dat = merge(dat, dat_insert_size_metrics, by = "SAMPLE")
-  dat = merge(dat, dat_library_complexity, by = "SAMPLE")
-  dat = merge(dat, dat_mapq_stats, by = "SAMPLE")
+  dat <- dat_align_metrics
+  if (is_rnaseq) {
+    dat <- merge(dat, dat_rnaseq_metrics, by = "SAMPLE")
+  }
+  dat <- merge(dat, dat_duplicate_metrics, by = "SAMPLE")
+  dat <- merge(dat, dat_gcbias_metrics, by = "SAMPLE")
+  dat <- merge(dat, dat_insert_size_metrics, by = "SAMPLE")
+  dat <- merge(dat, dat_library_complexity, by = "SAMPLE")
+  dat <- merge(dat, dat_mapq_stats, by = "SAMPLE")
 
   colnames(dat)
 
   return(dat)
-}
+} 
 
 main(prefix, outdir)
 
