@@ -1,0 +1,15 @@
+[Thu Apr 09 11:25:00 EDT 2015] picard.analysis.CollectMultipleMetrics INPUT=sample2.bam REFERENCE_SEQUENCE=/dev/shm/slowikow/hg19.genome.fa OUTPUT=sample2 PROGRAM=[CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution, MeanQualityByCycle, CollectBaseDistributionByCycle, CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution] VALIDATION_STRINGENCY=LENIENT    ASSUME_SORTED=true STOP_AFTER=0 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
+[Thu Apr 09 11:25:00 EDT 2015] Executing as slowikow@lorax on Linux 2.6.18-194.8.1.el5 amd64; OpenJDK 64-Bit Server VM 1.6.0_0-b16; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
+INFO	2015-04-09 11:25:49	RExecutor	Executing R script via command: Rscript /tmp/slowikow/script4415530799591374367.R /medpop/srlab/slowikow/work/picardmetrics/out/sample2.insert_size_metrics /medpop/srlab/slowikow/work/picardmetrics/out/sample2.insert_size_Histogram.pdf sample2.bam
+INFO	2015-04-09 11:25:49	ProcessExecutor	[1] "Not creating insert size PDF as there are duplicated header names: All_Reads"
+INFO	2015-04-09 11:25:50	RExecutor	Executing R script via command: Rscript /tmp/slowikow/script2440018269534187528.R /medpop/srlab/slowikow/work/picardmetrics/out/sample2.quality_by_cycle_metrics /medpop/srlab/slowikow/work/picardmetrics/out/sample2.quality_by_cycle.pdf sample2.bam 
+INFO	2015-04-09 11:25:50	ProcessExecutor	null device 
+INFO	2015-04-09 11:25:50	ProcessExecutor	          1 
+INFO	2015-04-09 11:25:50	RExecutor	Executing R script via command: Rscript /tmp/slowikow/script1802616520945963906.R /medpop/srlab/slowikow/work/picardmetrics/out/sample2.base_distribution_by_cycle_metrics /medpop/srlab/slowikow/work/picardmetrics/out/sample2.base_distribution_by_cycle.pdf sample2.bam 
+INFO	2015-04-09 11:25:50	ProcessExecutor	null device 
+INFO	2015-04-09 11:25:50	ProcessExecutor	          1 
+INFO	2015-04-09 11:25:50	RExecutor	Executing R script via command: Rscript /tmp/slowikow/script2599608477003929020.R /medpop/srlab/slowikow/work/picardmetrics/out/sample2.quality_distribution_metrics /medpop/srlab/slowikow/work/picardmetrics/out/sample2.quality_distribution.pdf sample2.bam 
+INFO	2015-04-09 11:25:51	ProcessExecutor	null device 
+INFO	2015-04-09 11:25:51	ProcessExecutor	          1 
+[Thu Apr 09 11:25:51 EDT 2015] picard.analysis.CollectMultipleMetrics done. Elapsed time: 0.84 minutes.
+Runtime.totalMemory()=5300748288

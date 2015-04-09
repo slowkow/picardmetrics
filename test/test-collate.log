@@ -1,14 +1,14 @@
-2015-03-20 08:02:53	START	data/project1
-2015-03-20 08:02:53	Collating 2 alignment_summary_metrics files
-2015-03-20 08:02:53	Collating 2 quality_distribution_metrics files
-2015-03-20 08:02:54	Collating 2 rnaseq_metrics files (summary)
-2015-03-20 08:02:54	Collating 2 rnaseq_metrics files (coverage)
-2015-03-20 08:02:54	Collating 2 gc_bias_metrics files
-2015-03-20 08:02:54	Collating 2 gc_bias_metrics_summary files
-2015-03-20 08:02:54	Collating 2 duplicate_metrics files
-2015-03-20 08:02:55	Collating 2 insert_size_metrics files
-2015-03-20 08:02:55	Collating 2 library_complexity files
-2015-03-20 08:02:55	Collating 2 library_complexity files (histogram)
-2015-03-20 08:02:55	Collating 2 mapq_stats files
-2015-03-20 08:02:55	Joining all files into 'data/project1-all-metrics.tsv'
-2015-03-20 08:02:56	DONE	data/project1
+2015-04-09 11:37:28	START	out/project1
+2015-04-09 11:37:28	Collating 2 alignment_summary_metrics files
+2015-04-09 11:37:28	Collating 2 quality_distribution_metrics files
+2015-04-09 11:37:28	Collating 2 rnaseq_metrics files (summary)
+2015-04-09 11:37:29	Collating 2 rnaseq_metrics files (coverage)
+2015-04-09 11:37:29	Collating 2 gc_bias_metrics files
+2015-04-09 11:37:29	Collating 2 gc_bias_metrics_summary files
+2015-04-09 11:37:29	Collating 2 duplicate_metrics files
+2015-04-09 11:37:29	Collating 2 insert_size_metrics files
+2015-04-09 11:37:29	Collating 2 library_complexity files
+2015-04-09 11:37:29	Collating 2 library_complexity files (histogram)
+2015-04-09 11:37:30	Collating 2 mapq_stats files
+2015-04-09 11:37:30	Joining all files into 'out/project1-all-metrics.tsv'
+2015-04-09 11:37:30	DONE	out/project1

@@ -1,0 +1,6 @@
+[Thu Apr 09 11:27:57 EDT 2015] picard.sam.markduplicates.EstimateLibraryComplexity INPUT=[sample2.bam] OUTPUT=sample2.library_complexity VALIDATION_STRINGENCY=LENIENT    MIN_IDENTICAL_BASES=5 MAX_DIFF_RATE=0.03 MIN_MEAN_QUALITY=20 MAX_GROUP_RATIO=500 READ_NAME_REGEX=[a-zA-Z0-9]+:[0-9]:([0-9]+):([0-9]+):([0-9]+).* OPTICAL_DUPLICATE_PIXEL_DISTANCE=100 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=8352329 CREATE_INDEX=false CREATE_MD5_FILE=false
+[Thu Apr 09 11:27:57 EDT 2015] Executing as slowikow@lorax on Linux 2.6.18-194.8.1.el5 amd64; OpenJDK 64-Bit Server VM 1.6.0_0-b16; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
+INFO	2015-04-09 11:27:57	EstimateLibraryComplexity	Will store 8352329 read pairs in memory before sorting.
+INFO	2015-04-09 11:27:58	EstimateLibraryComplexity	Finished reading - moving on to scanning for duplicates.
+[Thu Apr 09 11:27:58 EDT 2015] picard.sam.markduplicates.EstimateLibraryComplexity done. Elapsed time: 0.01 minutes.
+Runtime.totalMemory()=5145034752
