@@ -1,9 +1,0 @@
-[Fri Mar 20 07:58:01 EDT 2015] picard.analysis.CollectRnaSeqMetrics REF_FLAT=/medpop/rnaseq/genome/gencode.v19.annotation.refFlat RIBOSOMAL_INTERVALS=/medpop/rnaseq/genome/gencode.v19.rRNA.interval_list STRAND_SPECIFICITY=NONE CHART_OUTPUT=sample1.sorted.rnaseq_metrics.pdf INPUT=sample1.sorted.bam OUTPUT=sample1.sorted.rnaseq_metrics REFERENCE_SEQUENCE=/dev/shm/slowikow/hg19.genome.fa VALIDATION_STRINGENCY=LENIENT    MINIMUM_LENGTH=500 RRNA_FRAGMENT_PERCENTAGE=0.8 METRIC_ACCUMULATION_LEVEL=[ALL_READS] ASSUME_SORTED=true STOP_AFTER=0 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
-[Fri Mar 20 07:58:01 EDT 2015] Executing as slowikow@lorax on Linux 2.6.18-194.8.1.el5 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
-INFO	2015-03-20 07:58:06	CollectRnaSeqMetrics	Loaded 191625 genes.
-INFO	2015-03-20 07:58:28	RExecutor	Executing R script via command: Rscript /tmp/slowikow/script8236804890910649027.R /medpop/srlab/slowikow/work/picardmetrics/data/project1/sample1/picardmetrics/sample1.sorted.rnaseq_metrics /medpop/srlab/slowikow/work/picardmetrics/data/project1/sample1/picardmetrics/sample1.sorted.rnaseq_metrics.pdf sample1.sorted.bam 
-ERROR	2015-03-20 07:58:28	ProcessExecutor	Bioconductor version 3.0 (BiocInstaller 1.16.2), ?biocLite for help
-INFO	2015-03-20 07:58:29	ProcessExecutor	null device 
-INFO	2015-03-20 07:58:29	ProcessExecutor	          1 
-[Fri Mar 20 07:58:29 EDT 2015] picard.analysis.CollectRnaSeqMetrics done. Elapsed time: 0.46 minutes.
-Runtime.totalMemory()=4960681984
