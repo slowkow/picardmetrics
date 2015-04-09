@@ -22,19 +22,22 @@ main() {
 main_run() {
   # Ensure that the script was called with correct arguments.
   if [[ "$1" == "" ]]; then
-    echo "Usage: picardmetrics run [-f FILE] [-r] [-o DIR] <file.bam>"
+    echo "Usage: picardmetrics run [-f FILE] [-o DIR] [-r] <file.bam>"
     echo "  -f FILE     The configuration file. (Default: ~/.picardmetricsrc)"
-    echo "  -o DIR      Base directory for all output files."
-    echo "              (Default: Write outputs in a folder called"
-    echo "              'picardmetrics' in the BAM file's folder.)"
+    echo "  -o DIR      Write output files in this directory. (Default: .)"
     echo "  -r          The BAM file has RNA-seq reads. (Default: false)"
     return 0
   fi
 
-  # Assume the input .bam file does not come from an RNA-seq experiment.
+  # By default, look for the config file in the user's home directory.
   PICARDMETRICS_CONFIG=~/.picardmetricsrc
-  OUT_DIR=""
+
+  # By default, write output to the user's current working directory.
+  OUT_DIR="."
+
+  # Assume the input .bam file does not come from an RNA-seq experiment.
   RNASEQ=""
+
   while getopts ":f:o:r" opt; do
     case "$opt" in
       f)
@@ -62,6 +65,9 @@ main_run() {
   # Get the first positional argument after the option flags.
   bam=${@:$OPTIND:1}
 
+  # Get the absolute path, but do not resolve symlinks.
+  bam="$(realpath -s $bam)"
+
   # Ensure the BAM file is valid.
   if ! is_bam "$bam"; then
     echo "ERROR: Not a .bam file: '$bam'" >&2
@@ -71,84 +77,83 @@ main_run() {
     exit 1
   fi
 
-  dir="$(dirname $bam)"
-  bam="$(basename $bam)"
-  work_dir="$OUT_DIR/$dir/picardmetrics"
-
-  if ! mkdir -p "$work_dir"; then
-    echo "ERROR mkdir '$work_dir'" >&2
+  # Make the ouput directory if it does not exist.
+  if ! mkdir -p "$OUT_DIR"; then
+    echo "ERROR mkdir '$OUT_DIR'" >&2
     exit 1
   fi
 
   # Perform all actions in a folder inside the BAM file's directory.
-  if ! cd "$work_dir"; then
-    echo "ERROR: cd '$work_dir'" >&2
+  if ! cd "$OUT_DIR"; then
+    echo "ERROR: cd '$OUT_DIR'" >&2
     exit 1
   fi
 
-  bam="../$bam"
+  echo -e "$(DATE)\tSTART\t$bam"
 
-  echo -e "$(DATE)\tSTART\t$(readlink -f $bam)"
+  local sorted=$(basename $bam)
 
   # Sort the BAM file if it is not already sorted.
   if ! bam_sorted "$bam"; then
-    local sorted="$(basename $bam .bam).sorted.bam"
-
     # Picard tools require a coordinate-sorted BAM file.
     if [[ ! -s "$sorted" || "$bam" -nt "$sorted" ]] \
     || bam_incomplete "$sorted"; then
       sort_sam "$bam" "$sorted"
     fi
   else
-    sorted="$bam"
+    # The BAM file is already sorted, so make a symlink to it.
+    if ! ln -sf "$bam" "$sorted"; then
+      echo "ERROR: Cannot symlink '$bam' to '$sorted'" >&2
+      exit 1
+    fi
   fi
 
   # Run all of the Picard tools.
   compute_metrics "$sorted" "$RNASEQ"
 
-  echo -e "$(DATE)\tDONE\t$(readlink -f $bam)"
+  echo -e "$(DATE)\tDONE\t$bam"
 }
 
 main_collate() {
   if [[ "$1" == "" || "$2" == "" ]]; then
-    echo "Usage: picardmetrics collate PREFIX <file.bam> [<file.bam> ...]"
+    echo "Usage: picardmetrics collate PREFIX DIR"
+    echo "  All picardmetrics output files in DIR will be collated."
+    echo "  A file named 'PREFIX-all-metrics.tsv' will be written in DIR."
     return 0
   fi
 
   local prefix="$1"
-  shift
-  local bams=($@)
+  local dir="$2"
 
   echo -e "$(DATE)\tSTART\t$prefix" >&2
   
   # CollectAlignmentMetrics
-  collate_alignment_metrics "$prefix-alignment-metrics.tsv" ${bams[*]}
+  collate_alignment_metrics "$prefix-alignment-metrics.tsv" "$dir"
 
   # CollectQualityMetrics
-  collate_quality_metrics \
-    "$prefix-quality-distribution-metrics.tsv" ${bams[*]}
+  collate_quality_metrics "$prefix-quality-distribution-metrics.tsv" "$dir"
 
   # CollectRnaSeqMetrics
-  collate_rnaseq_metrics "$prefix-rnaseq-metrics.tsv" ${bams[*]}
-  collate_rnaseq_coverage "$prefix-rnaseq-coverage.tsv" ${bams[*]}
+  collate_rnaseq_metrics "$prefix-rnaseq-metrics.tsv" "$dir"
+  collate_rnaseq_coverage "$prefix-rnaseq-coverage.tsv" "$dir"
 
   # CollectGcBiasMetrics
-  collate_gc_bias_metrics "$prefix-gc-bias-metrics.tsv" ${bams[*]}
-  collate_gc_bias_summary "$prefix-gc-bias-summary.tsv" ${bams[*]}
+  collate_gc_bias_metrics "$prefix-gc-bias-metrics.tsv" "$dir"
+  collate_gc_bias_summary "$prefix-gc-bias-summary.tsv" "$dir"
 
   # MarkDuplicates
-  collate_duplicate_metrics "$prefix-duplicate-metrics.tsv" ${bams[*]}
+  collate_duplicate_metrics "$prefix-duplicate-metrics.tsv" "$dir"
 
   # CollectInsertSizeMetrics
-  collate_insert_size_metrics "$prefix-insert-size-metrics.tsv" ${bams[*]}
+  collate_insert_size_metrics "$prefix-insert-size-metrics.tsv" "$dir"
 
   # EstimateLibraryComplexity
-  collate_library_complexity "$prefix-library-complexity.tsv" ${bams[*]}
+  collate_library_complexity "$prefix-library-complexity.tsv" "$dir"
   collate_library_complexity_histogram \
-    "$prefix-library-complexity-histogram.tsv" ${bams[*]}
+    "$prefix-library-complexity-histogram.tsv" "$dir"
 
   # MAPQ statistics.
-  collate_mapq_stats "$prefix-mapq-stats.tsv" ${bams[*]}
+  collate_mapq_stats "$prefix-mapq-stats.tsv" "$dir"
 
   # Merge all collated files into one master file "$prefix-all-metrics.tsv".
   collate_all "$prefix"
@@ -299,10 +304,12 @@ compute_metrics() {
 run_picard() {
   local tool="$1"; shift
   local args=($@)
+  local bam=${args[0]}
+  local log=$(basename ${bam#*=} .bam).${tool}.log
   echo -e "$(DATE)\t$tool"
-  if ! $NICE $PICARD $tool ${args[*]} &> ${tool}.log; then
+  if ! $NICE $PICARD $tool ${args[*]} &> $log; then
     echo "ERROR: $tool failed" >&2
-    echo "       See $(pwd)/${tool}.log for details" >&2
+    echo "       See $(pwd)/$log for details" >&2
     exit 1
   fi
 }
@@ -397,10 +404,8 @@ library_complexity() {
 # Collate functions. ---------------------------------------------------------
 
 collate_alignment_metrics() {
-  local out="$1"
-  shift
-  local bams=($@)
-  local files=( $(replace_ext .bam .alignment_summary_metrics ${bams[*]}) )
+  local out="$1" dir="$2"
+  local files=($dir/*.alignment_summary_metrics)
   [[ ${#files[@]} == 0 ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} alignment_summary_metrics files" >&2
   (
@@ -419,10 +424,8 @@ collate_alignment_metrics() {
 
 # Get the metrics line from CollectRnaSeqMetrics.
 collate_rnaseq_metrics() {
-  local out="$1"
-  shift
-  local bams=($@)
-  local files=( $(replace_ext .bam .rnaseq_metrics ${bams[*]}) )
+  local out="$1" dir="$2"
+  local files=($dir/*.rnaseq_metrics)
   [[ ${#files[@]} == 0 ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} rnaseq_metrics files (summary)" >&2
   (
@@ -440,10 +443,8 @@ collate_rnaseq_metrics() {
 
 # Get the coverage table from CollectRnaSeqMetrics.
 collate_rnaseq_coverage() {
-  local out="$1"
-  shift
-  local bams=($@)
-  local files=( $(replace_ext .bam .rnaseq_metrics ${bams[*]}) )
+  local out="$1" dir="$2"
+  local files=($dir/*.rnaseq_metrics)
   [[ ${#files[@]} == 0 ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} rnaseq_metrics files (coverage)" >&2
   (
@@ -460,10 +461,8 @@ collate_rnaseq_coverage() {
 }
 
 collate_quality_metrics() {
-  local out="$1"
-  shift
-  local bams=($@)
-  local files=( $(replace_ext .bam .quality_distribution_metrics ${bams[*]}) )
+  local out="$1" dir="$2"
+  local files=($dir/*.quality_distribution_metrics)
   [[ ${#files[@]} == 0 ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} quality_distribution_metrics files" >&2
   (
@@ -480,10 +479,8 @@ collate_quality_metrics() {
 }
 
 collate_gc_bias_metrics() {
-  local out="$1"
-  shift
-  local bams=($@)
-  local files=( $(replace_ext .bam .gc_bias_metrics ${bams[*]}) )
+  local out="$1" dir="$2"
+  local files=($dir/*.gc_bias_metrics)
   [[ ${#files[@]} == 0 ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} gc_bias_metrics files" >&2
   (
@@ -501,10 +498,8 @@ collate_gc_bias_metrics() {
 }
 
 collate_gc_bias_summary() {
-  local out="$1"
-  shift
-  local bams=($@)
-  local files=( $(replace_ext .bam .gc_bias_metrics_summary ${bams[*]}) )
+  local out="$1" dir="$2"
+  local files=($dir/*.gc_bias_metrics_summary)
   [[ ${#files[@]} == 0 ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} gc_bias_metrics_summary files" >&2
   (
@@ -522,10 +517,9 @@ collate_gc_bias_summary() {
 }
 
 collate_insert_size_metrics() {
-  local out="$1"
-  shift
-  local bams=($@)
-  local files=( $(replace_ext .bam .insert_size_metrics ${bams[*]}) )
+  local out="$1" dir="$2"
+  local files=($dir/*.insert_size_metrics)
+  [[ ${#files[@]} == 0 ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} insert_size_metrics files" >&2
   (
     echo -ne "SAMPLE\t"
@@ -541,10 +535,8 @@ collate_insert_size_metrics() {
 }
 
 collate_duplicate_metrics() {
-  local out="$1"
-  shift
-  local bams=($@)
-  local files=( $(replace_ext .bam .duplicate_metrics ${bams[*]}) )
+  local out="$1" dir="$2"
+  local files=($dir/*.duplicate_metrics)
   [[ ${#files[@]} == 0 ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} duplicate_metrics files" >&2
   (
@@ -562,10 +554,8 @@ collate_duplicate_metrics() {
 }
 
 collate_library_complexity() {
-  local out="$1"
-  shift
-  local bams=($@)
-  local files=( $(replace_ext .bam .library_complexity ${bams[*]}) )
+  local out="$1" dir="$2"
+  local files=($dir/*.library_complexity)
   [[ ${#files[@]} == 0 ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} library_complexity files" >&2
   (
@@ -584,10 +574,8 @@ collate_library_complexity() {
 
 # Get the histogram.
 collate_library_complexity_histogram() {
-  local out="$1"
-  shift
-  local bams=($@)
-  local files=( $(replace_ext .bam .library_complexity ${bams[*]}) )
+  local out="$1" dir="$2"
+  local files=($dir/*.library_complexity)
   [[ ${#files[@]} == 0 ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} library_complexity files (histogram)" >&2
   (
@@ -605,10 +593,8 @@ collate_library_complexity_histogram() {
 }
 
 collate_mapq_stats() {
-  local out="$1"
-  shift
-  local bams=($@)
-  local files=( $(replace_ext .bam .mapq_stats ${bams[*]}) )
+  local out="$1" dir="$2"
+  local files=($dir/*.mapq_stats)
   [[ ${#files[@]} == 0 ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} mapq_stats files" >&2
   (
@@ -649,42 +635,42 @@ write_tsv <- function(...) {
   write.table(sep = "\t", quote = FALSE, row.names = FALSE, ...)  
 }
 
-read_metrics <- function(prefix) {
-  is_rnaseq <- file.exists("%s-rnaseq-metrics.tsv", prefix)
+read_tsv <- function(filename, ...) {
+  if (!file.exists(filename)) {
+    stop(sprintf("File not found: %s", filename))
+  }
+  read.delim(filename, stringsAsFactors = FALSE, ...)
+}
 
-  dat_align_metrics = read.delim(
-    sprintf("%s-alignment-metrics.tsv", prefix),
-    stringsAsFactors = FALSE
+read_metrics <- function(prefix) {
+  is_rnaseq <- file.exists(sprintf("%s-rnaseq-metrics.tsv", prefix))
+
+  dat_align_metrics = read_tsv(
+    sprintf("%s-alignment-metrics.tsv", prefix)
   )
-  dat_duplicate_metrics = read.delim(
-    sprintf("%s-duplicate-metrics.tsv", prefix),
-    stringsAsFactors = FALSE
+  dat_duplicate_metrics = read_tsv(
+    sprintf("%s-duplicate-metrics.tsv", prefix)
   )
-  dat_gcbias_metrics = read.delim(
-    sprintf("%s-gc-bias-summary.tsv", prefix),
-    stringsAsFactors = FALSE
+  dat_gcbias_metrics = read_tsv(
+    sprintf("%s-gc-bias-summary.tsv", prefix)
   )
-  dat_insert_size_metrics = read.delim(
-    sprintf("%s-insert-size-metrics.tsv", prefix),
-    stringsAsFactors = FALSE
+  dat_insert_size_metrics = read_tsv(
+    sprintf("%s-insert-size-metrics.tsv", prefix)
   )
-  dat_library_complexity = read.delim(
-    sprintf("%s-library-complexity.tsv", prefix),
-    stringsAsFactors = FALSE
+  dat_library_complexity = read_tsv(
+    sprintf("%s-library-complexity.tsv", prefix)
   )
   if (is_rnaseq) {
-    dat_rnaseq_metrics = read.delim(
-      sprintf("%s-rnaseq-metrics.tsv", prefix),
-      stringsAsFactors = FALSE,
+    dat_rnaseq_metrics = read_tsv(
+      sprintf("%s-rnaseq-metrics.tsv", prefix)
     )
   }
-  dat_mapq_stats <- read.delim(
-    sprintf("%s-mapq-stats.tsv", prefix),
-    stringsAsFactors = FALSE
+  dat_mapq_stats <- read_tsv(
+    sprintf("%s-mapq-stats.tsv", prefix)
   )
 
   # Exclude FIRST_OF_PAIR and SECOND_OF_PAIR.
-  idx = dat_align_metrics$CATEGORY %in% c("PAIR", "UNPAIRED")
+  idx = !dat_align_metrics$CATEGORY %in% c("FIRST_OF_PAIR", "SECOND_OF_PAIR")
   dat_align_metrics = dat_align_metrics[idx, ]
 
   if (is_rnaseq) {
@@ -710,8 +696,9 @@ read_metrics <- function(prefix) {
   stopifnot( all(dat_align_metrics$SAMPLE == dat_library_complexity$SAMPLE) )
   stopifnot( all(dat_align_metrics$SAMPLE == dat_mapq_stats$SAMPLE) )
 
+  dat <- dat_align_metrics
   if (is_rnaseq) {
-    dat <- merge(dat_align_metrics, dat_rnaseq_metrics, by = "SAMPLE")
+    dat <- merge(dat, dat_rnaseq_metrics, by = "SAMPLE")
   }
   dat <- merge(dat, dat_duplicate_metrics, by = "SAMPLE")
   dat <- merge(dat, dat_gcbias_metrics, by = "SAMPLE")
@@ -752,36 +739,6 @@ bam_sorted() {
   fi
   samtools view -H "$1" 2>&1 | grep -q 'SO:coordinate'
   return "$?"
-}
-
-# Replace the file extension for each item in an array.
-# Return 1 if any of the new file names do not exist on the filesystem.
-# arg1  The file extension to replace, e.g. ".bam"
-# arg2  The new file extension, e.g. ".gc_bias_metrics"
-# rest  An array of file names.
-replace_ext() {
-  local ext="$1" new="$2"
-  shift
-  shift
-  local files=($@)
-  local retval=()
-  for f in ${files[*]}; do
-    # Replace the old extension with a new one.
-    local newf="${f%$ext}$new"
-    # Complain if the file does not exist.
-    if [[ ! -f "$newf" ]]; then
-      echo "WARNING: File not found '$newf'" >&2
-    else
-      # Add the file to the returned list if it does exist.
-      retval+=("$newf")
-    fi
-  done
-  if [[ ${#retval[@]} == 0 ]]; then
-    echo "ERROR: Found 0 files with extension '$new'" >&2
-    return 1
-  fi
-  # This is the hacky way to "return" an array in Bash. Should've used Perl.
-  echo ${retval[*]}
 }
 
 main "$@"
