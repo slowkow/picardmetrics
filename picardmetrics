@@ -23,7 +23,7 @@ main_run() {
   # Ensure that the script was called with correct arguments.
   if [[ "$1" == "" ]]; then
     echo "Usage: picardmetrics run [-f FILE] [-o DIR] [-r] <file.bam>"
-    echo "  -f FILE     The configuration file. (Default: ~/.picardmetricsrc)"
+    echo "  -f FILE     The configuration file. (Default: .picardmetricsrc)"
     echo "  -o DIR      Write output files in this directory. (Default: .)"
     echo "  -r          The BAM file has RNA-seq reads. (Default: false)"
     return 0
