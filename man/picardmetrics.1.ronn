@@ -54,11 +54,11 @@ Find more details here: <https://github.com/slowkow/picardmetrics>
 
   * `-r`
 
-    The BAM file is from a paired-end RNA-seq experiment. By default,
-    this is not true. When this option is used, the
-    `CollectRnaSeqMetrics` Picard tool is run. This option requires
-    the environment variables `REF_FLAT` and `RIBOSOMAL_INTERVALS` to
-    be set. You should specify them in the configuration file.
+    The BAM file is from an RNA-seq experiment. By default, this is not true.
+    When this option is used, the `CollectRnaSeqMetrics` Picard tool is run.
+    This option requires the environment variables `REF_FLAT` and
+    `RIBOSOMAL_INTERVALS` to be set. You should specify them in the
+    configuration file.
 
 ### collate
 
