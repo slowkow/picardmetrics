@@ -13,5 +13,6 @@ man: man/picardmetrics.1.ronn
 	ronn \
 		--manual="picardmetrics manual" \
 		--organization="picardmetrics-0.1.2" \
+		--date="2015-04-09" \
 		--style=toc \
 		$?
