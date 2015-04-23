@@ -29,4 +29,5 @@ data:
 	mkdir -p data
 	./scripts/make_refFlat
 	./scripts/make_rRNA_intervals
+	@echo
 	@echo "Edit your picardmetrics.conf file with paths to files in ./data"
