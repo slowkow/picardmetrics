@@ -37,8 +37,8 @@ Find more details here: <https://github.com/slowkow/picardmetrics>
   * `-f` <FILE>
 
     The configuration file with specified environment variables. In order of
-    preference, picardmetrics will use (1) the specified file, (2) a file
-    named .picardmetricsrc in the current directory or (3) in the user's
+    preference, `picardmetrics` will use (1) the specified file, (2) a file
+    named `picardmetrics.conf` in the current directory or (3) in the user's
     HOME directory. If no file is found, an error will be thrown and the
     program will exit.
 
@@ -70,7 +70,7 @@ Picard tools and all BAM files.
 
 ## ENVIRONMENT VARIABLES
 
-The `.picardmetricsrc` file must define the following envrionment variables:
+The `picardmetrics.conf` file must define the following envrionment variables:
 
   * `NICENESS`
 

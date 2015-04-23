@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# install_deps.sh
+# Kamil Slowikowski
+#
+# Install dependencies for picardmetrics.
+
+SRC="$HOME/src"
+
+mkdir -p $SRC
+
+cd $SRC
+
+# Picard
+VERSION=1.130
+if [[ ! -d "$SRC/picard-tools-${VERSION}" ]]; then
+  URL="https://github.com/broadinstitute/picard/releases/download"
+  if ! curl -k -L -O $URL/${VERSION}/picard-tools-${VERSION}.zip; then
+    echo "Failed to download Picard"
+    exit 1
+  fi
+  unzip picard-tools-${VERSION}.zip
+
+  echo "Edit your picardmetrics.conf file to include:"
+  echo "  PICARD_JAR=\"$SRC/picard-tools-${VERSION}/picard.jar\""
+fi
+
+# stats
+if ! which stats; then
+  if ! git clone https://github.com/arq5x/filo; then
+    echo "Failed to download stats"
+    exit 1
+  fi
+
+  cd filo     && make
+
+  echo "Copy $SRC/filo/stats/bin/stats to a directory in your PATH"
+fi
+
+# samtools
+if ! which samtools; then
+  if ! git clone https://github.com/samtools/htslib; then
+    echo "Failed to download htslib"
+    exit 1
+  fi
+  if ! git clone https://github.com/samtools/samtools; then
+    echo "Failed to download samtools"
+    exit 1
+  fi
+
+  cd htslib   && make && make install && cd ..
+  cd samtools && make && make install && cd ..
+fi
+

@@ -4,25 +4,36 @@
 
 set -o xtrace
 
+# UCSC
+# Feb. 2009 (hg19, GRCh37)
+# Dec. 2013 (hg38, GRCh38)
+hg=38
+
+# GENCODE
+# Version 19 (July 2013 freeze, GRCh37, hg19) - Ensembl 74
+# Version 22 (October 2014 freeze, GRCh38, hg38) - Ensembl 79
+rel=22
+
+CHROM_SIZES=data/hg${rel}.chrom.sizes
+GENCODE=data/gencode.v${rel}.annotation.gtf.gz
+rRNA=data/gencode.v${rel}.rRNA.interval_list
+
 # Download chromosome sizes from the UCSC genome browser.
-CHROM_SIZES=hg19.chrom.sizes
 if [[ ! -s $CHROM_SIZES ]]
 then
     mysql -N --user=genome --host=genome-mysql.cse.ucsc.edu -A -e \
-        "SELECT chrom,size FROM chromInfo ORDER BY size DESC;" hg19 \
+        "SELECT chrom,size FROM chromInfo ORDER BY size DESC;" hg${hg} \
     > $CHROM_SIZES
 fi
 
 # Download the Gencode GTF file.
-GENCODE=gencode.v19.annotation.gtf.gz
-GENCODE_URL="ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_19/${GENCODE}"
+GENCODE_URL="ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_${rel}/${GENCODE}"
 [[ ! -s $GENCODE ]] && wget -q $GENCODE_URL
 
 # Create an interval list file suitable for Picard CollectRnaSeqMetrics.
-rRNA=gencode.v19.rRNA.interval_list
 
 # Sequence names and lengths.
-perl -lane 'print "\@SQ\tSN:$F[0]\tLN:$F[1]\tAS:hg19"' $CHROM_SIZES | \
+perl -lane 'print "\@SQ\tSN:$F[0]\tLN:$F[1]\tAS:hg${hg}"' $CHROM_SIZES | \
 # Exclude chromosomes with "_" in their names.
     grep -v _ \
 > $rRNA

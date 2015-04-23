@@ -44,7 +44,7 @@ Usage: picardmetrics COMMAND
 
 $ picardmetrics run
 Usage: picardmetrics run [-f FILE] [-o DIR] [-r] <file.bam>
-  -f FILE     The configuration file. (Default: .picardmetricsrc)
+  -f FILE     The configuration file. (Default: picardmetrics.conf)
   -o DIR      Write output files in this directory. (Default: .)
   -r          The BAM file has RNA-seq reads. (Default: false)
 
@@ -65,7 +65,7 @@ cd picardmetrics
 make install PREFIX=~/.local
 
 # Edit the configuration file to match your system.
-vim ~/.picardmetricsrc
+vim ~/picardmetrics.conf
 ```
 
 You also need to install these dependencies:

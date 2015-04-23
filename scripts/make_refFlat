@@ -4,19 +4,34 @@
 
 set -o xtrace
 
+# GENCODE
+# Version 19 (July 2013 freeze, GRCh37, hg19) - Ensembl 74
+# Version 22 (October 2014 freeze, GRCh38, hg38) - Ensembl 79
+rel=22
+
+DIR=data
+
+GENOME=GRCh38.p2.genome.fa.gz
+GENCODE=gencode.v${rel}.annotation.gtf.gz
+REF_FLAT=gencode.v${rel}.annotation.refFlat
+
 # Download the Gencode GTF file.
-GENCODE=gencode.v19.annotation.gtf.gz
-GENCODE_URL="ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_19/${GENCODE}"
-[[ ! -s $GENCODE ]] && wget -q $GENCODE_URL
+GENCODE_URL="ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_${rel}/${GENCODE}"
+[[ ! -s $DIR/$GENCODE ]] && wget $GENCODE_URL -O $DIR/GENCODE
 
 # Download a program for converting GTF to refFlat.
 gtfToGenePred='http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/gtfToGenePred'
-[[ ! -s gtfToGenePred ]] && wget -q $gtfToGenePred && chmod +x gtfToGenePred
+[[ ! -s scripts/gtfToGenePred ]] && \
+	wget $gtfToGenePred -O scripts/$gtfToGenePred \
+	&& chmod +x scripts/gtfToGenePred
 
 # Create the refFlat file suitable for use with Picard CollectRnaSeqMetrics.
-REF_FLAT=gencode.v19.annotation.refFlat
-if [[ ! -s $REF_FLAT ]]; then
-	./gtfToGenePred \
-		-ignoreGroupsWithoutExons <(gunzip -c $GENCODE) $REF_FLAT \
-	&& perl -i -lane 'print join "\t", ($F[0], @F)' $REF_FLAT
+if [[ ! -s $DIR/$REF_FLAT ]]; then
+	./scripts/gtfToGenePred \
+		-ignoreGroupsWithoutExons <(gunzip -c $GENCODE) $DIR/$REF_FLAT \
+	&& perl -i -lane 'print join "\t", ($F[0], @F)' $DIR/$REF_FLAT
 fi
+
+# Download the genome sequence.
+GENOME_URL="ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_${rel}/${GENOME}"
+[[ ! -s $DIR/$GENOME ]] && wget $GENOME_URL -O $DIR/$GENOME
