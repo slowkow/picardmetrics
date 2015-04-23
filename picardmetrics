@@ -174,7 +174,7 @@ configure_run() {
   #     2. The config in the current directory.
   #     3. The config in the home directory.
   if [[ -f "$PICARDMETRICS_CONFIG" ]]; then
-    continue
+    PICARDMETRICS_CONFIG="$PICARDMETRICS_CONFIG"
   elif [[ -f picardmetrics.conf ]]; then
     PICARDMETRICS_CONFIG=picardmetric.conf
   elif [[ -f ~/picardmetrics.conf ]]; then
@@ -413,7 +413,7 @@ library_complexity() {
 collate_alignment_metrics() {
   local out="$1" dir="$2"
   local files=($dir/*.alignment_summary_metrics)
-  [[ ${#files[@]} == 0 ]] && return 1
+  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} alignment_summary_metrics files" >&2
   (
     echo -ne "SAMPLE\t"
@@ -433,7 +433,7 @@ collate_alignment_metrics() {
 collate_rnaseq_metrics() {
   local out="$1" dir="$2"
   local files=($dir/*.rnaseq_metrics)
-  [[ ${#files[@]} == 0 ]] && return 1
+  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} rnaseq_metrics files (summary)" >&2
   (
     echo -ne "SAMPLE\t"
@@ -452,7 +452,7 @@ collate_rnaseq_metrics() {
 collate_rnaseq_coverage() {
   local out="$1" dir="$2"
   local files=($dir/*.rnaseq_metrics)
-  [[ ${#files[@]} == 0 ]] && return 1
+  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} rnaseq_metrics files (coverage)" >&2
   (
     echo -ne "SAMPLE\t"
@@ -470,7 +470,7 @@ collate_rnaseq_coverage() {
 collate_quality_metrics() {
   local out="$1" dir="$2"
   local files=($dir/*.quality_distribution_metrics)
-  [[ ${#files[@]} == 0 ]] && return 1
+  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} quality_distribution_metrics files" >&2
   (
     echo -ne "SAMPLE\t"
@@ -488,7 +488,7 @@ collate_quality_metrics() {
 collate_gc_bias_metrics() {
   local out="$1" dir="$2"
   local files=($dir/*.gc_bias_metrics)
-  [[ ${#files[@]} == 0 ]] && return 1
+  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} gc_bias_metrics files" >&2
   (
     echo -ne "SAMPLE\t"
@@ -507,7 +507,7 @@ collate_gc_bias_metrics() {
 collate_gc_bias_summary() {
   local out="$1" dir="$2"
   local files=($dir/*.gc_bias_metrics_summary)
-  [[ ${#files[@]} == 0 ]] && return 1
+  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} gc_bias_metrics_summary files" >&2
   (
     echo -ne "SAMPLE\t"
@@ -526,7 +526,7 @@ collate_gc_bias_summary() {
 collate_insert_size_metrics() {
   local out="$1" dir="$2"
   local files=($dir/*.insert_size_metrics)
-  [[ ${#files[@]} == 0 ]] && return 1
+  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} insert_size_metrics files" >&2
   (
     echo -ne "SAMPLE\t"
@@ -544,7 +544,7 @@ collate_insert_size_metrics() {
 collate_duplicate_metrics() {
   local out="$1" dir="$2"
   local files=($dir/*.duplicate_metrics)
-  [[ ${#files[@]} == 0 ]] && return 1
+  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} duplicate_metrics files" >&2
   (
     echo -ne "SAMPLE\t"
@@ -563,7 +563,7 @@ collate_duplicate_metrics() {
 collate_library_complexity() {
   local out="$1" dir="$2"
   local files=($dir/*.library_complexity)
-  [[ ${#files[@]} == 0 ]] && return 1
+  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} library_complexity files" >&2
   (
     echo -ne "SAMPLE\t"
@@ -583,7 +583,7 @@ collate_library_complexity() {
 collate_library_complexity_histogram() {
   local out="$1" dir="$2"
   local files=($dir/*.library_complexity)
-  [[ ${#files[@]} == 0 ]] && return 1
+  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} library_complexity files (histogram)" >&2
   (
     echo -ne "SAMPLE\t"
@@ -602,7 +602,7 @@ collate_library_complexity_histogram() {
 collate_mapq_stats() {
   local out="$1" dir="$2"
   local files=($dir/*.mapq_stats)
-  [[ ${#files[@]} == 0 ]] && return 1
+  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   echo -e "$(DATE)\tCollating ${#files[@]} mapq_stats files" >&2
   (
     echo -e \
