@@ -2,7 +2,7 @@
 
 ## SYNOPSIS
 
-`picardmetrics` run [-f <FILE>] [-o <DIR>] [-r] <file.bam>
+`picardmetrics` run [-f <FILE>] [-o <DIR>] [-r] [-k] <file.bam>
 
 `picardmetrics` collate <PREFIX> <DIR>
 
