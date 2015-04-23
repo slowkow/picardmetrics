@@ -1,5 +1,29 @@
 # Change Log
 
+# 0.1.3 - 2015-04-23
+
+## Fixed
+
+-   The `collate_` functions did not correctly check for the number of metrics
+    files. This affects output generated using `picardmetrics` without `-r`.
+
+## Changed
+
+-   The output BAM file is now deleted after a successful run.
+
+-   Added option `-k` to optionally keep the output BAM file.
+
+-   The configuration file is now called `picardmetrics.conf` instead of
+    `.picardmetricsrc`.
+
+## Added
+
+-   Added extra commands to the Makefile to ease installation of dependencies
+    and download of human reference data.
+
+    -   Now h38 is downloaded by default instead of hg19. The user can modify
+        the script to get different versions.
+
 # 0.1.2 - 2015-04-09
 
 ## Fixed
