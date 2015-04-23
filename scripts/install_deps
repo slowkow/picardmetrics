@@ -4,50 +4,79 @@
 #
 # Install dependencies for picardmetrics.
 
+# Executables, libraries, and manpages will be put here with 'make install'.
+if [[ "$1" == "" ]]; then
+  PREFIX="$HOME/.local"
+else
+  PREFIX="$1"
+fi
+
+# Source code downloaded from the web will be put here.
 SRC="$HOME/src"
 
-mkdir -p $SRC
+main() {
+  mkdir -p $PREFIX/bin
+  mkdir -p $SRC
 
-cd $SRC
+  cd $SRC
 
-# Picard
-VERSION=1.130
-if [[ ! -d "$SRC/picard-tools-${VERSION}" ]]; then
-  URL="https://github.com/broadinstitute/picard/releases/download"
-  if ! curl -k -L -O $URL/${VERSION}/picard-tools-${VERSION}.zip; then
-    echo "Failed to download Picard"
-    exit 1
-  fi
-  unzip picard-tools-${VERSION}.zip
+  # Picard
+  VERSION=1.130
+  if [[ ! -e "$SRC/picard-tools-${VERSION}/picard.jar" ]]; then
+    URL="https://github.com/broadinstitute/picard/releases/download"
+    if ! curl -k -L -O $URL/${VERSION}/picard-tools-${VERSION}.zip; then
+      echo "Failed to download Picard"
+      exit 1
+    fi
+    unzip picard-tools-${VERSION}.zip
 
-  echo "Edit your picardmetrics.conf file to include:"
-  echo "  PICARD_JAR=\"$SRC/picard-tools-${VERSION}/picard.jar\""
-fi
-
-# stats
-if ! which stats; then
-  if ! git clone https://github.com/arq5x/filo; then
-    echo "Failed to download stats"
-    exit 1
+    echo "Edit your picardmetrics.conf file to include:"
+    echo "  PICARD_JAR=\"$SRC/picard-tools-${VERSION}/picard.jar\""
   fi
 
-  cd filo     && make
+  # stats
+  if [[ ! -e $PREFIX/bin/stats ]]; then
+    git_clone arq5x/filo
 
-  echo "Copy $SRC/filo/stats/bin/stats to a directory in your PATH"
-fi
-
-# samtools
-if ! which samtools; then
-  if ! git clone https://github.com/samtools/htslib; then
-    echo "Failed to download htslib"
-    exit 1
-  fi
-  if ! git clone https://github.com/samtools/samtools; then
-    echo "Failed to download samtools"
-    exit 1
+    cd filo \
+      && make \
+      && cp bin/stats $PREFIX/bin/ \
+      && cd ..
   fi
 
-  cd htslib   && make && make install && cd ..
-  cd samtools && make && make install && cd ..
-fi
+  # samtools
+  if [[ ! -e $PREFIX/bin/samtools ]]; then
+    git_clone samtools/htslib
 
+    cd htslib \
+      && make \
+      && make prefix=$PREFIX install \
+      && cd ..
+
+    git_clone samtools/samtools
+
+    cd samtools \
+      && make \
+      && make prefix=$PREFIX install \
+      && cd ..
+  fi
+
+  if ! which stats || ! which samtools; then
+    echo
+    echo "Add this to your .bashrc or .bash_profile:"
+    echo "    PATH=\"\$HOME/.local/bin:\$PATH\""
+  fi
+}
+
+git_clone() {
+  USER_REPO=$1
+  REPO=$(basename $USER_REPO)
+  if [[ ! -d $REPO ]]; then
+    if ! git clone https://github.com/${USER_REPO}; then
+      echo "ERROR: Failed to download ${USER_REPO}"
+      exit 1
+    fi
+  fi
+}
+
+main

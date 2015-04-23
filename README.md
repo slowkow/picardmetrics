@@ -20,8 +20,9 @@ Run [Picard] tools and collate multiple metrics files.
 
 You can find additional scripts in the [scripts/][scripts] folder:
 
-  -   `make_refFlat` creates a `refFlat` file with (human) [Gencode
-      v19][Gencode19] gene annotations, needed for `CollectRnaSeqMetrics`.
+  -   `make_refFlat` creates a `refFlat` file with (human) [Gencode] gene
+      annotations, needed for `CollectRnaSeqMetrics`. It also downloads the
+      human reference genome.
 
   -   `make_rRNA_intervals` creates an `intervals_list` file with all human
       ribosomal RNA genes, needed for `CollectRnaSeqMetrics`.
@@ -58,24 +59,31 @@ Usage: picardmetrics collate PREFIX DIR
 
 ```bash
 # Download the code.
-git clone git@github.com:slowkow/picardmetrics.git
+git clone https://github.com/slowkow/picardmetrics
 
-# Install the script to your preferred location.
 cd picardmetrics
+
+# Download and install the dependencies.
+make get-deps PREFIX=~/.local
+
+# Download human reference files and create the files needed for Picard.
+make data
+
+# Install picardmetrics.
 make install PREFIX=~/.local
 
 # Edit the configuration file to match your system.
 vim ~/picardmetrics.conf
 ```
 
-You also need to install these dependencies:
+If you wish, you can manually install these dependencies:
 
 -   [Picard]
 -   [samtools], which depends on [htslib]
 -   [stats]
 
 [BAM]: http://samtools.github.io/hts-specs/SAMv1.pdf
-[Gencode19]: http://www.gencodegenes.org/releases/19.html
+[Gencode]: http://www.gencodegenes.org/
 
 [Picard]: https://broadinstitute.github.io/picard/
 [samtools]: https://github.com/samtools/samtools
