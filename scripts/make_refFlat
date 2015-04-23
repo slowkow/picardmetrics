@@ -22,7 +22,7 @@ GENCODE_URL="ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_${rel}/${G
 # Download a program for converting GTF to refFlat.
 gtfToGenePred='http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/gtfToGenePred'
 [[ ! -s scripts/gtfToGenePred ]] && \
-	wget $gtfToGenePred -O scripts/$gtfToGenePred \
+	wget $gtfToGenePred -O scripts/gtfToGenePred \
 	&& chmod +x scripts/gtfToGenePred
 
 # Create the refFlat file suitable for use with Picard CollectRnaSeqMetrics.
