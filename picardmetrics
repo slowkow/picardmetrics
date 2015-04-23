@@ -26,6 +26,7 @@ main_run() {
     echo "  -f FILE     The configuration file. (Default: picardmetrics.conf)"
     echo "  -o DIR      Write output files in this directory. (Default: .)"
     echo "  -r          The BAM file has RNA-seq reads. (Default: false)"
+    echo "  -k          Keep the output BAM file. (Default: false)"
     return 0
   fi
 
@@ -38,6 +39,9 @@ main_run() {
   # Assume the input .bam file does not come from an RNA-seq experiment.
   RNASEQ=""
 
+  # The newly created .bam file will be deleted after metrics are computed.
+  KEEP=""
+
   while getopts ":f:o:r" opt; do
     case "$opt" in
       f)
@@ -48,6 +52,9 @@ main_run() {
         ;;
       r)
         RNASEQ=1
+        ;;
+      k)
+        KEEP=1
         ;;
       \?)
         echo "Invalid option: -$OPTARG" >&2
@@ -112,8 +119,10 @@ main_run() {
   compute_metrics "$sorted" "$RNASEQ"
 
   # Delete the extra BAM file after computing metrics.
-  if ! rm -f "$sorted"; then
-    echo "ERROR: Cannot delete '$sorted'"
+  if [[ "$KEEP" = "" ]]; then
+    if ! rm -f "$sorted"; then
+      echo "ERROR: Cannot delete '$sorted'"
+    fi
   fi
 
   echo -e "$(DATE)\tDONE\t$bam"

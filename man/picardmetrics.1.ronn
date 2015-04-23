@@ -60,6 +60,10 @@ Find more details here: <https://github.com/slowkow/picardmetrics>
     `RIBOSOMAL_INTERVALS` to be set. You should specify them in the
     configuration file.
 
+  * `-k`
+
+    Keep the output BAM file. By default, delete it after metrics are created.
+
 ### collate
 
 `picardmetrics` collate <PREFIX> <DIR>
