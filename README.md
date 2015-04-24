@@ -14,8 +14,12 @@ RNA-seq data from [hundreds of glioblastoma cells and gliomasphere cell
 lines][Patel2014].
 
 On the left, we see that samples with high mean mapping quality have the
-greatest number of detected genes. On the right, each sample is broken down
-into the percent of sequenced bases coming from different genomic regions.
+greatest number of detected genes. Further, the color of points reveals
+variation in the percent of reads per sample that are assigned to exons.
+
+On the right, each sample is broken down into the percent of sequenced bases
+coming from different genomic regions. We see that many samples have few
+sequenced bases coming from coding regions relative to intergenic regions.
 
 [Patel2014]: http://www.ncbi.nlm.nih.gov/bioproject/PRJNA248302
 
