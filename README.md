@@ -3,6 +3,8 @@
 Run [Picard] tools and collate multiple metrics files. Check the quality of
 your sequencing data.
 
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.17142.svg)](http://dx.doi.org/10.5281/zenodo.17142)
+
 ## Example
 
 ![Genes detected vs. Mean MAPQ and Percent of bases vs. Sample][example]
