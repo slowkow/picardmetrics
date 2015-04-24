@@ -1,6 +1,23 @@
 # picardmetrics
 
-Run [Picard] tools and collate multiple metrics files.
+Run [Picard] tools and collate multiple metrics files. Check the quality of
+your sequencing data.
+
+## Example
+
+![Genes detected vs. Mean MAPQ and Percent of bases vs. Sample][example]
+
+[example]: https://github.com/slowkow/picardmetrics/blob/master/man/picardmetrics-banner.png
+
+Use Picard to assess the quality of your sequencing data. This example shows
+RNA-seq data from [hundreds of glioblastoma cells and gliomasphere cell
+lines][Patel2014].
+
+On the left, we see that samples with high mean mapping quality have the
+greatest number of detected genes. On the right, each sample is broken down
+into the percent of sequenced bases coming from different genomic regions.
+
+[Patel2014]: http://www.ncbi.nlm.nih.gov/bioproject/PRJNA248302
 
 ## Summary
 
