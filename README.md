@@ -134,3 +134,15 @@ If you wish, you can manually install these dependencies:
 [CollectGcBiasMetrics]: https://broadinstitute.github.io/picard/command-line-overview.html#CollectGcBiasMetrics
 [EstimateLibraryComplexity]: https://broadinstitute.github.io/picard/command-line-overview.html#EstimateLibraryComplexity
 
+## Related work
+
+[RNA-SeQC][rnaseqc]
+
+> RNA-SeQC is a java program which computes a series of quality control metrics for RNA-seq data. The input can be one or more BAM files. The output consists of HTML reports and tab delimited files of metrics data. This program can be valuable for comparing sequencing quality across different samples or experiments to evaluate different experimental parameters. It can also be run on individual samples as a means of quality control before continuing with downstream analysis.
+
+[RSeQC][rseqc]
+
+> RSeQC package provides a number of useful modules that can comprehensively evaluate high throughput sequence data especially RNA-seq data. Some basic modules quickly inspect sequence quality, nucleotide composition bias, PCR bias and GC bias, while RNA-seq specific modules evaluate sequencing saturation, mapped reads distribution, coverage uniformity, strand specificity, etc.
+
+[rnaseqc]: http://www.broadinstitute.org/cancer/cga/rna-seqc
+[rseqc]: http://rseqc.sourceforge.net/
