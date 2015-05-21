@@ -72,9 +72,6 @@ main_run() {
   # Get the first positional argument after the option flags.
   bam=${@:$OPTIND:1}
 
-  # Get the absolute path, but do not resolve symlinks.
-  bam="$(realpath -s $bam)"
-
   # Ensure the BAM file is valid.
   if ! is_bam "$bam"; then
     echo "ERROR: Not a .bam file: '$bam'" >&2
@@ -83,6 +80,9 @@ main_run() {
     echo "ERROR: Missing EOF marker: '$bam'" >&2
     exit 1
   fi
+
+  # Get the absolute path, but do not resolve symlinks.
+  bam="$(bash_realpath $bam)"
 
   # Make the ouput directory if it does not exist.
   if ! mkdir -p "$OUT_DIR"; then
@@ -755,6 +755,22 @@ bam_sorted() {
   fi
   samtools view -H "$1" 2>&1 | grep -q 'SO:coordinate'
   return "$?"
+}
+
+bash_realpath() {
+  if [[ -f "$1" ]]; then
+    local f=$(basename "$1")
+    local d=$(dirname "$1")
+    if ! (cd "$d" && echo "$(pwd)/$f"); then
+      echo "ERROR: Failed to cd '$d'" 2>&1
+      exit 1
+    fi
+  elif [[ -d "$1" ]]; then
+    if ! (cd "$1" && echo "$(pwd)"); then
+      echo "ERROR: Failed to cd '$1'" 2>&1
+      exit 1
+    fi
+  fi
 }
 
 main "$@"
