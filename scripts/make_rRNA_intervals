@@ -20,7 +20,7 @@ GENCODE=$DIR/gencode.v${rel}.annotation.gtf.gz
 rRNA=$DIR/gencode.v${rel}.rRNA.interval_list
 
 # Download the Gencode GTF file.
-GENCODE_URL="ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_${rel}/${GENCODE}"
+GENCODE_URL="ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_${rel}/${GENCODE##*/}"
 if [[ ! -s $GENCODE ]]; then
     wget $GENCODE_URL -O $GENCODE
 fi
