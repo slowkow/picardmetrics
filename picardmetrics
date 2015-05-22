@@ -131,13 +131,18 @@ main_run() {
 main_collate() {
   if [[ "$1" == "" || "$2" == "" ]]; then
     echo "Usage: picardmetrics collate PREFIX DIR"
-    echo "  All picardmetrics output files in DIR will be collated."
-    echo "  A file named 'PREFIX-all-metrics.tsv' will be written in DIR."
+    echo "  Find all picardmetrics output files in DIR and collate them"
+    echo "  into a file named 'PREFIX-all-metrics.tsv'."
     return 0
   fi
 
   local prefix="$1"
   local dir="$2"
+
+  if [[ ! -d "$dir" ]]; then
+    echo "ERROR: Not a directory: '$dir'" >&2
+    exit 1
+  fi
 
   echo -e "$(DATE)\tSTART\t$prefix" >&2
   
