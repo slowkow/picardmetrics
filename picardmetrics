@@ -662,7 +662,8 @@ write_tsv <- function(...) {
 
 read_tsv <- function(filename, ...) {
   if (!file.exists(filename)) {
-    stop(sprintf("File not found: %s", filename))
+    warning("File does not exist: ", filename)
+    return(NULL)
   }
   read.delim(filename, stringsAsFactors = FALSE, ...)
 }
@@ -673,6 +674,11 @@ read_metrics <- function(prefix) {
   dat_align_metrics = read_tsv(
     sprintf("%s-alignment-metrics.tsv", prefix)
   )
+  # This file must be present. The others are optional.
+  if (is.null(dat_align_metrics)) {
+    stop(sprintf("Failed to read %s-alignment-metrics.tsv", prefix))
+  }
+
   dat_duplicate_metrics = read_tsv(
     sprintf("%s-duplicate-metrics.tsv", prefix)
   )
@@ -698,40 +704,49 @@ read_metrics <- function(prefix) {
   idx = !dat_align_metrics$CATEGORY %in% c("FIRST_OF_PAIR", "SECOND_OF_PAIR")
   dat_align_metrics = dat_align_metrics[idx, ]
 
-  if (is_rnaseq) {
+  dat <- dat_align_metrics
+
+  if (is_rnaseq && !is.null(dat_rnaseq_metrics)) {
     # alignment_metrics and rnaseq_metrics both have this column.
     idx <- colnames(dat_rnaseq_metrics) == "PF_ALIGNED_BASES"
     colnames(dat_rnaseq_metrics)[idx] <- "PF_ALIGNED_BASES_rnaseq_metrics"
-  }
-  
-  # duplicate_metrics and library_complexity share columns
-  cnames <- colnames(dat_library_complexity)
-  cnames[2:length(cnames)] <- paste0(
-    cnames[2:length(cnames)], "_library_complexity"
-  )
-  colnames(dat_library_complexity) <- cnames
 
-  # Ensure the files are describing the same samples.
-  if (is_rnaseq) {
     stopifnot( all(dat_align_metrics$SAMPLE == dat_rnaseq_metrics$SAMPLE) )
-  }
-  stopifnot( all(dat_align_metrics$SAMPLE == dat_duplicate_metrics$SAMPLE) )
-  stopifnot( all(dat_align_metrics$SAMPLE == dat_gcbias_metrics$SAMPLE) )
-  stopifnot( all(dat_align_metrics$SAMPLE == dat_insert_size_metrics$SAMPLE) )
-  stopifnot( all(dat_align_metrics$SAMPLE == dat_library_complexity$SAMPLE) )
-  stopifnot( all(dat_align_metrics$SAMPLE == dat_mapq_stats$SAMPLE) )
 
-  dat <- dat_align_metrics
-  if (is_rnaseq) {
     dat <- merge(dat, dat_rnaseq_metrics, by = "SAMPLE")
   }
-  dat <- merge(dat, dat_duplicate_metrics, by = "SAMPLE")
-  dat <- merge(dat, dat_gcbias_metrics, by = "SAMPLE")
-  dat <- merge(dat, dat_insert_size_metrics, by = "SAMPLE")
-  dat <- merge(dat, dat_library_complexity, by = "SAMPLE")
-  dat <- merge(dat, dat_mapq_stats, by = "SAMPLE")
 
-  colnames(dat)
+  if (!is.null(dat_duplicate_metrics)) {
+    stopifnot( all(dat_align_metrics$SAMPLE == dat_duplicate_metrics$SAMPLE) )
+    dat <- merge(dat, dat_duplicate_metrics, by = "SAMPLE")
+  }
+
+  if (!is.null(dat_gcbias_metrics)) {
+    stopifnot( all(dat_align_metrics$SAMPLE == dat_gcbias_metrics$SAMPLE) )
+    dat <- merge(dat, dat_gcbias_metrics, by = "SAMPLE")
+  }
+
+  if (!is.null(dat_insert_size_metrics)) {
+    stopifnot( all(dat_align_metrics$SAMPLE == dat_insert_size_metrics$SAMPLE) )
+    dat <- merge(dat, dat_insert_size_metrics, by = "SAMPLE")
+  }
+
+  if (!is.null(dat_library_complexity)) {
+    # duplicate_metrics and library_complexity share columns
+    cnames <- colnames(dat_library_complexity)
+    cnames[2:length(cnames)] <- paste0(
+      cnames[2:length(cnames)], "_library_complexity"
+    )
+    colnames(dat_library_complexity) <- cnames
+
+    stopifnot( all(dat_align_metrics$SAMPLE == dat_library_complexity$SAMPLE) )
+    dat <- merge(dat, dat_library_complexity, by = "SAMPLE")
+  }
+
+  if (!is.null(dat_mapq_stats)) {
+    stopifnot( all(dat_align_metrics$SAMPLE == dat_mapq_stats$SAMPLE) )
+    dat <- merge(dat, dat_mapq_stats, by = "SAMPLE")
+  }
 
   return(dat)
 } 
