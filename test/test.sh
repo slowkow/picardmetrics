@@ -29,7 +29,7 @@ test_default() {
 
   # Confirm that the final output is correct.
   md5sum -c \
-    <(echo 5f4a27b122a088730f144c93a2100a74 out/project1-all-metrics.tsv)
+    <(echo "5f4a27b122a088730f144c93a2100a74  out/project1-all-metrics.tsv")
 
   if [[ "$?" != 0 ]]; then
     exit 1
@@ -54,7 +54,7 @@ test_rnaseq() {
 
   # Confirm that the final output is correct.
   md5sum -c \
-    <(echo 98887a74cfdec74cb60f11f8f69d281e out/project1-all-metrics.tsv)
+    <(echo "98887a74cfdec74cb60f11f8f69d281e  out/project1-all-metrics.tsv")
 
   if [[ "$?" != 0 ]]; then
     exit 1
