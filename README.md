@@ -62,7 +62,7 @@ the [out/][out] folder.
 
 See the [manual] for more details.
 
-```bash
+```
 $ picardmetrics
 Usage: picardmetrics COMMAND
   run         Run the Picard tools on a given BAM file.
