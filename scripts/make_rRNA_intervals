@@ -5,47 +5,31 @@
 set -o xtrace
 
 # UCSC
-# Feb. 2009 (hg19, GRCh37)
-# Dec. 2013 (hg38, GRCh38)
-hg=38
+# 19 : Feb. 2009 (hg19, GRCh37)
+# 38 : Dec. 2013 (hg38, GRCh38)
+hg=19
 
 # GENCODE
-# Version 19 (July 2013 freeze, GRCh37, hg19) - Ensembl 74
-# Version 22 (October 2014 freeze, GRCh38, hg38) - Ensembl 79
-rel=22
+# 19 : Version 19 (July 2013 freeze, GRCh37, hg19) - Ensembl 74 or 75
+# 22 : Version 22 (October 2014 freeze, GRCh38, hg38) - Ensembl 79
+rel=19
 
 DIR=data
 
-CHROM_SIZES=hg${rel}.chrom.sizes
-GENCODE=gencode.v${rel}.annotation.gtf.gz
-rRNA=gencode.v${rel}.rRNA.interval_list
-
-# Download chromosome sizes from the UCSC genome browser.
-if [[ ! -s $DIR/$CHROM_SIZES ]]
-then
-    mysql -N --user=genome --host=genome-mysql.cse.ucsc.edu -A -e \
-        "SELECT chrom,size FROM chromInfo ORDER BY size DESC;" hg${hg} \
-    > $DIR/$CHROM_SIZES
-fi
+GENCODE=$DIR/gencode.v${rel}.annotation.gtf.gz
+rRNA=$DIR/gencode.v${rel}.rRNA.interval_list
 
 # Download the Gencode GTF file.
 GENCODE_URL="ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_${rel}/${GENCODE}"
-if [[ ! -s $DIR/$GENCODE ]]; then
-    wget $GENCODE_URL -O $DIR/$GENCODE
+if [[ ! -s $GENCODE ]]; then
+    wget $GENCODE_URL -O $GENCODE
 fi
 
 # Create an interval list file suitable for Picard CollectRnaSeqMetrics.
-
-if [[ ! -s $DIR/$rRNA ]]; then
-    # Sequence names and lengths.
-    perl -lane 'print "\@SQ\tSN:$F[0]\tLN:$F[1]\tAS:hg${hg}"' \
-        $DIR/$CHROM_SIZES | \
-    # Exclude chromosomes with "_" in their names.
-        grep -v _ \
-    > $DIR/$rRNA
-
-    # Intervals for rRNA transcripts.
-    grep 'gene_type "rRNA"' <(gunzip -c $DIR/$GENCODE) | \
+# Caveat: The header portion of this file will be generated on-the-fly by
+# picardmetrics by taking the '@SQ' lines from the BAM file.
+if [[ ! -s $rRNA ]]; then
+    grep 'gene_type "rRNA"' <(gunzip -c $GENCODE) | \
         awk '$3 == "transcript"' | \
         cut -f1,4,5,7,9 | \
         perl -lane '
@@ -53,5 +37,5 @@ if [[ ! -s $DIR/$rRNA ]]; then
             print join "\t", (@F[0,1,2,3], $1)
         ' | \
         sort -k1V -k2n -k3n \
-    >> $DIR/$rRNA
+    > $rRNA
 fi
