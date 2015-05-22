@@ -12,7 +12,7 @@ main() {
     shift
     main_run $@
   else
-    echo "picardmetrics v0.1.3 - 2015-04-23"
+    echo "picardmetrics v0.1.4 - 2015-05-22"
     echo "Usage: picardmetrics COMMAND"
     echo "  run         Run the Picard tools on a given BAM file."
     echo "  collate     Collate metrics files for multiple BAM files."

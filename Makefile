@@ -17,7 +17,7 @@ install:
 man: man/picardmetrics.1.ronn
 	ronn \
 		--manual="picardmetrics manual" \
-		--organization="picardmetrics-0.1.3" \
+		--organization="picardmetrics-0.1.4" \
 		--date="$(shell date +%Y-%m-%d)" \
 		--style=toc \
 		$?
