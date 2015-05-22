@@ -21,7 +21,7 @@ main() {
   cd $SRC
 
   # Picard
-  VERSION=1.130
+  VERSION=1.126
   if [[ ! -e "$SRC/picard-tools-${VERSION}/picard.jar" ]]; then
     URL="https://github.com/broadinstitute/picard/releases/download"
     if ! curl -k -L -O $URL/${VERSION}/picard-tools-${VERSION}.zip; then
