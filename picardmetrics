@@ -432,7 +432,7 @@ collate_alignment_metrics() {
     do
       local sample=$(basename $f)
       sample=${sample%%.*}
-      tail -n+8 $f | grep -Pv '^\s' | cut -f1-22 \
+      tail -n+8 $f | grep -Pv '^$' | cut -f1-22 \
         | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
