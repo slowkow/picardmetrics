@@ -331,6 +331,10 @@ sort_sam() {
     VALIDATION_STRINGENCY=LENIENT
   )
   run_picard ${args[*]}
+  if bam_incomplete "$sorted_bam"; then
+    echo "ERROR: SortSam failed."
+    exit 1
+  fi
 }
 
 mark_duplicates() {
