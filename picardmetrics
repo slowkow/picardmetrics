@@ -373,6 +373,16 @@ multiple_metrics() {
 
 rnaseq_metrics() {
   local bam="$1"
+  # Ignore the sequence dictionary present in the interval_list file,
+  # and instead take the sequence dictionary from the BAM file.
+  local t="/tmp/picardmetrics_${USER}_${$}.interval_list"
+  if ! (
+    samtools view -H "$bam" | grep '^@SQ' > "$t" \
+      && grep -v '^@SQ' "$RIBOSOMAL_INTERVALS" >> "$t"
+  ); then
+    echo "ERROR: Could not retrieve header from '$bam'" >&2
+    exit 1
+  fi
   local args=(
     CollectRnaSeqMetrics
     INPUT="$bam"
@@ -380,11 +390,15 @@ rnaseq_metrics() {
     CHART_OUTPUT="${bam%.bam}.rnaseq_metrics.pdf"
     REFERENCE_SEQUENCE="$REFERENCE_SEQUENCE"
     REF_FLAT="$REF_FLAT"
-    RIBOSOMAL_INTERVALS="$RIBOSOMAL_INTERVALS"
+    RIBOSOMAL_INTERVALS="$t"
     STRAND_SPECIFICITY=NONE
     VALIDATION_STRINGENCY=LENIENT
   )
   run_picard ${args[*]}
+  # Remove the temporary file after we're done with it.
+  if ! rm -f "$t"; then
+    echo "WARNING: Could not delete '$t'" >&2
+  fi
 }
 
 gcbias_metrics() {
