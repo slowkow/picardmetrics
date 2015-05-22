@@ -15,7 +15,7 @@ GENCODE=$DIR/gencode.v${rel}.annotation.gtf.gz
 REF_FLAT=$DIR/gencode.v${rel}.annotation.refFlat
 
 # Download the Gencode GTF file.
-GENCODE_URL="ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_${rel}/${GENCODE}"
+GENCODE_URL="ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_${rel}/${GENCODE##*/}"
 [[ ! -s $GENCODE ]] && wget $GENCODE_URL -O $GENCODE
 
 # Download a program for converting GTF to refFlat.
