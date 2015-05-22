@@ -252,20 +252,6 @@ configure_run() {
       exit 1
     fi
   fi
-
-  # Copy the genome FASTA into RAM to speed things up a bit.
-  RAM="/dev/shm/$USER"
-  [[ -d "$RAM" ]] || mkdir -p $RAM
-  RAM_REFERENCE_SEQUENCE="$RAM/$(basename $REFERENCE_SEQUENCE)"
-
-  if [[ ! -e "$RAM_REFERENCE_SEQUENCE" ]]; then
-    if ! cp -f "$REFERENCE_SEQUENCE" "$RAM/"; then
-      echo "ERROR: Failed to copy '$REFERENCE_SEQUENCE' to '$RAM/'" >&2
-      exit 1
-    fi
-  else
-    REFERENCE_SEQUENCE="$RAM_REFERENCE_SEQUENCE"
-  fi
 }
 
 # Call the Picard tools. -----------------------------------------------------
