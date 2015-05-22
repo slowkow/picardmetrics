@@ -77,8 +77,8 @@ Usage: picardmetrics run [-f FILE] [-o DIR] [-r] <file.bam>
 
 $ picardmetrics collate
 Usage: picardmetrics collate PREFIX DIR
-  All picardmetrics output files in DIR will be collated.
-  A file named 'PREFIX-all-metrics.tsv' will be written in DIR.
+  Find all picardmetrics output files in DIR and collate them
+  into a file named 'PREFIX-all-metrics.tsv'.
 ```
 
 ## Installation
