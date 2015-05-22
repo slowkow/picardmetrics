@@ -1,5 +1,41 @@
 # Change Log
 
+# 0.1.4 - 2015-05-22
+
+## Fixed
+
+-   The `picard collate` command now tolerates missing files and will still
+	collate the existing files.
+
+-   The collated output file `PREFIX-alignment-metrics.tsv` no longer has
+	extra blanks lines.
+
+-   Fix the invocation of `md5sum -c` in `test/test.sh`.
+
+-   Some systems like CentOS don't have an up-to-date version of coreutils.
+	So, I replaced the invocation of `realpath` with a Bash function that does
+	produces the same output.
+
+## Changed
+
+-   The `rnaseq_metrics` function will generate a sequence dictionary for the
+	rRNA intervals_list file on-the-fly by taking it from the BAM file. The
+	sequence dictionary consists of the BAM header lines starting with '@SQ'.
+
+    -   The script `scripts/make_rRNA_intervals` no longer downloads
+    	chromosome sizes from UCSC.
+
+-   The `sort_sam` function checks if the output BAM is correct.
+
+-   The reference genome sequence is no longer copied to RAM.
+
+-   The script `scripts/make_refFlat` no longer downloads the reference
+	genome. The user must use their own anyway.
+
+-   In `scripts/install_deps`, roll back to Picard 1.126 because of a
+	conflicting change introduced in Picard 1.130. See here for more details:
+    https://github.com/broadinstitute/picard/issues/212
+
 # 0.1.3 - 2015-04-23
 
 ## Fixed
