@@ -480,7 +480,7 @@ collate_rnaseq_coverage() {
     do
       local sample=$(basename "$f")
       sample=${sample%%.*}
-      tail -n+12 "$f" | grep -Pv '^\s' | perl -pe 's{^}{'$sample'\t}'
+      tail -n+12 "$f" | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
 }
@@ -498,7 +498,7 @@ collate_quality_metrics() {
     do
       local sample=$(basename "$f")
       sample=${sample%%.*}
-      tail -n+9 "$f" | grep -Pv '^\s' | perl -pe 's{^}{'$sample'\t}'
+      tail -n+9 "$f" | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
 }
@@ -516,8 +516,7 @@ collate_gc_bias_metrics() {
     do
       local sample=$(basename "$f")
       sample=${sample%%.*}
-      tail -n+8 "$f" | grep -Pv '^\s' | perl -pe 's{^}{'$sample'\t}' \
-        | perl -pe 's/\s+$/\n/'
+      tail -n+8 "$f" | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
 }
@@ -612,7 +611,7 @@ collate_library_complexity_histogram() {
     do
       local sample=$(basename "$f")
       sample=${sample%%.*}
-      tail -n+12 "$f" | grep -Pv '^\s' | perl -pe 's{^}{'$sample'\t}'
+      tail -n+12 "$f" | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
 }
