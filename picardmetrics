@@ -572,7 +572,7 @@ collate_duplicate_metrics() {
       local sample=$(basename "$f")
       sample=${sample%%.*}
       tail -n+8 "$f" | head -n1 | cut -f1-9 \
-        | perl -pe 's/\t$//g; s{^}{'$sample'\t}'
+        | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
 }
@@ -591,7 +591,7 @@ collate_library_complexity() {
       local sample=$(basename "$f")
       sample=${sample%%.*}
       tail -n+8 "$f" | head -n1 | cut -f1-9 \
-        | perl -pe 's/\t$//g; s{^}{'$sample'\t}'
+        | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
 }
