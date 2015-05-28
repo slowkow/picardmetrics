@@ -1,0 +1,12 @@
+2015-05-28 08:50:00	START	out/default
+2015-05-28 08:50:00	Collating 2 alignment_summary_metrics files
+2015-05-28 08:50:00	Collating 2 quality_distribution_metrics files
+2015-05-28 08:50:00	Collating 2 gc_bias_metrics files
+2015-05-28 08:50:00	Collating 2 gc_bias_metrics_summary files
+2015-05-28 08:50:00	Collating 2 duplicate_metrics files
+2015-05-28 08:50:00	Collating 2 insert_size_metrics files
+2015-05-28 08:50:00	Collating 2 library_complexity files
+2015-05-28 08:50:00	Collating 2 library_complexity files (histogram)
+2015-05-28 08:50:01	Collating 2 mapq_stats files
+2015-05-28 08:50:01	Joining all files into 'out/default-all-metrics.tsv'
+2015-05-28 08:50:01	DONE	out/default

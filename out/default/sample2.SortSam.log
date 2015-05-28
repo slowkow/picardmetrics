@@ -1,0 +1,5 @@
+[Thu May 28 08:48:42 EDT 2015] picard.sam.SortSam INPUT=/tmp/picardmetrics_ks38_59148/sample2.bam OUTPUT=/tmp/picardmetrics_ks38_59148/sample2.SortSam.bam SORT_ORDER=coordinate VALIDATION_STRINGENCY=LENIENT    VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
+[Thu May 28 08:48:42 EDT 2015] Executing as ks38@eris1n2.research.partners.org on Linux 2.6.32-431.29.2.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
+INFO	2015-05-28 08:48:43	SortSam	Finished reading inputs, merging and writing to output now.
+[Thu May 28 08:48:43 EDT 2015] picard.sam.SortSam done. Elapsed time: 0.01 minutes.
+Runtime.totalMemory()=5145034752

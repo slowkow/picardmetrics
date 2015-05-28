@@ -1,0 +1,15 @@
+[Thu May 28 08:50:07 EDT 2015] picard.analysis.CollectMultipleMetrics INPUT=/tmp/picardmetrics_ks38_59893/sample1.bam REFERENCE_SEQUENCE=/data/srlab/external-data/iGenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta/genome.fa OUTPUT=sample1 PROGRAM=[CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution, MeanQualityByCycle, CollectBaseDistributionByCycle, CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution] VALIDATION_STRINGENCY=LENIENT    ASSUME_SORTED=true STOP_AFTER=0 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
+[Thu May 28 08:50:07 EDT 2015] Executing as ks38@eris1n2.research.partners.org on Linux 2.6.32-431.29.2.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
+INFO	2015-05-28 08:50:12	RExecutor	Executing R script via command: Rscript /tmp/ks38/script8495060952802453613.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.base_distribution_by_cycle_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.base_distribution_by_cycle.pdf sample1.bam 
+INFO	2015-05-28 08:50:12	ProcessExecutor	null device 
+INFO	2015-05-28 08:50:12	ProcessExecutor	          1 
+INFO	2015-05-28 08:50:12	RExecutor	Executing R script via command: Rscript /tmp/ks38/script8392980828086019139.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_by_cycle_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_by_cycle.pdf sample1.bam 
+INFO	2015-05-28 08:50:12	ProcessExecutor	null device 
+INFO	2015-05-28 08:50:12	ProcessExecutor	          1 
+INFO	2015-05-28 08:50:29	RExecutor	Executing R script via command: Rscript /tmp/ks38/script6788082247941244817.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.insert_size_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.insert_size_Histogram.pdf sample1.bam
+INFO	2015-05-28 08:50:29	ProcessExecutor	[1] "Not creating insert size PDF as there are duplicated header names: All_Reads"
+INFO	2015-05-28 08:50:29	RExecutor	Executing R script via command: Rscript /tmp/ks38/script8416184597272258354.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_distribution_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_distribution.pdf sample1.bam 
+INFO	2015-05-28 08:50:29	ProcessExecutor	null device 
+INFO	2015-05-28 08:50:29	ProcessExecutor	          1 
+[Thu May 28 08:50:29 EDT 2015] picard.analysis.CollectMultipleMetrics done. Elapsed time: 0.37 minutes.
+Runtime.totalMemory()=5366284288
