@@ -11,11 +11,17 @@ main() {
   elif [[ "$1" == "run" ]]; then
     shift
     main_run $@
+  elif [[ "$1" == "refFlat" ]]; then
+    main_refFlat $@
+  elif [[ "$1" == "rRNA" ]]; then
+    main_rRNA $@
   else
     echo "picardmetrics v0.1.4 - 2015-05-22"
     echo "Usage: picardmetrics COMMAND"
     echo "  run         Run the Picard tools on a given BAM file."
     echo "  collate     Collate metrics files for multiple BAM files."
+    echo "  refFlat     Collate metrics files for multiple BAM files."
+    echo "  rRNA        Collate metrics files for multiple BAM files."
   fi
 }
 
@@ -190,6 +196,89 @@ main_collate() {
   collate_all "$prefix"
 
   echo -e "$(DATE)\tDONE\t$prefix" >&2
+}
+
+main_refFlat() {
+  local gtf="$2"
+  # Ensure that the script was called with correct arguments.
+  if [[ ! ("$gtf" == *.gtf || "$gtf" == *.gtf.gz) ]]; then
+    echo "Usage: picardmetrics refFlat <file.gtf[.gz]>"
+    return 0
+  fi
+
+  if ! which gtfToGenePred &> /dev/null; then
+    echo "ERROR: gtfToGenePred is not installed."
+    echo "  Install gtfToGenePred to a directory in your PATH"
+    echo "  http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/gtfToGenePred"
+    exit 1
+  fi
+
+  if [[ ! -s "$gtf" ]]; then
+    echo "ERROR: File not found '$gtf'" >&2
+    exit 1
+  fi
+
+  local in=$(mktemp)
+
+  if [[ "$gtf" == *.gtf.gz ]] ; then
+    out="${gtf%.gtf.gz}.refFlat"
+    gunzip -c "$gtf" > "$in"
+  else
+    out="${gtf%.gtf}.refFlat"
+    cat "$gtf" > "$in"
+  fi
+
+  gtfToGenePred -ignoreGroupsWithoutExons "$in" "$out" \
+    && perl -i -lane 'print join "\t", ($F[0], @F)' "$out" \
+    && rm -f "$in"
+  local ERR=$?
+
+  if [[ -s "$out" ]]; then
+    echo "Successfully created '$out'"
+  fi
+
+  if [[ "$ERR" != 0 && "$ERR" != 255 ]]; then
+      echo "Unexpected error $ERR from gtfToGenePred"
+      exit 1
+  fi
+}
+
+main_rRNA() {
+  local gtf="$2"
+  # Ensure that the script was called with correct arguments.
+  if [[ ! ("$gtf" == *.gtf || "$gtf" == *.gtf.gz) ]]; then
+    echo "Usage: picardmetrics rRNA <file.gtf[.gz]>"
+    return 0
+  fi
+
+  if [[ ! -s "$gtf" ]]; then
+    echo "ERROR: File not found '$gtf'" >&2
+    exit 1
+  fi
+
+  local in=$(mktemp)
+
+  if [[ "$gtf" == *.gtf.gz ]] ; then
+    out="${gtf%.gtf.gz}.rRNA.list"
+    gunzip -c "$gtf" > "$in"
+  else
+    out="${gtf%.gtf}.rRNA.list"
+    cat "$gtf" > "$in"
+  fi
+
+  grep 'gene_type "rRNA"' "$in" | \
+      awk '$3 == "transcript"' | \
+      cut -f1,4,5,7,9 | \
+      perl -lane '
+          /transcript_id "([^"]+)"/ or die "no transcript_id on $.";
+          print join "\t", (@F[0,1,2,3], $1)
+      ' | \
+      sort -k1V -k2n -k3n \
+  > "$out"
+
+  if [[ -s "$out" ]]; then
+    echo "Successfully created '$out'"
+  fi
 }
 
 # Check for correct configuration. -------------------------------------------
