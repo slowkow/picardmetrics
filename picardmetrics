@@ -86,7 +86,7 @@ main_run() {
 
   # Make the ouput directory if it does not exist.
   if ! mkdir -p "$OUT_DIR"; then
-    echo "ERROR mkdir '$OUT_DIR'" >&2
+    echo "ERROR: mkdir '$OUT_DIR'" >&2
     exit 1
   fi
 
