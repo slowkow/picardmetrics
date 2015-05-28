@@ -16,7 +16,7 @@ main() {
   elif [[ "$1" == "rRNA" ]]; then
     main_rRNA $@
   else
-    echo "picardmetrics v0.1.4 - 2015-05-22"
+    echo "picardmetrics v0.2.0 - 2015-05-28"
     echo "Usage: picardmetrics COMMAND"
     echo "  run         Run the Picard tools on a given BAM file."
     echo "  collate     Collate metrics files for multiple BAM files."

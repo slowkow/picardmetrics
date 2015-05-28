@@ -1,39 +1,92 @@
 # Change Log
 
+# 0.2.0 - 2015-05-28
+
+## Added
+
+-   Added two commands:
+
+    -    refFlat
+
+        -   This creates a file for the REF_FLAT argument of
+        	CollectRnaSeqMetrics.
+
+    -    rRNA
+
+        -   This creates a file for the RIBOSOMAL_INTERVALS argument of
+        	CollectRnaSeqMetrics.
+
+## Fixed
+
+-   This was harmless, but some of the collated output files were missing the
+	trailing tab character at the end of the line. Some also had extra lines
+    without data. Now all of the collated output files should be perfectly
+    formatted.
+
+-   Bash functions return 1 when problems are encountered.
+
+-   The `-k` option is checked.
+
+## Changed
+
+-   `picardmetrics run` now puts the newly generated BAM file in `/tmp` and
+	deletes it after successfully running, unless the `-k` option is used.
+
+-   `picardmetrics run` now runs CreateSequenceDictionary and ReorderSam on
+    the BAM file to avoid issues where the sequence names in the header of the
+    BAM file is not in the same order as the sequence names in the reference
+    sequence FASTA file.
+
+-   Shuffled the header for `data/project1/sample2.bam` so we can ensure that
+	BAM files with unordered headers work correctly.
+
+-   Rearranged output files so you can see the extra metrics contributed by
+	CollectRnaSeqMetrics:
+
+	-   Compare the files in `out/default` with `out/rnaseq`.
+
+## Removed
+
+-   Removed files that are no longer needed:
+
+    -   `scripts/make_refFlat`
+    -   `scripts/make_rRNA_intervals`
+    -   `scripts/plot_picardmetrics.R`
+
 # 0.1.4 - 2015-05-22
 
 ## Fixed
 
 -   The `picard collate` command now tolerates missing files and will still
-	collate the existing files.
+    collate the existing files.
 
 -   The collated output file `PREFIX-alignment-metrics.tsv` no longer has
-	extra blanks lines.
+    extra blanks lines.
 
 -   Fix the invocation of `md5sum -c` in `test/test.sh`.
 
 -   Some systems like CentOS don't have an up-to-date version of coreutils.
-	So, I replaced the invocation of `realpath` with a Bash function that does
-	produces the same output.
+    So, I replaced the invocation of `realpath` with a Bash function that does
+    produces the same output.
 
 ## Changed
 
 -   The `rnaseq_metrics` function will generate a sequence dictionary for the
-	rRNA intervals_list file on-the-fly by taking it from the BAM file. The
-	sequence dictionary consists of the BAM header lines starting with '@SQ'.
+    rRNA intervals_list file on-the-fly by taking it from the BAM file. The
+    sequence dictionary consists of the BAM header lines starting with '@SQ'.
 
     -   The script `scripts/make_rRNA_intervals` no longer downloads
-    	chromosome sizes from UCSC.
+        chromosome sizes from UCSC.
 
 -   The `sort_sam` function checks if the output BAM is correct.
 
 -   The reference genome sequence is no longer copied to RAM.
 
 -   The script `scripts/make_refFlat` no longer downloads the reference
-	genome. The user must use their own anyway.
+    genome. The user must use their own anyway.
 
 -   In `scripts/install_deps`, roll back to Picard 1.126 because of a
-	conflicting change introduced in Picard 1.130. See here for more details:
+    conflicting change introduced in Picard 1.130. See here for more details:
     https://github.com/broadinstitute/picard/issues/212
 
 # 0.1.3 - 2015-04-23
