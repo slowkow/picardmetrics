@@ -260,7 +260,7 @@ compute_metrics() {
   local bam="$1" rnaseq="$2"
   if [[ ! -s "$bam" ]]; then
     echo "BAM file not found '$bam'" >&2
-    return 0
+    return 1
   fi
   
   if ! bam_sorted "$bam"; then
@@ -767,7 +767,7 @@ is_bam() {
 
 bam_incomplete() {
   if [[ ! -s "$1" ]]; then
-    return 0
+    return 1
   fi
   samtools view -H "$1" 2>&1 | grep -q 'EOF marker is absent'
   return "$?"
@@ -775,7 +775,7 @@ bam_incomplete() {
 
 bam_sorted() {
   if [[ ! -s "$1" ]]; then
-    return 0
+    return 1
   fi
   samtools view -H "$1" 2>&1 | grep -q 'SO:coordinate'
   return "$?"
