@@ -1,11 +1,10 @@
 PREFIX = ~/.local
 
-.PHONY: all install man get-deps data
+.PHONY: all install man get-deps
 
 all:
 	@echo "Run 'make get-deps' to download and install dependencies in $(PREFIX)"
 	@echo "Run 'make install' to install picardmetrics files in $(PREFIX)"
-	@echo "Run 'make data' to download and create human reference files in ./data"
 
 install:
 	mkdir -p $(PREFIX)/bin/
@@ -24,10 +23,3 @@ man: man/picardmetrics.1.ronn
 
 get-deps:
 	./scripts/install_deps $(PREFIX)
-
-data:
-	mkdir -p data
-	./scripts/make_refFlat
-	./scripts/make_rRNA_intervals
-	@echo
-	@echo "Edit your picardmetrics.conf file with paths to files in ./data"

@@ -34,6 +34,12 @@ main() {
     echo "  PICARD_JAR=\"$SRC/picard-tools-${VERSION}/picard.jar\""
   fi
 
+  # gtfToGenePred
+  if [[ ! -e $PREFIX/bin/gtfToGenePred ]]; then
+    url='http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/gtfToGenePred'
+    wget $url -O $PREFIX/bin/gtfToGenePred && chmod +x $PREFIX/bin/gtfToGenePred
+  fi
+
   # stats
   if [[ ! -e $PREFIX/bin/stats ]]; then
     git_clone arq5x/filo
@@ -61,7 +67,7 @@ main() {
       && cd ..
   fi
 
-  if ! which stats || ! which samtools; then
+  if ! gtfToGenePred || ! which stats || ! which samtools ; then
     echo
     echo "Add this to your .bashrc or .bash_profile:"
     echo "    PATH=\"\$HOME/.local/bin:\$PATH\""
