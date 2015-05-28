@@ -5,6 +5,31 @@ your sequencing data.
 
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.17142.svg)](http://dx.doi.org/10.5281/zenodo.17142)
 
+## Summary
+
+`picardmetrics` runs up to [12 Picard tools][manual] on a [BAM] file and
+collates all of the output files into a single table with up to [90 different
+metrics][definitions]. It also creates the two Picard files required for
+CollectRnaSeqMetrics.
+
+See the [manual] for more details.
+
+After running `picardmetrics`, plot and explore the metrics:
+
+```r
+library(ggplot2)
+
+dat <- read.delim("out/rnaseq-all-metrics.tsv", stringsAsFactors = FALSE)
+
+ggplot(dat) +
+  geom_point(aes(PF_READS, PF_ALIGNED_BASES))
+```
+
+See two example BAM files in the [data/][data] folder. They are used to
+illustrate the usage of `picardmetrics` and to test that it functions
+correctly. See the outputs in the [out/][out] folder. Download the reference
+files used to test `picardmetrics` [here][reference].
+
 ## Example
 
 ![Genes detected vs. Mean MAPQ and Percent of bases vs. Sample][example]
@@ -27,60 +52,6 @@ coding regions relative to intergenic regions.
 
 [Patel2014]: http://www.ncbi.nlm.nih.gov/bioproject/PRJNA248302
 
-## Summary
-
-`picardmetrics` runs 10 Picard tools on a [BAM] file:
-
-  -   [SortSam]
-  -   [MarkDuplicates]
-  -   [CollectMultipleMetrics]
-      -   [CollectAlignmentSummaryMetrics]
-      -   [CollectBaseDistributionByCycle]
-      -   [CollectInsertSizeMetrics]
-      -   [MeanQualityByCycle]
-      -   [QualityScoreDistribution]
-  -   [CollectRnaSeqMetrics]
-  -   [CollectGcBiasMetrics]
-  -   [EstimateLibraryComplexity]
-
-You can find additional scripts in the [scripts/][scripts] folder:
-
-  -   `make_refFlat` creates a `refFlat` file with (human) [Gencode] gene
-      annotations, needed for `CollectRnaSeqMetrics`. It also downloads the
-      human reference genome.
-
-  -   `make_rRNA_intervals` creates an `intervals_list` file with all human
-      ribosomal RNA genes, needed for `CollectRnaSeqMetrics`.
-
-  -   `plot_picardmetrics.R` shows how to read and plot the metrics.
-
-I included two BAM files in the [data/][data] folder, each with 10,000 mapped
-reads, to illustrate the usage of `picardmetrics`. Please see the outputs in
-the [out/][out] folder.
-
-## Commands
-
-See the [manual] for more details.
-
-```
-$ picardmetrics
-Usage: picardmetrics COMMAND
-  run         Run the Picard tools on a given BAM file.
-  collate     Collate metrics files for multiple BAM files.
-
-$ picardmetrics run
-Usage: picardmetrics run [-f FILE] [-o DIR] [-r] <file.bam>
-  -f FILE     The configuration file. (Default: picardmetrics.conf)
-  -o DIR      Write output files in this directory. (Default: .)
-  -r          The BAM file has RNA-seq reads. (Default: false)
-  -k          Keep the output BAM file. (Default: false)
-
-$ picardmetrics collate
-Usage: picardmetrics collate PREFIX DIR
-  Find all picardmetrics output files in DIR and collate them
-  into a file named 'PREFIX-all-metrics.tsv'.
-```
-
 ## Installation
 
 ```bash
@@ -92,21 +63,19 @@ cd picardmetrics
 # Download and install the dependencies.
 make get-deps PREFIX=~/.local
 
-# Download human reference files and create the files needed for Picard.
-make data
-
-# Install picardmetrics.
+# Install picardmetrics and the man page.
 make install PREFIX=~/.local
 
-# Edit the configuration file to match your system.
+# Edit the configuration file for your project.
 vim ~/picardmetrics.conf
 ```
 
-If you wish, you can manually install these dependencies:
+If you wish, you can manually install the dependencies:
 
 -   [Picard]
 -   [samtools], which depends on [htslib]
 -   [stats]
+-   [gtfToGenePred]
 
 [BAM]: http://samtools.github.io/hts-specs/SAMv1.pdf
 [Gencode]: http://www.gencodegenes.org/
@@ -115,34 +84,37 @@ If you wish, you can manually install these dependencies:
 [samtools]: https://github.com/samtools/samtools
 [htslib]: https://github.com/samtools/htslib
 [stats]: https://github.com/arq5x/filo
+[gtfToGenePred]: http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/
 
 [scripts]: https://github.com/slowkow/picardmetrics/tree/master/scripts
 [data]: https://github.com/slowkow/picardmetrics/tree/master/data
 [out]: https://github.com/slowkow/picardmetrics/tree/master/out
 
 [manual]: http://slowkow.com/picardmetrics/
+[reference]: http://dx.doi.org/10.5281/zenodo.18116
 
-[SortSam]: https://broadinstitute.github.io/picard/command-line-overview.html#SortSam
-[MarkDuplicates]: https://broadinstitute.github.io/picard/command-line-overview.html#MarkDuplicates
-[CollectMultipleMetrics]: https://broadinstitute.github.io/picard/command-line-overview.html#CollectMultipleMetrics
-[CollectAlignmentSummaryMetrics]: https://broadinstitute.github.io/picard/command-line-overview.html#CollectAlignmentSummaryMetrics
-[CollectBaseDistributionByCycle]: https://broadinstitute.github.io/picard/command-line-overview.html#CollectBaseDistributionByCycle
-[CollectInsertSizeMetrics]: https://broadinstitute.github.io/picard/command-line-overview.html#CollectInsertSizeMetrics
-[MeanQualityByCycle]: https://broadinstitute.github.io/picard/command-line-overview.html#MeanQualityByCycle
-[QualityScoreDistribution]: https://broadinstitute.github.io/picard/command-line-overview.html#QualityScoreDistribution
-[CollectRnaSeqMetrics]: https://broadinstitute.github.io/picard/command-line-overview.html#CollectRnaSeqMetrics
-[CollectGcBiasMetrics]: https://broadinstitute.github.io/picard/command-line-overview.html#CollectGcBiasMetrics
-[EstimateLibraryComplexity]: https://broadinstitute.github.io/picard/command-line-overview.html#EstimateLibraryComplexity
+[definitions]: https://broadinstitute.github.io/picard/picard-metric-definitions.html
 
 ## Related work
 
 [RNA-SeQC][rnaseqc]
 
-> RNA-SeQC is a java program which computes a series of quality control metrics for RNA-seq data. The input can be one or more BAM files. The output consists of HTML reports and tab delimited files of metrics data. This program can be valuable for comparing sequencing quality across different samples or experiments to evaluate different experimental parameters. It can also be run on individual samples as a means of quality control before continuing with downstream analysis.
+> RNA-SeQC is a java program which computes a series of quality control
+> metrics for RNA-seq data. The input can be one or more BAM files. The output
+> consists of HTML reports and tab delimited files of metrics data. This
+> program can be valuable for comparing sequencing quality across different
+> samples or experiments to evaluate different experimental parameters. It can
+> also be run on individual samples as a means of quality control before
+> continuing with downstream analysis.
 
 [RSeQC][rseqc]
 
-> RSeQC package provides a number of useful modules that can comprehensively evaluate high throughput sequence data especially RNA-seq data. Some basic modules quickly inspect sequence quality, nucleotide composition bias, PCR bias and GC bias, while RNA-seq specific modules evaluate sequencing saturation, mapped reads distribution, coverage uniformity, strand specificity, etc.
+> RSeQC package provides a number of useful modules that can comprehensively
+> evaluate high throughput sequence data especially RNA-seq data. Some basic
+> modules quickly inspect sequence quality, nucleotide composition bias, PCR
+> bias and GC bias, while RNA-seq specific modules evaluate sequencing
+> saturation, mapped reads distribution, coverage uniformity, strand
+> specificity, etc.
 
 [rnaseqc]: http://www.broadinstitute.org/cancer/cga/rna-seqc
 [rseqc]: http://rseqc.sourceforge.net/
