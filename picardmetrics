@@ -605,7 +605,7 @@ collate_library_complexity_histogram() {
   (
     echo -ne "SAMPLE\t"
     tail -n+11 "${files[0]}" | head -n1 | cut -f1 \
-      | perl -pe 's/\s+$/\n/; s/(\S+)/$1\tread_pairs/;'
+      | perl -pe 's/\s+$/\n/; s/(\S+)/$1\tfragments/;'
     local f
     for f in ${files[*]}
     do
