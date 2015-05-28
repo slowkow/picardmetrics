@@ -42,7 +42,7 @@ main_run() {
   # The newly created .bam file will be deleted after metrics are computed.
   KEEP=""
 
-  while getopts ":f:o:r" opt; do
+  while getopts ":f:o:rk" opt; do
     case "$opt" in
       f)
         PICARDMETRICS_CONFIG="$OPTARG"
