@@ -98,31 +98,43 @@ main_run() {
 
   echo -e "$(DATE)\tSTART\t$bam"
 
-  local sorted=$(basename $bam)
+  # Create a sequence dictionary needed for ReorderSam.
+  create_sequence_dictionary "$REFERENCE_SEQUENCE"
 
-  # Create a sorted BAM file if the given file is not sorted.
-  if ! bam_sorted "$bam"; then
-    # Picard tools require a coordinate-sorted BAM file.
-    if [[ ! -s "$sorted" || "$bam" -nt "$sorted" ]] \
-    || bam_incomplete "$sorted"; then
-      sort_sam "$bam" "$sorted"
-    fi
-  else
-    # Make a symlink if the given BAM file is already sorted.
-    if ! ln -sf "$bam" "$sorted"; then
-      echo "ERROR: Cannot symlink '$bam' to '$sorted'" >&2
-      exit 1
-    fi
+  # Temporary BAM file that is deleted by default.
+  local temp_dir="/tmp/picardmetrics_${USER}_${$}"
+  if ! mkdir -p "$temp_dir"; then
+    echo "ERROR: mdkir -p '$temp_dir'" >&2
+    exit 1
+  fi
+
+  local temp_bam="$temp_dir/$(basename $bam)"
+
+  if ! ln -sf "$bam" "$temp_bam"; then
+    echo "ERROR: ln -sf '$bam' '$temp_bam'" >&2
+    exit 1
   fi
 
   # Run all of the Picard tools.
-  compute_metrics "$sorted" "$RNASEQ"
+  compute_metrics "$temp_bam" "$RNASEQ"
 
-  # Delete the extra BAM file after computing metrics.
   if [[ "$KEEP" = "" ]]; then
-    if ! rm -f "$sorted"; then
-      echo "ERROR: Cannot delete '$sorted'"
+    # Delete the temporary BAM file after computing metrics.
+    if ! rm -f "$temp_bam"; then
+      echo "ERROR: rm -f '$temp_bam'" >&2
+      exit 1
     fi
+  else
+    # Otherwise, move it to the output folder.
+    if ! mv "$temp_bam" . ;then
+      echo "ERROR: mv '$temp_bam' ." >&2
+      exit 1
+    fi
+  fi
+  # Delete the temporary directory.
+  if ! rm -rf "$temp_dir"; then
+    echo "ERROR: rm -rf '$temp_dir'" >&2
+    exit 1
   fi
 
   echo -e "$(DATE)\tDONE\t$bam"
@@ -262,14 +274,17 @@ compute_metrics() {
     echo "BAM file not found '$bam'" >&2
     return 1
   fi
+
+  # Reorder the BAM header to match the header of the reference sequence.
+  reorder_sam "$bam"
   
-  if ! bam_sorted "$bam"; then
-    echo "Cannot compute metrics on an unsorted bam file '$bam'" >&2
-    return 0
-  fi
+  # Sort the reads by coordinate.
+  sort_sam "$bam"
+
+  local prefix=$(basename "$bam" .bam)
 
   # Check if the BAM file is newer or if the metrics file is absent.
-  mapq_stats="${bam%.bam}.mapq_stats"
+  mapq_stats="${prefix}.mapq_stats"
   if [[ "$bam" -nt "$mapq_stats" || ! -s "$mapq_stats" ]]; then
     if ! ( $NICE samtools view "$bam" | cut -f5 | stats > "$mapq_stats" );
     then
@@ -277,30 +292,30 @@ compute_metrics() {
     fi
   fi
 
-  metrics="${bam%.bam}.duplicate_metrics"
+  metrics="${prefix}.duplicate_metrics"
   if [[ "$bam" -nt "$metrics" || ! -s "$metrics" ]]; then
     # featureCounts can ignore the marked duplicate reads with --ignoreDup
     mark_duplicates "$bam"
   fi
 
-  metrics="${bam%.bam}.alignment_summary_metrics"
+  metrics="${prefix}.alignment_summary_metrics"
   if [[ "$bam" -nt "$metrics" || ! -s "$metrics" ]]; then
     multiple_metrics "$bam"
   fi
 
   if [[ "$rnaseq" ]]; then
-    metrics="${bam%.bam}.rnaseq_metrics"
+    metrics="${prefix}.rnaseq_metrics"
     if [[ "$bam" -nt "$metrics" || ! -s "$metrics" ]]; then
       rnaseq_metrics "$bam"
     fi
   fi
 
-  metrics="${bam%.bam}.gc_bias_metrics"
+  metrics="${prefix}.gc_bias_metrics"
   if [[ "$bam" -nt "$metrics" || ! -s "$metrics" ]]; then
     gcbias_metrics "$bam"
   fi
 
-  metrics="${bam%.bam}.library_complexity"
+  metrics="${prefix}.library_complexity"
   if [[ "$bam" -nt "$metrics" || ! -s "$metrics" ]]; then
     library_complexity "$bam"
   fi
@@ -317,34 +332,67 @@ run_picard() {
   if ! $NICE $PICARD $tool ${args[*]} &> $log; then
     echo "ERROR: $tool failed" >&2
     echo "       See $(pwd)/$log for details" >&2
+  fi
+}
+
+create_sequence_dictionary() {
+  local ref="$1"
+  local dict="${1%.*}.dict"
+  if [[ ! -e "$dict" ]]; then
+    local args=(
+      CreateSequenceDictionary
+      REFERENCE="$1"
+      OUTPUT="$dict"
+    )
+    run_picard ${args[*]}
+  fi
+}
+
+reorder_sam() {
+  local bam="$1"
+  local out="${bam%.bam}.ReorderSam.bam"
+  local args=(
+    ReorderSam
+    INPUT="$bam"
+    OUTPUT="$out"
+    REFERENCE="${REFERENCE_SEQUENCE}"
+    VALIDATION_STRINGENCY=LENIENT
+  )
+  run_picard ${args[*]}
+  if ! mv -f "$out" "$bam"; then
+    echo "ERROR: Failed to move '$out' to '$bam'" >&2
     exit 1
   fi
 }
 
 sort_sam() {
-  local bam="$1" sorted_bam="$2"
-  local args=(
-    SortSam
-    INPUT="$bam"
-    OUTPUT="$sorted_bam"
-    SORT_ORDER=coordinate
-    VALIDATION_STRINGENCY=LENIENT
-  )
-  run_picard ${args[*]}
-  if bam_incomplete "$sorted_bam"; then
-    echo "ERROR: SortSam failed."
-    exit 1
+  local bam="$1"
+  local out="${bam%.bam}.SortSam.bam"
+  if ! bam_sorted "$bam"; then
+    local args=(
+      SortSam
+      INPUT="$bam"
+      OUTPUT="$out"
+      SORT_ORDER=coordinate
+      VALIDATION_STRINGENCY=LENIENT
+    )
+    run_picard ${args[*]}
+    if ! mv -f "$out" "$bam"; then
+      echo "ERROR: Failed to move '$out' to '$bam'" >&2
+      exit 1
+    fi
   fi
 }
 
 mark_duplicates() {
   local bam="$1"
   local out="${bam%.bam}.MarkDuplicates.bam"
+  local prefix=$(basename "$bam" .bam)
   local args=(
     MarkDuplicates
     INPUT="$bam"
     OUTPUT="$out"
-    METRICS_FILE="${bam%.bam}.duplicate_metrics"
+    METRICS_FILE="${prefix}.duplicate_metrics"
     REMOVE_DUPLICATES=false
     READ_NAME_REGEX=null
     VALIDATION_STRINGENCY=LENIENT
@@ -358,10 +406,11 @@ mark_duplicates() {
 
 multiple_metrics() {
   local bam="$1"
+  local prefix=$(basename "$bam" .bam)
   local args=(
     CollectMultipleMetrics
     INPUT="$bam"
-    OUTPUT="${bam%.bam}"
+    OUTPUT="$prefix"
     REFERENCE_SEQUENCE="$REFERENCE_SEQUENCE"
     VALIDATION_STRINGENCY=LENIENT
     PROGRAM=CollectAlignmentSummaryMetrics
@@ -383,11 +432,12 @@ rnaseq_metrics() {
     echo "ERROR: Could not retrieve header from '$bam'" >&2
     exit 1
   fi
+  local prefix=$(basename "$bam" .bam)
   local args=(
     CollectRnaSeqMetrics
     INPUT="$bam"
-    OUTPUT="${bam%.bam}.rnaseq_metrics"
-    CHART_OUTPUT="${bam%.bam}.rnaseq_metrics.pdf"
+    OUTPUT="${prefix}.rnaseq_metrics"
+    CHART_OUTPUT="${prefix}.rnaseq_metrics.pdf"
     REFERENCE_SEQUENCE="$REFERENCE_SEQUENCE"
     REF_FLAT="$REF_FLAT"
     RIBOSOMAL_INTERVALS="$t"
@@ -403,12 +453,13 @@ rnaseq_metrics() {
 
 gcbias_metrics() {
   local bam="$1"
+  local prefix=$(basename "$bam" .bam)
   local args=(
     CollectGcBiasMetrics
     INPUT="$bam"
-    OUTPUT="${bam%.bam}.gc_bias_metrics"
-    CHART_OUTPUT="${bam%.bam}.gc_bias_metrics.pdf"
-    SUMMARY_OUTPUT="${bam%.bam}.gc_bias_metrics_summary"
+    OUTPUT="${prefix}.gc_bias_metrics"
+    CHART_OUTPUT="${prefix}.gc_bias_metrics.pdf"
+    SUMMARY_OUTPUT="${prefix}.gc_bias_metrics_summary"
     REFERENCE_SEQUENCE="$REFERENCE_SEQUENCE"
     VALIDATION_STRINGENCY=LENIENT
   )
@@ -417,10 +468,11 @@ gcbias_metrics() {
 
 library_complexity() {
   local bam="$1"
+  local prefix=$(basename "$bam" .bam)
   local args=(
     EstimateLibraryComplexity
     INPUT="$bam"
-    OUTPUT="${bam%.bam}.library_complexity"
+    OUTPUT="${prefix}.library_complexity"
     VALIDATION_STRINGENCY=LENIENT
   )
   run_picard ${args[*]}
