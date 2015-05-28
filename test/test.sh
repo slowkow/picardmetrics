@@ -2,67 +2,69 @@
 # test.sh
 #
 # Test picardmetrics
+#
+# data/project1/sample1.bam     10,000 paired-end 101 bp reads
+# data/project1/sample2.bam     similar reads, but the header is shuffled
 
 main() {
+  # Clean up previous runs.
+  rm -rf out
+
   echo -e "$(DATE)\tSTART\ttest_default"
   test_default
+
   echo -e "$(DATE)\tSTART\ttest_rnaseq"
   test_rnaseq
+
   echo -e "$(DATE)\tDONE"
 }
 
 test_default() {
-  # Clean up previous runs.
-  rm -rf out
-  rm -f test/test-run.log
-  rm -f test/test-collate.log
+  out=out/default
+  mkdir -p $out
+
+  run_log=$out/picardmetrics-run.log
+  collate_log=$out/picardmetrics-collate.log
+  rm -f $run_log $collate_log
 
   # Run multiple metrics on each BAM file.
   for f in data/project1/sample?/sample?.bam
   do
-    ./picardmetrics run -f ~/picardmetrics.conf -o out $f \
-      2>&1 >> test/test-run.log
+    ./picardmetrics run -f ~/picardmetrics.conf -o $out $f 2>&1 >> $run_log
   done
 
-  # Collate the generated tables into project summary tables.
-  ./picardmetrics collate out/project1 out &> test/test-collate.log
+  # Collate the generated tables.
+  ./picardmetrics collate $out $out &> $collate_log
 
   # Confirm that the final output is correct.
   md5sum -c \
-    <(echo "5f4a27b122a088730f144c93a2100a74  out/project1-all-metrics.tsv")
-
-  if [[ "$?" != 0 ]]; then
-    exit 1
-  fi
+    <(echo "5f4a27b122a088730f144c93a2100a74  ${out}-all-metrics.tsv")
 }
 
 test_rnaseq() {
-  # Clean up previous runs.
-  rm -rf out
-  rm -f test/test-run.log
-  rm -f test/test-collate.log
+  out=out/rnaseq
+  mkdir -p $out
+
+  run_log=$out/picardmetrics-run.log
+  collate_log=$out/picardmetrics-collate.log
+  rm -f $run_log $collate_log
 
   # Run multiple metrics on each BAM file.
   for f in data/project1/sample?/sample?.bam
   do
-    ./picardmetrics run -f ~/picardmetrics.conf -o out -r $f \
-      2>&1 >> test/test-run.log
+    ./picardmetrics run -r -f ~/picardmetrics.conf -o $out $f 2>&1 >> $run_log
   done
 
-  # Collate the generated tables into project summary tables.
-  ./picardmetrics collate out/project1 out &> test/test-collate.log
+  # Collate the generated tables.
+  ./picardmetrics collate $out $out &> $collate_log
 
   # Confirm that the final output is correct.
   md5sum -c \
-    <(echo "98887a74cfdec74cb60f11f8f69d281e  out/project1-all-metrics.tsv")
-
-  if [[ "$?" != 0 ]]; then
-    exit 1
-  fi
+    <(echo "98887a74cfdec74cb60f11f8f69d281e  ${out}-all-metrics.tsv")
 }
 
 DATE() {
   command date +'%Y-%m-%d %H:%M:%S'
 }
 
-main
+main &> test/test.log
