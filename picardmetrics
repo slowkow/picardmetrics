@@ -203,6 +203,7 @@ main_refFlat() {
   # Ensure that the script was called with correct arguments.
   if [[ ! ("$gtf" == *.gtf || "$gtf" == *.gtf.gz) ]]; then
     echo "Usage: picardmetrics refFlat <file.gtf[.gz]>"
+    echo "  Create 'file.refFlat' for CollectRnaSeqMetrics."
     return 0
   fi
 
@@ -248,6 +249,7 @@ main_rRNA() {
   # Ensure that the script was called with correct arguments.
   if [[ ! ("$gtf" == *.gtf || "$gtf" == *.gtf.gz) ]]; then
     echo "Usage: picardmetrics rRNA <file.gtf[.gz]>"
+    echo "  Create 'file.rRNA.list' for CollectRnaSeqMetrics."
     return 0
   fi
 
