@@ -20,8 +20,8 @@ main() {
     echo "Usage: picardmetrics COMMAND"
     echo "  run         Run the Picard tools on a given BAM file."
     echo "  collate     Collate metrics files for multiple BAM files."
-    echo "  refFlat     Collate metrics files for multiple BAM files."
-    echo "  rRNA        Collate metrics files for multiple BAM files."
+    echo "  refFlat     Create a .refFlat file for CollectRnaSeqMetrics."
+    echo "  rRNA        Create a .rRNA.list file for CollectRnaSeqMetrics."
   fi
 }
 
