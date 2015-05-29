@@ -876,8 +876,9 @@ read_metrics <- function(prefix) {
   if (!is.null(dat_library_complexity)) {
     # duplicate_metrics and library_complexity share columns
     cnames <- colnames(dat_library_complexity)
-    cnames[2:length(cnames)] <- paste0(
-      cnames[2:length(cnames)], "_library_complexity"
+    cnames[2:length(cnames)] <- paste(
+      cnames[2:length(cnames)], "_library_complexity",
+      sep = ""
     )
     colnames(dat_library_complexity) <- cnames
 
