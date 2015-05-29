@@ -41,6 +41,7 @@ test_default() {
     <(echo "5f4a27b122a088730f144c93a2100a74  ${out}-all-metrics.tsv"); then
     cat $run_log >&2
     cat $collate_log >&2
+    exit 1
   fi
 }
 
@@ -66,6 +67,7 @@ test_rnaseq() {
     <(echo "98887a74cfdec74cb60f11f8f69d281e  ${out}-all-metrics.tsv"); then
     cat $run_log >&2
     cat $collate_log >&2
+    exit 1
   fi
 }
 
