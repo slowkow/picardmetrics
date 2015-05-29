@@ -6,7 +6,7 @@
 addons:
     apt:
         packages:
-        - Rscript
+        - r-base
 
 before_install:
     - wget https://zenodo.org/record/18116/files/picardmetrics-data.tar.xz
