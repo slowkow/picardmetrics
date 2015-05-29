@@ -1,0 +1,14 @@
+# Travis will do the following:
+# 
+#   git clone https://github.com/slowkow/picardmetrics
+#   cd picardmetrics
+
+before_install:
+    - wget https://zenodo.org/record/18116/files/picardmetrics-data.tar.xz
+    - tar xf picardmetrics-data.tar.xz
+
+install:
+    - make get-deps
+    - perl -pe '$x = qx{pwd}; chomp $x; s{/PATH/TO}{$x/data}' picardmetrics.conf > ~/picardmetrics.conf
+
+script: ./test/test.sh
