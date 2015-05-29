@@ -6,10 +6,11 @@
 before_install:
     - wget https://zenodo.org/record/18116/files/picardmetrics-data.tar.xz
     - tar xf picardmetrics-data.tar.xz
+    - export PATH="$HOME/.local/bin:$PATH"
+    - make get-deps
 
 install:
-    - make get-deps
-    - export PATH="$HOME/.local/bin:$PATH"
     - perl -pe '$x = qx{pwd}; chomp $x; s{/PATH/TO}{$x/data}' picardmetrics.conf > ~/picardmetrics.conf
+    - cat ~/picardmetrics.conf
 
 script: ./test/test.sh

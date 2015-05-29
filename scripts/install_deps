@@ -67,7 +67,7 @@ main() {
       && cd ..
   fi
 
-  if ! gtfToGenePred || ! which stats || ! which samtools ; then
+  if ! which gtfToGenePred || ! which stats || ! which samtools ; then
     echo
     echo "Add this to your .bashrc or .bash_profile:"
     echo "    PATH=\"\$HOME/.local/bin:\$PATH\""
