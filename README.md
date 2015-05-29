@@ -4,6 +4,7 @@ Run [Picard] tools and collate multiple metrics files. Check the quality of
 your sequencing data.
 
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.17142.svg)](http://dx.doi.org/10.5281/zenodo.17142)
+[![Build Status](https://travis-ci.org/slowkow/picardmetrics.svg?branch=master)](https://travis-ci.org/slowkow/picardmetrics)
 
 ## Summary
 
