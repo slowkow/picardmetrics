@@ -63,11 +63,11 @@ main_run() {
         KEEP=1
         ;;
       \?)
-        echo "Invalid option: -$OPTARG" >&2
+        warn "Invalid option: -$OPTARG"
         exit 1
         ;;
       :)
-        echo "Option -$OPTARG requires an argument." >&2
+        warn "Option -$OPTARG requires an argument."
         ;;
     esac
   done
@@ -80,10 +80,10 @@ main_run() {
 
   # Ensure the BAM file is valid.
   if ! is_bam "$bam"; then
-    echo "ERROR: Not a .bam file: '$bam'" >&2
+    warn "ERROR: Not a .bam file: '$bam'"
     exit 1
   elif bam_incomplete "$bam"; then
-    echo "ERROR: Missing EOF marker: '$bam'" >&2
+    warn "ERROR: Missing EOF marker: '$bam'"
     exit 1
   fi
 
@@ -92,13 +92,13 @@ main_run() {
 
   # Make the ouput directory if it does not exist.
   if ! mkdir -p "$OUT_DIR"; then
-    echo "ERROR: mkdir '$OUT_DIR'" >&2
+    warn "ERROR: mkdir '$OUT_DIR'"
     exit 1
   fi
 
   # Perform all actions in a folder inside the BAM file's directory.
   if ! cd "$OUT_DIR"; then
-    echo "ERROR: cd '$OUT_DIR'" >&2
+    warn "ERROR: cd '$OUT_DIR'"
     exit 1
   fi
 
@@ -110,14 +110,14 @@ main_run() {
   # Temporary BAM file that is deleted by default.
   local temp_dir="/tmp/picardmetrics_${USER}_${$}"
   if ! mkdir -p "$temp_dir"; then
-    echo "ERROR: mdkir -p '$temp_dir'" >&2
+    warn "ERROR: mdkir -p '$temp_dir'"
     exit 1
   fi
 
   local temp_bam="$temp_dir/$(basename $bam)"
 
   if ! ln -sf "$bam" "$temp_bam"; then
-    echo "ERROR: ln -sf '$bam' '$temp_bam'" >&2
+    warn "ERROR: ln -sf '$bam' '$temp_bam'"
     exit 1
   fi
 
@@ -127,19 +127,19 @@ main_run() {
   if [[ "$KEEP" = "" ]]; then
     # Delete the temporary BAM file after computing metrics.
     if ! rm -f "$temp_bam"; then
-      echo "ERROR: rm -f '$temp_bam'" >&2
+      warn "ERROR: rm -f '$temp_bam'"
       exit 1
     fi
   else
     # Otherwise, move it to the output folder.
     if ! mv "$temp_bam" . ;then
-      echo "ERROR: mv '$temp_bam' ." >&2
+      warn "ERROR: mv '$temp_bam' ."
       exit 1
     fi
   fi
   # Delete the temporary directory.
   if ! rm -rf "$temp_dir"; then
-    echo "ERROR: rm -rf '$temp_dir'" >&2
+    warn "ERROR: rm -rf '$temp_dir'"
     exit 1
   fi
 
@@ -158,11 +158,11 @@ main_collate() {
   local dir="$2"
 
   if [[ ! -d "$dir" ]]; then
-    echo "ERROR: Not a directory: '$dir'" >&2
+    warn "ERROR: Not a directory: '$dir'"
     exit 1
   fi
 
-  echo -e "$(DATE)\tSTART\t$prefix" >&2
+  warn -e "$(DATE)\tSTART\t$prefix"
   
   # CollectAlignmentMetrics
   collate_alignment_metrics "$prefix-alignment-metrics.tsv" "$dir"
@@ -195,7 +195,7 @@ main_collate() {
   # Merge all collated files into one master file "$prefix-all-metrics.tsv".
   collate_all "$prefix"
 
-  echo -e "$(DATE)\tDONE\t$prefix" >&2
+  warn -e "$(DATE)\tDONE\t$prefix"
 }
 
 main_refFlat() {
@@ -215,7 +215,7 @@ main_refFlat() {
   fi
 
   if [[ ! -s "$gtf" ]]; then
-    echo "ERROR: File not found '$gtf'" >&2
+    warn "ERROR: File not found '$gtf'"
     exit 1
   fi
 
@@ -254,7 +254,7 @@ main_rRNA() {
   fi
 
   if [[ ! -s "$gtf" ]]; then
-    echo "ERROR: File not found '$gtf'" >&2
+    warn "ERROR: File not found '$gtf'"
     exit 1
   fi
 
@@ -297,9 +297,9 @@ configure_run() {
   elif [[ -f ~/picardmetrics.conf ]]; then
     PICARDMETRICS_CONFIG=~/picardmetrics.conf
   else
-    echo "WARNING: Config file '$PICARDMETRICS_CONFIG' not found" >&2
+    warn "WARNING: Config file '$PICARDMETRICS_CONFIG' not found"
   fi
-  echo -e "$(DATE)\tLoading '$PICARDMETRICS_CONFIG'" >&2
+  warn -e "$(DATE)\tLoading '$PICARDMETRICS_CONFIG'"
   source "$PICARDMETRICS_CONFIG"
 
   # All jobs will be launched with niceness=20 by default.
@@ -309,49 +309,49 @@ configure_run() {
   NICE="nice -n$NICENESS"
 
   if [[ ! -e "$PICARD_JAR" ]]; then
-    echo "ERROR: Please download the 'picard.jar' file" >&2
-    echo "         https://broadinstitute.github.io/picard/" >&2
-    echo "       and define PICARD_JAR=/path/to/picard.jar" >&2
+    warn "ERROR: Please download the 'picard.jar' file"
+    warn "         https://broadinstitute.github.io/picard/"
+    warn "       and define PICARD_JAR=/path/to/picard.jar"
     exit 1
   fi
 
   if [[ -z "$PICARD" ]]; then
-    echo "ERROR: Please define the variable PICARD" >&2
-    echo '       For example: PICARD="java -jar $PICARD_JAR"' >&2
+    warn "ERROR: Please define the variable PICARD"
+    warn '       For example: PICARD="java -jar $PICARD_JAR"'
   fi
 
   if ! which samtools &> /dev/null; then
-    echo "ERROR: Please install the 'samtools' program" >&2
-    echo "         https://github.com/samtools/samtools" >&2
+    warn "ERROR: Please install the 'samtools' program"
+    warn "         https://github.com/samtools/samtools"
     exit 1
   fi
 
   if ! which stats &> /dev/null; then
-    echo "ERROR: Please install the 'stats' program" >&2
-    echo "         https://github.com/arq5x/filo" >&2
+    warn "ERROR: Please install the 'stats' program"
+    warn "         https://github.com/arq5x/filo"
     exit 1
   fi
 
   if [[ ! -f "$REFERENCE_SEQUENCE" ]]; then
-    echo "ERROR: FASTA file not found: '$REFERENCE_SEQUENCE'"
-    echo "       Please define REFERENCE_SEQUENCE" >&2
-    echo '       For example: REFERENCE_SEQUENCE=~/data/hg19.fasta' >&2
+    warn "ERROR: FASTA file not found: '$REFERENCE_SEQUENCE'"
+    warn "       Please define REFERENCE_SEQUENCE"
+    warn '       For example: REFERENCE_SEQUENCE=~/data/hg19.fasta'
     exit 1
   fi
 
   # If the input BAM file comes from an RNA-seq experiment.
   if [[ "$RNASEQ" ]]; then
     if [[ ! -s "$REF_FLAT" ]]; then
-      echo "ERROR: refFlat file not found: '$REF_FLAT'"
-      echo "       Please define REF_FLAT" >&2
-      echo '       For example: REF_FLAT=~/data/genes.refFlat' >&2
+      warn "ERROR: refFlat file not found: '$REF_FLAT'"
+      warn "       Please define REF_FLAT"
+      warn '       For example: REF_FLAT=~/data/genes.refFlat'
       exit 1
     fi
 
     if [[ ! -s "$RIBOSOMAL_INTERVALS" ]]; then
-      echo "ERROR: Ribosomal intervals not found: '$RIBOSOMAL_INTERVALS'"
-      echo "       Please define RIBOSOMAL_INTERVALS" >&2
-      echo '       For example: RIBOSOMAL_INTERVALS=~/data/rRNA.txt' >&2
+      warn "ERROR: Ribosomal intervals not found: '$RIBOSOMAL_INTERVALS'"
+      warn "       Please define RIBOSOMAL_INTERVALS"
+      warn '       For example: RIBOSOMAL_INTERVALS=~/data/rRNA.txt'
       exit 1
     fi
   fi
@@ -362,7 +362,7 @@ configure_run() {
 compute_metrics() {
   local bam="$1" rnaseq="$2"
   if [[ ! -s "$bam" ]]; then
-    echo "BAM file not found '$bam'" >&2
+    warn "BAM file not found '$bam'"
     return 1
   fi
 
@@ -379,7 +379,7 @@ compute_metrics() {
   if [[ "$bam" -nt "$mapq_stats" || ! -s "$mapq_stats" ]]; then
     if ! ( $NICE samtools view "$bam" | cut -f5 | stats > "$mapq_stats" );
     then
-      echo "ERROR: mapq_stats failed" >&2
+      warn "ERROR: mapq_stats failed"
     fi
   fi
 
@@ -421,8 +421,8 @@ run_picard() {
   local log=$(basename ${bam#*=} .bam).${tool}.log
   echo -e "$(DATE)\t$tool"
   if ! $NICE $PICARD $tool ${args[*]} &> $log; then
-    echo "ERROR: $tool failed" >&2
-    echo "       See $(pwd)/$log for details" >&2
+    warn "ERROR: $tool failed. See: $(pwd)/$log"
+    cat "$(pwd)/$log" >&2
   fi
 }
 
@@ -451,7 +451,7 @@ reorder_sam() {
   )
   run_picard ${args[*]}
   if ! mv -f "$out" "$bam"; then
-    echo "ERROR: Failed to move '$out' to '$bam'" >&2
+    warn "ERROR: Failed to move '$out' to '$bam'"
     exit 1
   fi
 }
@@ -469,7 +469,7 @@ sort_sam() {
     )
     run_picard ${args[*]}
     if ! mv -f "$out" "$bam"; then
-      echo "ERROR: Failed to move '$out' to '$bam'" >&2
+      warn "ERROR: Failed to move '$out' to '$bam'"
       exit 1
     fi
   fi
@@ -490,7 +490,7 @@ mark_duplicates() {
   )
   run_picard ${args[*]}
   if ! mv -f "$out" "$bam"; then
-    echo "ERROR: Failed to move '$out' to '$bam'" >&2
+    warn "ERROR: Failed to move '$out' to '$bam'"
     exit 1
   fi
 }
@@ -520,7 +520,7 @@ rnaseq_metrics() {
     samtools view -H "$bam" | grep '^@SQ' > "$t" \
       && grep -v '^@SQ' "$RIBOSOMAL_INTERVALS" >> "$t"
   ); then
-    echo "ERROR: Could not retrieve header from '$bam'" >&2
+    warn "ERROR: Could not retrieve header from '$bam'"
     exit 1
   fi
   local prefix=$(basename "$bam" .bam)
@@ -538,7 +538,7 @@ rnaseq_metrics() {
   run_picard ${args[*]}
   # Remove the temporary file after we're done with it.
   if ! rm -f "$t"; then
-    echo "WARNING: Could not delete '$t'" >&2
+    warn "WARNING: Could not delete '$t'"
   fi
 }
 
@@ -575,7 +575,7 @@ collate_alignment_metrics() {
   local out="$1" dir="$2"
   local files=($dir/*.alignment_summary_metrics)
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
-  echo -e "$(DATE)\tCollating ${#files[@]} alignment_summary_metrics files" >&2
+  warn -e "$(DATE)\tCollating ${#files[@]} alignment_summary_metrics files"
   (
     echo -ne "SAMPLE\t"
     tail -n+7 "${files[0]}" | head -n1 | cut -f1-22
@@ -595,7 +595,7 @@ collate_rnaseq_metrics() {
   local out="$1" dir="$2"
   local files=($dir/*.rnaseq_metrics)
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
-  echo -e "$(DATE)\tCollating ${#files[@]} rnaseq_metrics files (summary)" >&2
+  warn -e "$(DATE)\tCollating ${#files[@]} rnaseq_metrics files (summary)"
   (
     echo -ne "SAMPLE\t"
     tail -n+7 "${files[0]}" | head -n1 | cut -f1-22
@@ -614,7 +614,7 @@ collate_rnaseq_coverage() {
   local out="$1" dir="$2"
   local files=($dir/*.rnaseq_metrics)
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
-  echo -e "$(DATE)\tCollating ${#files[@]} rnaseq_metrics files (coverage)" >&2
+  warn -e "$(DATE)\tCollating ${#files[@]} rnaseq_metrics files (coverage)"
   (
     echo -ne "SAMPLE\t"
     tail -n+11 "${files[0]}" | head -n1 | perl -pe 's/\s+$/\n/'
@@ -632,7 +632,7 @@ collate_quality_metrics() {
   local out="$1" dir="$2"
   local files=($dir/*.quality_distribution_metrics)
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
-  echo -e "$(DATE)\tCollating ${#files[@]} quality_distribution_metrics files" >&2
+  warn -e "$(DATE)\tCollating ${#files[@]} quality_distribution_metrics files"
   (
     echo -ne "SAMPLE\t"
     tail -n+8 "${files[0]}" | head -n1 | perl -pe 's/\s+$/\n/'
@@ -650,7 +650,7 @@ collate_gc_bias_metrics() {
   local out="$1" dir="$2"
   local files=($dir/*.gc_bias_metrics)
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
-  echo -e "$(DATE)\tCollating ${#files[@]} gc_bias_metrics files" >&2
+  warn -e "$(DATE)\tCollating ${#files[@]} gc_bias_metrics files"
   (
     echo -ne "SAMPLE\t"
     tail -n+7 "${files[0]}" | head -n1 | perl -pe 's/\s+$/\n/'
@@ -668,7 +668,7 @@ collate_gc_bias_summary() {
   local out="$1" dir="$2"
   local files=($dir/*.gc_bias_metrics_summary)
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
-  echo -e "$(DATE)\tCollating ${#files[@]} gc_bias_metrics_summary files" >&2
+  warn -e "$(DATE)\tCollating ${#files[@]} gc_bias_metrics_summary files"
   (
     echo -ne "SAMPLE\t"
     tail -n+7 "${files[0]}" | head -n1 | perl -pe 's/\s+$/\n/'
@@ -687,7 +687,7 @@ collate_insert_size_metrics() {
   local out="$1" dir="$2"
   local files=($dir/*.insert_size_metrics)
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
-  echo -e "$(DATE)\tCollating ${#files[@]} insert_size_metrics files" >&2
+  warn -e "$(DATE)\tCollating ${#files[@]} insert_size_metrics files"
   (
     echo -ne "SAMPLE\t"
     tail -n+7 "${files[0]}" | head -n1 | cut -f1-18
@@ -705,7 +705,7 @@ collate_duplicate_metrics() {
   local out="$1" dir="$2"
   local files=($dir/*.duplicate_metrics)
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
-  echo -e "$(DATE)\tCollating ${#files[@]} duplicate_metrics files" >&2
+  warn -e "$(DATE)\tCollating ${#files[@]} duplicate_metrics files"
   (
     echo -ne "SAMPLE\t"
     tail -n+7 "${files[0]}" | head -n1 | cut -f1-9
@@ -724,7 +724,7 @@ collate_library_complexity() {
   local out="$1" dir="$2"
   local files=($dir/*.library_complexity)
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
-  echo -e "$(DATE)\tCollating ${#files[@]} library_complexity files" >&2
+  warn -e "$(DATE)\tCollating ${#files[@]} library_complexity files"
   (
     echo -ne "SAMPLE\t"
     tail -n+7 "${files[0]}" | head -n1 | cut -f1-9
@@ -744,7 +744,7 @@ collate_library_complexity_histogram() {
   local out="$1" dir="$2"
   local files=($dir/*.library_complexity)
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
-  echo -e "$(DATE)\tCollating ${#files[@]} library_complexity files (histogram)" >&2
+  warn -e "$(DATE)\tCollating ${#files[@]} library_complexity files (histogram)"
   (
     echo -ne "SAMPLE\t"
     tail -n+11 "${files[0]}" | head -n1 | cut -f1 \
@@ -763,7 +763,7 @@ collate_mapq_stats() {
   local out="$1" dir="$2"
   local files=($dir/*.mapq_stats)
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
-  echo -e "$(DATE)\tCollating ${#files[@]} mapq_stats files" >&2
+  warn -e "$(DATE)\tCollating ${#files[@]} mapq_stats files"
   (
     echo -e \
     "SAMPLE\tMAPQ_Mean\tMAPQ_Median\tMAPQ_SD\tMAPQ_Mode\tMAPQ_ModePercent"
@@ -788,7 +788,7 @@ collate_mapq_stats() {
 
 collate_all() {
   local prefix="$1"
-  echo -e "$(DATE)\tJoining all files into '$prefix-all-metrics.tsv'" >&2
+  warn -e "$(DATE)\tJoining all files into '$prefix-all-metrics.tsv'"
   # This code is also present in scripts/plot-picardmetrics.R
   Rscript --vanilla <(echo '
 main <- function() {
@@ -898,6 +898,10 @@ main()
 }
 
 # Extra functions. -----------------------------------------------------------
+
+warn() {
+  echo $@ >&2
+}
 
 DATE() {
   command date +'%Y-%m-%d %H:%M:%S'
