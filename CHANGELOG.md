@@ -9,17 +9,21 @@
     -    refFlat
 
         -   This creates a file for the REF_FLAT argument of
-        	CollectRnaSeqMetrics.
+            CollectRnaSeqMetrics.
 
     -    rRNA
 
         -   This creates a file for the RIBOSOMAL_INTERVALS argument of
-        	CollectRnaSeqMetrics.
+            CollectRnaSeqMetrics.
+
+-   Travis continuous integration testing. Each time I push new changes to the
+    repo, Travis will automatically check that the picardmetrics output is
+    correct.
 
 ## Fixed
 
 -   This was harmless, but some of the collated output files were missing the
-	trailing tab character at the end of the line. Some also had extra lines
+    trailing tab character at the end of the line. Some also had extra lines
     without data. Now all of the collated output files should be perfectly
     formatted.
 
@@ -30,7 +34,7 @@
 ## Changed
 
 -   `picardmetrics run` now puts the newly generated BAM file in `/tmp` and
-	deletes it after successfully running, unless the `-k` option is used.
+    deletes it after successfully running, unless the `-k` option is used.
 
 -   `picardmetrics run` now runs CreateSequenceDictionary and ReorderSam on
     the BAM file to avoid issues where the sequence names in the header of the
@@ -38,12 +42,12 @@
     sequence FASTA file.
 
 -   Shuffled the header for `data/project1/sample2.bam` so we can ensure that
-	BAM files with unordered headers work correctly.
+    BAM files with unordered headers work correctly.
 
 -   Rearranged output files so you can see the extra metrics contributed by
-	CollectRnaSeqMetrics:
+    CollectRnaSeqMetrics:
 
-	-   Compare the files in `out/default` with `out/rnaseq`.
+    -   Compare the files in `out/default` with `out/rnaseq`.
 
 ## Removed
 
