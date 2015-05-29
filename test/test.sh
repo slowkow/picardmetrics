@@ -39,6 +39,11 @@ test_default() {
   # Confirm that the final output is correct.
   md5sum -c \
     <(echo "5f4a27b122a088730f144c93a2100a74  ${out}-all-metrics.tsv")
+
+  ERR=$?
+  if [[ $ERR != 0 ]]; then
+    exit $ERR
+  fi
 }
 
 test_rnaseq() {
@@ -61,6 +66,11 @@ test_rnaseq() {
   # Confirm that the final output is correct.
   md5sum -c \
     <(echo "98887a74cfdec74cb60f11f8f69d281e  ${out}-all-metrics.tsv")
+  
+  ERR=$?
+  if [[ $ERR != 0 ]]; then
+    exit $ERR
+  fi
 }
 
 DATE() {
