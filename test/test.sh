@@ -67,4 +67,4 @@ DATE() {
   command date +'%Y-%m-%d %H:%M:%S'
 }
 
-main &> test/test.log
+main
