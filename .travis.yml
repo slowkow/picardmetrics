@@ -3,6 +3,11 @@
 #   git clone https://github.com/slowkow/picardmetrics
 #   cd picardmetrics
 
+addons:
+    apt:
+        packages:
+        - Rscript
+
 before_install:
     - wget https://zenodo.org/record/18116/files/picardmetrics-data.tar.xz
     - tar xf picardmetrics-data.tar.xz
