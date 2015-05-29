@@ -34,7 +34,7 @@ In order, **picardmetrics run** will do the following:
   4.    Mark duplicates in the BAM file and report duplicate metrics.
   5.    Run up to 8 additional Picard tools.
 
-After running the tools, use **picardmetrics colllate** to merge all of the
+After running the tools, use **picardmetrics collate** to merge all of the
 generated metrics from multiple BAM files into tab-delimited files.
 Additionally, all of these tab-delimited files are consolidated into a single
 file with all metrics from all BAM files and all Picard tools.
@@ -97,9 +97,10 @@ Read about the meaning of each metric: [Picard metrics definitions][definitions]
 
 `picardmetrics` collate <PREFIX> <DIR>
 
-Output metrics files in <DIR> will be collated. Next, a file named
-<PREFIX>-all-metrics.tsv will be created in <DIR> with all metrics from all
-Picard tools and all BAM files.
+Collate output metrics files in <DIR> into files names
+<PREFIX>-descriptive-name.tsv. Next, create a file named
+<PREFIX>-all-metrics.tsv with all metrics from all Picard tools and all BAM
+files.
 
 ### refFlat
 
@@ -163,10 +164,10 @@ Here are three examples of how you can run the program:
 
 1. Run **picardmetrics** sequentially in a for loop on multiple BAM files.
 
-2. Run in parallel with GNU parallel, using multiple processors or multiple
-   servers.
+2. Run in parallel with [GNU parallel][parallel], using multiple processors or
+   multiple servers.
 
-3. Run in parallel with an LSF queue, distributing jobs to multiple servers.
+3. Run in parallel with an [LSF] queue, distributing jobs to multiple servers.
 
 ### Example 1: Sequential
 
@@ -174,7 +175,7 @@ Run **picardmetrics** on the provided example BAM files:
 
 ```bash
 for f in data/project1/sample?/sample?.bam; do
-  picardmetrics run -o out -r $f
+  picardmetrics run -r -o out $f
 done
 ```
 
@@ -183,6 +184,8 @@ Collate the generated metrics files:
 ```bash
 picardmetrics collate out/project1 out
 ```
+
+Next, use the file `out/project1-all-metrics.tsv` to explore the metrics.
 
 ### Example 2: GNU parallel
 

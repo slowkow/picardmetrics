@@ -119,7 +119,7 @@ for generating the two input files required by CollectRnaSeqMetrics.</p>
 </ol>
 
 
-<p>After running the tools, use <strong>picardmetrics colllate</strong> to merge all of the
+<p>After running the tools, use <strong>picardmetrics collate</strong> to merge all of the
 generated metrics from multiple BAM files into tab-delimited files.
 Additionally, all of these tab-delimited files are consolidated into a single
 file with all metrics from all BAM files and all Picard tools.</p>
@@ -189,9 +189,10 @@ configuration file.</p></li>
 
 <p><code>picardmetrics</code> collate <var>PREFIX</var> <var>DIR</var></p>
 
-<p>Output metrics files in <var>DIR</var> will be collated. Next, a file named
-<var>PREFIX</var>-all-metrics.tsv will be created in <var>DIR</var> with all metrics from all
-Picard tools and all BAM files.</p>
+<p>Collate output metrics files in <var>DIR</var> into files names
+<var>PREFIX</var>-descriptive-name.tsv. Next, create a file named
+<var>PREFIX</var>-all-metrics.tsv with all metrics from all Picard tools and all BAM
+files.</p>
 
 <h3 id="refFlat">refFlat</h3>
 
@@ -253,9 +254,9 @@ genes in Picard format. Required for <a href="https://broadinstitute.github.io/p
 
 <ol>
 <li><p>Run <strong>picardmetrics</strong> sequentially in a for loop on multiple BAM files.</p></li>
-<li><p>Run in parallel with GNU parallel, using multiple processors or multiple
-servers.</p></li>
-<li><p>Run in parallel with an LSF queue, distributing jobs to multiple servers.</p></li>
+<li><p>Run in parallel with <a href="https://www.gnu.org/software/parallel/parallel_tutorial.html">GNU parallel</a>, using multiple processors or
+multiple servers.</p></li>
+<li><p>Run in parallel with an <a href="http://www.vub.ac.be/BFUCC/LSF/">LSF</a> queue, distributing jobs to multiple servers.</p></li>
 </ol>
 
 
@@ -264,7 +265,7 @@ servers.</p></li>
 <p>Run <strong>picardmetrics</strong> on the provided example BAM files:</p>
 
 <pre><code class="bash">for f in data/project1/sample?/sample?.bam; do
-  picardmetrics run -o out -r $f
+  picardmetrics run -r -o out $f
 done
 </code></pre>
 
@@ -272,6 +273,8 @@ done
 
 <pre><code class="bash">picardmetrics collate out/project1 out
 </code></pre>
+
+<p>Next, use the file <code>out/project1-all-metrics.tsv</code> to explore the metrics.</p>
 
 <h3 id="Example-2-GNU-parallel">Example 2: GNU parallel</h3>
 

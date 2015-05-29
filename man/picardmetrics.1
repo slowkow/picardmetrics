@@ -59,7 +59,7 @@ Run up to 8 additional Picard tools\.
 .IP "" 0
 .
 .P
-After running the tools, use \fBpicardmetrics colllate\fR to merge all of the generated metrics from multiple BAM files into tab\-delimited files\. Additionally, all of these tab\-delimited files are consolidated into a single file with all metrics from all BAM files and all Picard tools\.
+After running the tools, use \fBpicardmetrics collate\fR to merge all of the generated metrics from multiple BAM files into tab\-delimited files\. Additionally, all of these tab\-delimited files are consolidated into a single file with all metrics from all BAM files and all Picard tools\.
 .
 .P
 These are the tools called by \fBpicardmetrics\fR:
@@ -157,7 +157,7 @@ Keep the output BAM file\. By default, delete it after metrics are created\.
 \fBpicardmetrics\fR collate \fIPREFIX\fR \fIDIR\fR
 .
 .P
-Output metrics files in \fIDIR\fR will be collated\. Next, a file named \fIPREFIX\fR\-all\-metrics\.tsv will be created in \fIDIR\fR with all metrics from all Picard tools and all BAM files\.
+Collate output metrics files in \fIDIR\fR into files names \fIPREFIX\fR\-descriptive\-name\.tsv\. Next, create a file named \fIPREFIX\fR\-all\-metrics\.tsv with all metrics from all Picard tools and all BAM files\.
 .
 .SS "refFlat"
 \fBpicardmetrics\fR refFlat <file\.gtf[\.gz]>
@@ -222,10 +222,10 @@ Here are three examples of how you can run the program:
 Run \fBpicardmetrics\fR sequentially in a for loop on multiple BAM files\.
 .
 .IP "2." 4
-Run in parallel with GNU parallel, using multiple processors or multiple servers\.
+Run in parallel with GNU parallel \fIhttps://www\.gnu\.org/software/parallel/parallel_tutorial\.html\fR, using multiple processors or multiple servers\.
 .
 .IP "3." 4
-Run in parallel with an LSF queue, distributing jobs to multiple servers\.
+Run in parallel with an LSF \fIhttp://www\.vub\.ac\.be/BFUCC/LSF/\fR queue, distributing jobs to multiple servers\.
 .
 .IP "" 0
 .
@@ -237,7 +237,7 @@ Run \fBpicardmetrics\fR on the provided example BAM files:
 .nf
 
 for f in data/project1/sample?/sample?\.bam; do
-  picardmetrics run \-o out \-r $f
+  picardmetrics run \-r \-o out $f
 done
 .
 .fi
@@ -256,6 +256,9 @@ picardmetrics collate out/project1 out
 .fi
 .
 .IP "" 0
+.
+.P
+Next, use the file \fBout/project1\-all\-metrics\.tsv\fR to explore the metrics\.
 .
 .SS "Example 2: GNU parallel"
 Run 2 jobs in parallel:
