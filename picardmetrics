@@ -579,13 +579,13 @@ collate_alignment_metrics() {
   warn -e "$(DATE)\tCollating ${#files[@]} alignment_summary_metrics files"
   (
     echo -ne "SAMPLE\t"
-    tail -n+7 "${files[0]}" | head -n1 | cut -f1-22
+    grep -A1 '## METRICS' "${files[0]}" | tail -n1 | cut -f1-22
     local f
     for f in ${files[*]}
     do
       local sample=$(sample_name "$f")
-      tail -n+8 $f | grep -Pv '^$' | cut -f1-22 \
-        | perl -pe 's{^}{'$sample'\t}'
+      grep -A1000000 '## METRICS' "$f" | tail -n+3 | \
+        grep -Pv '^$' | cut -f1-22 | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
 }
@@ -598,12 +598,13 @@ collate_rnaseq_metrics() {
   warn -e "$(DATE)\tCollating ${#files[@]} rnaseq_metrics files (summary)"
   (
     echo -ne "SAMPLE\t"
-    tail -n+7 "${files[0]}" | head -n1 | cut -f1-22
+    grep -A1 '## METRICS' "${files[0]}" | tail -n1 | cut -f1-22
     local f
     for f in ${files[*]}
     do
       local sample=$(sample_name "$f")
-      tail -n+8 "$f" | head -n1 | cut -f1-22 | perl -pe 's{^}{'$sample'\t}'
+      grep -A2 '## METRICS' "$f" | tail -n1 | cut -f1-22 \
+        | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
 }
@@ -616,12 +617,13 @@ collate_rnaseq_coverage() {
   warn -e "$(DATE)\tCollating ${#files[@]} rnaseq_metrics files (coverage)"
   (
     echo -ne "SAMPLE\t"
-    tail -n+11 "${files[0]}" | head -n1 | perl -pe 's/\s+$/\n/'
+    grep -A1 '## HISTOGRAM' "${files[0]}" | tail -n1 | perl -pe 's/\s+$/\n/'
     local f
     for f in ${files[*]}
     do
       local sample=$(sample_name "$f")
-      tail -n+12 "$f" | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
+      grep -A1000000 '## HISTOGRAM' "$f" | tail -n+3 \
+        | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
 }
@@ -633,12 +635,13 @@ collate_quality_metrics() {
   warn -e "$(DATE)\tCollating ${#files[@]} quality_distribution_metrics files"
   (
     echo -ne "SAMPLE\t"
-    tail -n+8 "${files[0]}" | head -n1 | perl -pe 's/\s+$/\n/'
+    grep -A1 '## HISTOGRAM' "${files[0]}" | tail -n1 | perl -pe 's/\s+$/\n/'
     local f
     for f in ${files[*]}
     do
       local sample=$(sample_name "$f")
-      tail -n+9 "$f" | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
+      grep -A1000000 '## HISTOGRAM' "$f" | tail -n+3 | grep -Pv '^$' \
+        | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
 }
@@ -650,12 +653,13 @@ collate_gc_bias_metrics() {
   warn -e "$(DATE)\tCollating ${#files[@]} gc_bias_metrics files"
   (
     echo -ne "SAMPLE\t"
-    tail -n+7 "${files[0]}" | head -n1 | perl -pe 's/\s+$/\n/'
+    grep -A1 '## METRICS' "${files[0]}" | tail -n1 | perl -pe 's/\s+$/\n/'
     local f
     for f in ${files[*]}
     do
       local sample=$(sample_name "$f")
-      tail -n+8 "$f" | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
+      grep -A1000000 '## METRICS' "$f" | tail -n+3 | grep -Pv '^$' \
+        | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
 }
@@ -667,13 +671,13 @@ collate_gc_bias_summary() {
   warn -e "$(DATE)\tCollating ${#files[@]} gc_bias_metrics_summary files"
   (
     echo -ne "SAMPLE\t"
-    tail -n+7 "${files[0]}" | head -n1 | perl -pe 's/\s+$/\n/'
+    grep -A1 '## METRICS' "${files[0]}" | tail -n1 | perl -pe 's/\s+$/\n/'
     local f
     for f in ${files[*]}
     do
       local sample=$(sample_name "$f")
-      tail -n+8 "$f" | head -n1 | perl -pe 's{^}{'$sample'\t}' \
-        | perl -pe 's/\s+$/\n/'
+      grep -A2 '## METRICS' "$f" | tail -n1 \
+        | perl -pe 's{^}{'$sample'\t};s/\s+$/\n/'
     done
   ) > "$out"
 }
@@ -685,12 +689,13 @@ collate_insert_size_metrics() {
   warn -e "$(DATE)\tCollating ${#files[@]} insert_size_metrics files"
   (
     echo -ne "SAMPLE\t"
-    tail -n+7 "${files[0]}" | head -n1 | cut -f1-18
+    grep -A1 '## METRICS' "${files[0]}" | tail -n1 | cut -f1-18
     local f
     for f in ${files[*]}
     do
       local sample=$(sample_name "$f")
-      tail -n+8 "$f" | head -n1 | cut -f1-18 | perl -pe 's{^}{'$sample'\t}'
+      grep -A2 '## METRICS' "$f" | tail -n1 | cut -f1-18 \
+        | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
 }
@@ -702,12 +707,13 @@ collate_insert_size_histogram() {
   warn -e "$(DATE)\tCollating ${#files[@]} insert_size_metrics files (histogram)"
   (
     echo -ne "SAMPLE\t"
-    tail -n+11 "${files[0]}" | head -n1 | perl -pe 's/\s+$/\n/'
+    grep -A1 '## HISTOGRAM' "${files[0]}" | tail -n1 | perl -pe 's/\s+$/\n/'
     local f
     for f in ${files[*]}
     do
       local sample=$(sample_name "$f")
-      tail -n+12 "$f" | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
+      grep -A1000000 '## HISTOGRAM' "$f" | tail -n+3 \
+        | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
 }
@@ -719,12 +725,12 @@ collate_duplicate_metrics() {
   warn -e "$(DATE)\tCollating ${#files[@]} duplicate_metrics files"
   (
     echo -ne "SAMPLE\t"
-    tail -n+7 "${files[0]}" | head -n1 | cut -f1-9
+    grep -A1 '## METRICS' "${files[0]}" | tail -n1 | cut -f1-9
     local f
     for f in ${files[*]}
     do
       local sample=$(sample_name "$f")
-      tail -n+8 "$f" | head -n1 | cut -f1-9 \
+      grep -A2 '## METRICS' "$f" | tail -n1 | cut -f1-9 \
         | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
@@ -737,12 +743,12 @@ collate_library_complexity() {
   warn -e "$(DATE)\tCollating ${#files[@]} library_complexity files"
   (
     echo -ne "SAMPLE\t"
-    tail -n+7 "${files[0]}" | head -n1 | cut -f1-9
+    grep -A1 '## METRICS' "${files[0]}" | tail -n1 | cut -f1-9
     local f
     for f in ${files[*]}
     do
       local sample=$(sample_name "$f")
-      tail -n+8 "$f" | head -n1 | cut -f1-9 \
+      grep -A2 '## METRICS' "$f" | tail -n1 | cut -f1-9 \
         | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
@@ -756,13 +762,14 @@ collate_library_complexity_histogram() {
   warn -e "$(DATE)\tCollating ${#files[@]} library_complexity files (histogram)"
   (
     echo -ne "SAMPLE\t"
-    tail -n+11 "${files[0]}" | head -n1 | cut -f1 \
+    grep -A1 '## HISTOGRAM' "${files[0]}" | tail -n1 | cut -f1 \
       | perl -pe 's/\s+$/\n/; s/(\S+)/$1\tfragments/;'
     local f
     for f in ${files[*]}
     do
       local sample=$(sample_name "$f")
-      tail -n+12 "$f" | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
+      grep -A1000000 '## HISTOGRAM' "$f" | tail -n+3 \
+        | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
 }
