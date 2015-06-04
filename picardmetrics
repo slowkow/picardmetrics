@@ -183,6 +183,7 @@ main_collate() {
 
   # CollectInsertSizeMetrics
   collate_insert_size_metrics "$prefix-insert-size-metrics.tsv" "$dir"
+  collate_insert_size_histogram "$prefix-insert-size-histogram.tsv" "$dir"
 
   # EstimateLibraryComplexity
   collate_library_complexity "$prefix-library-complexity.tsv" "$dir"
@@ -701,6 +702,24 @@ collate_insert_size_metrics() {
   ) > "$out"
 }
 
+collate_insert_size_histogram() {
+  local out="$1" dir="$2"
+  local files=($dir/*.insert_size_metrics)
+  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
+  warn -e "$(DATE)\tCollating ${#files[@]} insert_size_metrics files (histogram)"
+  (
+    echo -ne "SAMPLE\t"
+    tail -n+11 "${files[0]}" | head -n1 | perl -pe 's/\s+$/\n/'
+    local f
+    for f in ${files[*]}
+    do
+      local sample=$(basename "$f")
+      sample=${sample%%.*}
+      tail -n+12 "$f" | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
+    done
+  ) > "$out"
+}
+
 collate_duplicate_metrics() {
   local out="$1" dir="$2"
   local files=($dir/*.duplicate_metrics)
@@ -906,6 +925,10 @@ warn() {
 
 DATE() {
   command date +'%Y-%m-%d %H:%M:%S'
+}
+
+sample_name() {
+  echo hi
 }
 
 is_bam() {
