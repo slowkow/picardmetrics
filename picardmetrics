@@ -176,7 +176,7 @@ main_collate() {
 
   # CollectGcBiasMetrics
   collate_gc_bias_metrics "$prefix-gc-bias-metrics.tsv" "$dir"
-  collate_gc_bias_summary "$prefix-gc-bias-summary.tsv" "$dir"
+  collate_gc_bias_histogram "$prefix-gc-bias-histogram.tsv" "$dir"
 
   # MarkDuplicates
   collate_duplicate_metrics "$prefix-duplicate-metrics.tsv" "$dir"
@@ -549,9 +549,9 @@ gcbias_metrics() {
   local args=(
     CollectGcBiasMetrics
     INPUT="$bam"
-    OUTPUT="${prefix}.gc_bias_metrics"
-    CHART_OUTPUT="${prefix}.gc_bias_metrics.pdf"
-    SUMMARY_OUTPUT="${prefix}.gc_bias_metrics_summary"
+    OUTPUT="${prefix}.gc_bias_histogram"
+    CHART_OUTPUT="${prefix}.gc_bias_histogram.pdf"
+    SUMMARY_OUTPUT="${prefix}.gc_bias_metrics"
     REFERENCE_SEQUENCE="$REFERENCE_SEQUENCE"
     VALIDATION_STRINGENCY=LENIENT
   )
@@ -646,11 +646,11 @@ collate_quality_metrics() {
   ) > "$out"
 }
 
-collate_gc_bias_metrics() {
+collate_gc_bias_histogram() {
   local out="$1" dir="$2"
-  local files=($dir/*.gc_bias_metrics)
+  local files=($dir/*.gc_bias_histogram)
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
-  warn -e "$(DATE)\tCollating ${#files[@]} gc_bias_metrics files"
+  warn -e "$(DATE)\tCollating ${#files[@]} gc_bias_histogram files"
   (
     echo -ne "SAMPLE\t"
     grep -A1 '## METRICS' "${files[0]}" | tail -n1 | perl -pe 's/\s+$/\n/'
@@ -664,11 +664,11 @@ collate_gc_bias_metrics() {
   ) > "$out"
 }
 
-collate_gc_bias_summary() {
+collate_gc_bias_metrics() {
   local out="$1" dir="$2"
-  local files=($dir/*.gc_bias_metrics_summary)
+  local files=($dir/*.gc_bias_metrics)
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
-  warn -e "$(DATE)\tCollating ${#files[@]} gc_bias_metrics_summary files"
+  warn -e "$(DATE)\tCollating ${#files[@]} gc_bias_metrics files"
   (
     echo -ne "SAMPLE\t"
     grep -A1 '## METRICS' "${files[0]}" | tail -n1 | perl -pe 's/\s+$/\n/'
@@ -839,7 +839,7 @@ read_metrics <- function(prefix) {
     sprintf("%s-duplicate-metrics.tsv", prefix)
   )
   dat_gcbias_metrics = read_tsv(
-    sprintf("%s-gc-bias-summary.tsv", prefix)
+    sprintf("%s-gc-bias-metrics.tsv", prefix)
   )
   dat_insert_size_metrics = read_tsv(
     sprintf("%s-insert-size-metrics.tsv", prefix)
