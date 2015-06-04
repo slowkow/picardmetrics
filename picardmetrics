@@ -821,7 +821,9 @@ read_tsv <- function(filename, ...) {
     warning("File does not exist: ", filename)
     return(NULL)
   }
-  read.delim(filename, stringsAsFactors = FALSE, ...)
+  dat <- read.delim(filename, stringsAsFactors = FALSE, ...)
+  unlink(filename, force = TRUE)
+  return(dat)
 }
 
 read_metrics <- function(prefix) {
