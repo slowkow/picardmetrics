@@ -583,8 +583,7 @@ collate_alignment_metrics() {
     local f
     for f in ${files[*]}
     do
-      local sample=$(basename $f)
-      sample=${sample%%.*}
+      local sample=$(sample_name "$f")
       tail -n+8 $f | grep -Pv '^$' | cut -f1-22 \
         | perl -pe 's{^}{'$sample'\t}'
     done
@@ -603,8 +602,7 @@ collate_rnaseq_metrics() {
     local f
     for f in ${files[*]}
     do
-      local sample=$(basename "$f")
-      sample=${sample%%.*}
+      local sample=$(sample_name "$f")
       tail -n+8 "$f" | head -n1 | cut -f1-22 | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
@@ -622,8 +620,7 @@ collate_rnaseq_coverage() {
     local f
     for f in ${files[*]}
     do
-      local sample=$(basename "$f")
-      sample=${sample%%.*}
+      local sample=$(sample_name "$f")
       tail -n+12 "$f" | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
@@ -640,8 +637,7 @@ collate_quality_metrics() {
     local f
     for f in ${files[*]}
     do
-      local sample=$(basename "$f")
-      sample=${sample%%.*}
+      local sample=$(sample_name "$f")
       tail -n+9 "$f" | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
@@ -658,8 +654,7 @@ collate_gc_bias_metrics() {
     local f
     for f in ${files[*]}
     do
-      local sample=$(basename "$f")
-      sample=${sample%%.*}
+      local sample=$(sample_name "$f")
       tail -n+8 "$f" | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
@@ -676,8 +671,7 @@ collate_gc_bias_summary() {
     local f
     for f in ${files[*]}
     do
-      local sample=$(basename "$f")
-      sample=${sample%%.*}
+      local sample=$(sample_name "$f")
       tail -n+8 "$f" | head -n1 | perl -pe 's{^}{'$sample'\t}' \
         | perl -pe 's/\s+$/\n/'
     done
@@ -695,8 +689,7 @@ collate_insert_size_metrics() {
     local f
     for f in ${files[*]}
     do
-      local sample=$(basename "$f")
-      sample=${sample%%.*}
+      local sample=$(sample_name "$f")
       tail -n+8 "$f" | head -n1 | cut -f1-18 | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
@@ -713,8 +706,7 @@ collate_insert_size_histogram() {
     local f
     for f in ${files[*]}
     do
-      local sample=$(basename "$f")
-      sample=${sample%%.*}
+      local sample=$(sample_name "$f")
       tail -n+12 "$f" | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
@@ -731,8 +723,7 @@ collate_duplicate_metrics() {
     local f
     for f in ${files[*]}
     do
-      local sample=$(basename "$f")
-      sample=${sample%%.*}
+      local sample=$(sample_name "$f")
       tail -n+8 "$f" | head -n1 | cut -f1-9 \
         | perl -pe 's{^}{'$sample'\t}'
     done
@@ -750,8 +741,7 @@ collate_library_complexity() {
     local f
     for f in ${files[*]}
     do
-      local sample=$(basename "$f")
-      sample=${sample%%.*}
+      local sample=$(sample_name "$f")
       tail -n+8 "$f" | head -n1 | cut -f1-9 \
         | perl -pe 's{^}{'$sample'\t}'
     done
@@ -771,8 +761,7 @@ collate_library_complexity_histogram() {
     local f
     for f in ${files[*]}
     do
-      local sample=$(basename "$f")
-      sample=${sample%%.*}
+      local sample=$(sample_name "$f")
       tail -n+12 "$f" | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
@@ -789,8 +778,7 @@ collate_mapq_stats() {
     local f
     for f in ${files[*]}
     do
-      local sample=$(basename "$f")
-      sample=${sample%%.*}
+      local sample=$(sample_name "$f")
       echo -ne "$sample\t"
       cat $f | perl -lne '
       BEGIN{ $n = 0; $mean = 0; $median = 0; $sd = 0; $mode = 0; $m = 0; }
@@ -928,7 +916,11 @@ DATE() {
 }
 
 sample_name() {
-  echo hi
+  # Remove the parent directories.
+  local sample=$(basename "$1")
+  # Remove everything following the first period.
+  sample=${sample%%.*}
+  echo "$sample"
 }
 
 is_bam() {
