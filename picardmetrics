@@ -168,7 +168,7 @@ main_collate() {
   collate_alignment_metrics "$prefix-alignment-metrics.tsv" "$dir"
 
   # CollectQualityMetrics
-  collate_quality_metrics "$prefix-quality-distribution-metrics.tsv" "$dir"
+  collate_quality_metrics "$prefix-quality-histogram.tsv" "$dir"
 
   # CollectRnaSeqMetrics
   collate_rnaseq_metrics "$prefix-rnaseq-metrics.tsv" "$dir"
