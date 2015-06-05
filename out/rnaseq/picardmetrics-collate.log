@@ -1,14 +1,15 @@
-2015-05-28 08:53:06	START	out/rnaseq
-2015-05-28 08:53:06	Collating 2 alignment_summary_metrics files
-2015-05-28 08:53:06	Collating 2 quality_distribution_metrics files
-2015-05-28 08:53:06	Collating 2 rnaseq_metrics files (summary)
-2015-05-28 08:53:06	Collating 2 rnaseq_metrics files (coverage)
-2015-05-28 08:53:06	Collating 2 gc_bias_metrics files
-2015-05-28 08:53:06	Collating 2 gc_bias_metrics_summary files
-2015-05-28 08:53:06	Collating 2 duplicate_metrics files
-2015-05-28 08:53:06	Collating 2 insert_size_metrics files
-2015-05-28 08:53:06	Collating 2 library_complexity files
-2015-05-28 08:53:06	Collating 2 library_complexity files (histogram)
-2015-05-28 08:53:06	Collating 2 mapq_stats files
-2015-05-28 08:53:06	Joining all files into 'out/rnaseq-all-metrics.tsv'
-2015-05-28 08:53:06	DONE	out/rnaseq
+2015-06-04 15:33:09	START	out/rnaseq
+2015-06-04 15:33:09	Collating 2 alignment_summary_metrics files
+2015-06-04 15:33:09	Collating 2 quality_distribution_metrics files
+2015-06-04 15:33:09	Collating 2 rnaseq_metrics files (summary)
+2015-06-04 15:33:09	Collating 2 rnaseq_metrics files (coverage)
+2015-06-04 15:33:09	Collating 2 gc_bias_metrics files
+2015-06-04 15:33:09	Collating 2 gc_bias_histogram files
+2015-06-04 15:33:09	Collating 2 duplicate_metrics files
+2015-06-04 15:33:09	Collating 2 insert_size_metrics files
+2015-06-04 15:33:09	Collating 2 insert_size_metrics files (histogram)
+2015-06-04 15:33:09	Collating 2 library_complexity files
+2015-06-04 15:33:09	Collating 2 library_complexity files (histogram)
+2015-06-04 15:33:09	Collating 2 mapq_stats files
+2015-06-04 15:33:09	Joining all files into 'out/rnaseq-all-metrics.tsv'
+2015-06-04 15:33:09	DONE	out/rnaseq

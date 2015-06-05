@@ -1,8 +1,8 @@
-[Thu May 28 08:52:04 EDT 2015] picard.analysis.CollectRnaSeqMetrics REF_FLAT=/data/srlab/external-data/GENCODE/Gencode_human/release_19/gencode.v19.annotation.refFlat RIBOSOMAL_INTERVALS=/tmp/picardmetrics_ks38_60562.interval_list STRAND_SPECIFICITY=NONE CHART_OUTPUT=sample2.rnaseq_metrics.pdf INPUT=/tmp/picardmetrics_ks38_60562/sample2.bam OUTPUT=sample2.rnaseq_metrics REFERENCE_SEQUENCE=/data/srlab/external-data/iGenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta/genome.fa VALIDATION_STRINGENCY=LENIENT    MINIMUM_LENGTH=500 RRNA_FRAGMENT_PERCENTAGE=0.8 METRIC_ACCUMULATION_LEVEL=[ALL_READS] ASSUME_SORTED=true STOP_AFTER=0 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
-[Thu May 28 08:52:04 EDT 2015] Executing as ks38@eris1n2.research.partners.org on Linux 2.6.32-431.29.2.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
-INFO	2015-05-28 08:52:06	CollectRnaSeqMetrics	Loaded 191625 genes.
-INFO	2015-05-28 08:52:15	RExecutor	Executing R script via command: Rscript /tmp/ks38/script7346401793305730869.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.rnaseq_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.rnaseq_metrics.pdf sample2.bam 
-INFO	2015-05-28 08:52:16	ProcessExecutor	null device 
-INFO	2015-05-28 08:52:16	ProcessExecutor	          1 
-[Thu May 28 08:52:16 EDT 2015] picard.analysis.CollectRnaSeqMetrics done. Elapsed time: 0.20 minutes.
+[Thu Jun 04 15:32:03 EDT 2015] picard.analysis.CollectRnaSeqMetrics REF_FLAT=/data/srlab/external-data/GENCODE/Gencode_human/release_19/gencode.v19.annotation.refFlat RIBOSOMAL_INTERVALS=/tmp/picardmetrics_ks38_16046.interval_list STRAND_SPECIFICITY=NONE CHART_OUTPUT=sample2.rnaseq_metrics.pdf INPUT=/tmp/picardmetrics_ks38_16046/sample2.bam OUTPUT=sample2.rnaseq_metrics REFERENCE_SEQUENCE=/data/srlab/external-data/iGenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta/genome.fa VALIDATION_STRINGENCY=LENIENT    MINIMUM_LENGTH=500 RRNA_FRAGMENT_PERCENTAGE=0.8 METRIC_ACCUMULATION_LEVEL=[ALL_READS] ASSUME_SORTED=true STOP_AFTER=0 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
+[Thu Jun 04 15:32:03 EDT 2015] Executing as ks38@eris1n2.research.partners.org on Linux 2.6.32-431.29.2.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
+INFO	2015-06-04 15:32:07	CollectRnaSeqMetrics	Loaded 191625 genes.
+INFO	2015-06-04 15:32:15	RExecutor	Executing R script via command: Rscript /tmp/ks38/script7897255939914086716.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.rnaseq_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.rnaseq_metrics.pdf sample2.bam 
+INFO	2015-06-04 15:32:16	ProcessExecutor	null device 
+INFO	2015-06-04 15:32:16	ProcessExecutor	          1 
+[Thu Jun 04 15:32:16 EDT 2015] picard.analysis.CollectRnaSeqMetrics done. Elapsed time: 0.21 minutes.
 Runtime.totalMemory()=5145034752
