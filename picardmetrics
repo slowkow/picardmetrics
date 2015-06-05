@@ -590,7 +590,6 @@ collate_alignment_metrics() {
   ) > "$out"
 }
 
-# Get the metrics line from CollectRnaSeqMetrics.
 collate_rnaseq_metrics() {
   local out="$1" dir="$2"
   local files=($dir/*.rnaseq_metrics)
@@ -609,7 +608,6 @@ collate_rnaseq_metrics() {
   ) > "$out"
 }
 
-# Get the coverage table from CollectRnaSeqMetrics.
 collate_rnaseq_coverage() {
   local out="$1" dir="$2"
   local files=($dir/*.rnaseq_metrics)
@@ -754,7 +752,6 @@ collate_library_complexity() {
   ) > "$out"
 }
 
-# Get the histogram.
 collate_library_complexity_histogram() {
   local out="$1" dir="$2"
   local files=($dir/*.library_complexity)
@@ -803,7 +800,6 @@ collate_mapq_stats() {
 collate_all() {
   local prefix="$1"
   warn -e "$(DATE)\tJoining all files into '$prefix-all-metrics.tsv'"
-  # This code is also present in scripts/plot-picardmetrics.R
   Rscript --vanilla <(echo '
 main <- function() {
   args <- commandArgs(trailingOnly = TRUE)
