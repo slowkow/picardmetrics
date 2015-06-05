@@ -1,9 +1,9 @@
-2015-05-28 08:47:24	START	test_default
-2015-05-28 08:47:24	Loading '/PHShome/ks38/picardmetrics.conf'
-2015-05-28 08:48:41	Loading '/PHShome/ks38/picardmetrics.conf'
+2015-06-04 15:27:10	START	test_default
+2015-06-04 15:27:10	Loading '/PHShome/ks38/picardmetrics.conf'
+2015-06-04 15:28:34	Loading '/PHShome/ks38/picardmetrics.conf'
 out/default-all-metrics.tsv: OK
-2015-05-28 08:50:01	START	test_rnaseq
-2015-05-28 08:50:01	Loading '/PHShome/ks38/picardmetrics.conf'
-2015-05-28 08:51:30	Loading '/PHShome/ks38/picardmetrics.conf'
+2015-06-04 15:29:56	START	test_rnaseq
+2015-06-04 15:29:56	Loading '/PHShome/ks38/picardmetrics.conf'
+2015-06-04 15:31:29	Loading '/PHShome/ks38/picardmetrics.conf'
 out/rnaseq-all-metrics.tsv: OK
-2015-05-28 08:53:06	DONE
+2015-06-04 15:33:09	DONE
