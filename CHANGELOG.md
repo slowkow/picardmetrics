@@ -1,5 +1,20 @@
 # Change Log
 
+# 0.2.1 - 2015-06-05
+
+## Added
+
+-   Add `PREFIX-insert-size-histogram.tsv` to the collated outputs.
+
+## Changed
+
+-   Use `## METRICS` and `## HISTOGRAM` as landmarks to find the correct
+    lines in the Picard output files. This is more robust than using line
+    numbers.
+
+-   Delete the collated output files that are successfully integrated into the
+    `PREFIX-all-metrics.tsv` file. They are redundant.
+
 # 0.2.0 - 2015-05-28
 
 ## Added
