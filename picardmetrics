@@ -108,13 +108,7 @@ main_run() {
   create_sequence_dictionary "$REFERENCE_SEQUENCE"
 
   # Temporary BAM file that is deleted by default.
-  local temp_dir="/tmp/picardmetrics_${USER}_${$}"
-  if ! mkdir -p "$temp_dir"; then
-    warn "ERROR: mdkir -p '$temp_dir'"
-    exit 1
-  fi
-
-  local temp_bam="$temp_dir/$(basename $bam)"
+  local temp_bam="$TEMP_DIR/$(basename $bam)"
 
   if ! ln -sf "$bam" "$temp_bam"; then
     warn "ERROR: ln -sf '$bam' '$temp_bam'"
@@ -138,8 +132,8 @@ main_run() {
     fi
   fi
   # Delete the temporary directory.
-  if ! rm -rf "$temp_dir"; then
-    warn "ERROR: rm -rf '$temp_dir'"
+  if ! rm -rf "$TEMP_DIR"; then
+    warn "ERROR: rm -rf '$TEMP_DIR'"
     exit 1
   fi
 
@@ -303,8 +297,20 @@ configure_run() {
   warn -e "$(DATE)\tLoading '$PICARDMETRICS_CONFIG'"
   source "$PICARDMETRICS_CONFIG"
 
+  if [[ ! -d "$TEMP_DIR" ]]; then
+    warn "Setting TEMP_DIR=/tmp"
+    warn "Please ensure disk space is sufficient with 'df -h | grep /tmp'"
+    TEMP_DIR=/tmp
+  fi
+  TEMP_DIR="$TEMP_DIR/picardmetrics_${USER}_${$}"
+  if ! mkdir -p "$TEMP_DIR"; then
+    warn "ERROR: mkdir -p '$TEMP_DIR'"
+    exit 1
+  fi
+
   # All jobs will be launched with niceness=20 by default.
   if [[ -z "$NICENESS" ]]; then
+    warn "Setting NICENESS=20"
     NICENESS=20
   fi
   NICE="nice -n$NICENESS"
@@ -514,9 +520,10 @@ multiple_metrics() {
 
 rnaseq_metrics() {
   local bam="$1"
-  # Ignore the sequence dictionary present in the interval_list file,
+  local prefix=$(basename "$bam" .bam)
+  # Ignore the sequence dictionary present in the .list file,
   # and instead take the sequence dictionary from the BAM file.
-  local t="/tmp/picardmetrics_${USER}_${$}.interval_list"
+  local t="$TEMP_DIR/${prefix}.list"
   if ! (
     samtools view -H "$bam" | grep '^@SQ' > "$t" \
       && grep -v '^@SQ' "$RIBOSOMAL_INTERVALS" >> "$t"
@@ -524,7 +531,6 @@ rnaseq_metrics() {
     warn "ERROR: Could not retrieve header from '$bam'"
     exit 1
   fi
-  local prefix=$(basename "$bam" .bam)
   local args=(
     CollectRnaSeqMetrics
     INPUT="$bam"
