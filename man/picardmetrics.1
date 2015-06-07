@@ -193,6 +193,18 @@ Create <file\.rRNA\.list> for the \fBRIBOSOMAL_INTERVALS\fR argument of the Coll
 The \fBpicardmetrics\.conf\fR file must define the following envrionment variables:
 .
 .IP "\(bu" 4
+\fBTEMP_DIR\fR
+.
+.IP
+A directory where temporary files will be written\.
+.
+.IP
+The sequence dictionary is taken from the BAM header and written to a \.list file in this directory\. This file is used as the header of the RIBOSOMAL_INTERVALS file passed to CollectRnaSeqMetrics\.
+.
+.IP
+A copy of the input BAM file is written to the temporary directory\. Then ReorderSam, SortSam, and MarkDuplicates are run on this copy\. Use option \fB\-k\fR to move the duplicated BAM file to the output folder \fB\-o\fR instead of deleting it\.
+.
+.IP "\(bu" 4
 \fBNICENESS\fR
 .
 .IP

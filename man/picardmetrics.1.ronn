@@ -131,6 +131,19 @@ file.
 
 The `picardmetrics.conf` file must define the following envrionment variables:
 
+  * `TEMP_DIR`
+
+    A directory where temporary files will be written.
+
+    The sequence dictionary is taken from the BAM header and written to a
+    .list file in this directory. This file is used as the header of the
+    RIBOSOMAL_INTERVALS file passed to CollectRnaSeqMetrics.
+    
+    A copy of the input BAM file is written to the temporary directory. Then
+    ReorderSam, SortSam, and MarkDuplicates are run on this copy. Use option
+    `-k` to move the duplicated BAM file to the output folder `-o` instead of
+    deleting it.
+
   * `NICENESS`
 
     A number between 0 and 20 specifying the niceness to use for all jobs. Use
