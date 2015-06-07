@@ -1,110 +1,110 @@
-[Thu Jun 04 15:27:12 EDT 2015] picard.sam.ReorderSam INPUT=/tmp/picardmetrics_ks38_14764/sample1.bam OUTPUT=/tmp/picardmetrics_ks38_14764/sample1.ReorderSam.bam REFERENCE=/data/srlab/external-data/iGenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta/genome.fa VALIDATION_STRINGENCY=LENIENT    ALLOW_INCOMPLETE_DICT_CONCORDANCE=false ALLOW_CONTIG_LENGTH_DISCORDANCE=false VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
-[Thu Jun 04 15:27:12 EDT 2015] Executing as ks38@eris1n2.research.partners.org on Linux 2.6.32-431.29.2.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
-INFO	2015-06-04 15:27:12	ReorderSam	SAM/BAM file
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchrM16571
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr1249250621
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr2243199373
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr3198022430
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr4191154276
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr5180915260
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr6171115067
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr7159138663
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr8146364022
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr9141213431
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr10135534747
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr11135006516
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr12133851895
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr13115169878
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr14107349540
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr15102531392
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr1690354753
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr1781195210
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr1878077248
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr1959128983
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr2063025520
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr2148129895
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr2251304566
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchrX155270560
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchrY59373566
-INFO	2015-06-04 15:27:12	ReorderSam	Reference
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchrM16571
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr1249250621
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr2243199373
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr3198022430
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr4191154276
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr5180915260
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr6171115067
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr7159138663
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr8146364022
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr9141213431
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr10135534747
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr11135006516
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr12133851895
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr13115169878
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr14107349540
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr15102531392
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr1690354753
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr1781195210
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr1878077248
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr1959128983
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr2063025520
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr2148129895
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchr2251304566
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchrX155270560
-INFO	2015-06-04 15:27:12	ReorderSam	  SN=%s LN=%d%nchrY59373566
-INFO	2015-06-04 15:27:12	ReorderSam	Reordering SAM/BAM file:
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chrM [index=0] to => ref contig chrM [index=0]
+[Sun Jun 07 07:38:09 EDT 2015] picard.sam.ReorderSam INPUT=/tmp/picardmetrics_ks38_45813/sample1.bam OUTPUT=/tmp/picardmetrics_ks38_45813/sample1.ReorderSam.bam REFERENCE=/data/srlab/external-data/iGenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta/genome.fa VALIDATION_STRINGENCY=LENIENT    ALLOW_INCOMPLETE_DICT_CONCORDANCE=false ALLOW_CONTIG_LENGTH_DISCORDANCE=false VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
+[Sun Jun 07 07:38:09 EDT 2015] Executing as ks38@eris1n2.research.partners.org on Linux 2.6.32-431.29.2.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
+INFO	2015-06-07 07:38:10	ReorderSam	SAM/BAM file
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchrM16571
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr1249250621
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr2243199373
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr3198022430
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr4191154276
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr5180915260
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr6171115067
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr7159138663
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr8146364022
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr9141213431
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr10135534747
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr11135006516
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr12133851895
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr13115169878
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr14107349540
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr15102531392
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr1690354753
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr1781195210
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr1878077248
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr1959128983
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr2063025520
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr2148129895
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr2251304566
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchrX155270560
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchrY59373566
+INFO	2015-06-07 07:38:10	ReorderSam	Reference
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchrM16571
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr1249250621
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr2243199373
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr3198022430
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr4191154276
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr5180915260
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr6171115067
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr7159138663
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr8146364022
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr9141213431
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr10135534747
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr11135006516
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr12133851895
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr13115169878
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr14107349540
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr15102531392
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr1690354753
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr1781195210
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr1878077248
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr1959128983
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr2063025520
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr2148129895
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchr2251304566
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchrX155270560
+INFO	2015-06-07 07:38:10	ReorderSam	  SN=%s LN=%d%nchrY59373566
+INFO	2015-06-07 07:38:10	ReorderSam	Reordering SAM/BAM file:
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chrM [index=0] to => ref contig chrM [index=0]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr1 [index=1] to => ref contig chr1 [index=1]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr1 [index=1] to => ref contig chr1 [index=1]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr2 [index=2] to => ref contig chr2 [index=2]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr2 [index=2] to => ref contig chr2 [index=2]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr3 [index=3] to => ref contig chr3 [index=3]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr3 [index=3] to => ref contig chr3 [index=3]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr4 [index=4] to => ref contig chr4 [index=4]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr4 [index=4] to => ref contig chr4 [index=4]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr5 [index=5] to => ref contig chr5 [index=5]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr5 [index=5] to => ref contig chr5 [index=5]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr6 [index=6] to => ref contig chr6 [index=6]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr6 [index=6] to => ref contig chr6 [index=6]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr7 [index=7] to => ref contig chr7 [index=7]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr7 [index=7] to => ref contig chr7 [index=7]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr8 [index=8] to => ref contig chr8 [index=8]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr8 [index=8] to => ref contig chr8 [index=8]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr9 [index=9] to => ref contig chr9 [index=9]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr9 [index=9] to => ref contig chr9 [index=9]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr10 [index=10] to => ref contig chr10 [index=10]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr10 [index=10] to => ref contig chr10 [index=10]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr11 [index=11] to => ref contig chr11 [index=11]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr11 [index=11] to => ref contig chr11 [index=11]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr12 [index=12] to => ref contig chr12 [index=12]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr12 [index=12] to => ref contig chr12 [index=12]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr13 [index=13] to => ref contig chr13 [index=13]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr13 [index=13] to => ref contig chr13 [index=13]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr14 [index=14] to => ref contig chr14 [index=14]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr14 [index=14] to => ref contig chr14 [index=14]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr15 [index=15] to => ref contig chr15 [index=15]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr15 [index=15] to => ref contig chr15 [index=15]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr16 [index=16] to => ref contig chr16 [index=16]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr16 [index=16] to => ref contig chr16 [index=16]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr17 [index=17] to => ref contig chr17 [index=17]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr17 [index=17] to => ref contig chr17 [index=17]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr18 [index=18] to => ref contig chr18 [index=18]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr18 [index=18] to => ref contig chr18 [index=18]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr19 [index=19] to => ref contig chr19 [index=19]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr19 [index=19] to => ref contig chr19 [index=19]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr20 [index=20] to => ref contig chr20 [index=20]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr20 [index=20] to => ref contig chr20 [index=20]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr21 [index=21] to => ref contig chr21 [index=21]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr21 [index=21] to => ref contig chr21 [index=21]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chr22 [index=22] to => ref contig chr22 [index=22]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chr22 [index=22] to => ref contig chr22 [index=22]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chrX [index=23] to => ref contig chrX [index=23]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chrX [index=23] to => ref contig chrX [index=23]
 
-INFO	2015-06-04 15:27:12	ReorderSam	  Reordering read contig chrY [index=24] to => ref contig chrY [index=24]
+INFO	2015-06-07 07:38:10	ReorderSam	  Reordering read contig chrY [index=24] to => ref contig chrY [index=24]
 
-INFO	2015-06-04 15:27:12	ReorderSam	Writing reads...
-INFO	2015-06-04 15:27:12	ReorderSam	  Processing All reads
-INFO	2015-06-04 15:27:12	ReorderSam	Wrote 10000 reads
-[Thu Jun 04 15:27:12 EDT 2015] picard.sam.ReorderSam done. Elapsed time: 0.01 minutes.
+INFO	2015-06-07 07:38:10	ReorderSam	Writing reads...
+INFO	2015-06-07 07:38:10	ReorderSam	  Processing All reads
+INFO	2015-06-07 07:38:10	ReorderSam	Wrote 10000 reads
+[Sun Jun 07 07:38:10 EDT 2015] picard.sam.ReorderSam done. Elapsed time: 0.01 minutes.
 Runtime.totalMemory()=5145034752

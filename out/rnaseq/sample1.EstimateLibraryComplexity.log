@@ -1,6 +1,6 @@
-[Thu Jun 04 15:31:29 EDT 2015] picard.sam.markduplicates.EstimateLibraryComplexity INPUT=[/tmp/picardmetrics_ks38_15663/sample1.bam] OUTPUT=sample1.library_complexity VALIDATION_STRINGENCY=LENIENT    MIN_IDENTICAL_BASES=5 MAX_DIFF_RATE=0.03 MIN_MEAN_QUALITY=20 MAX_GROUP_RATIO=500 READ_NAME_REGEX=[a-zA-Z0-9]+:[0-9]:([0-9]+):([0-9]+):([0-9]+).* OPTICAL_DUPLICATE_PIXEL_DISTANCE=100 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=8352329 CREATE_INDEX=false CREATE_MD5_FILE=false
-[Thu Jun 04 15:31:29 EDT 2015] Executing as ks38@eris1n2.research.partners.org on Linux 2.6.32-431.29.2.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
-INFO	2015-06-04 15:31:29	EstimateLibraryComplexity	Will store 8352329 read pairs in memory before sorting.
-INFO	2015-06-04 15:31:29	EstimateLibraryComplexity	Finished reading - moving on to scanning for duplicates.
-[Thu Jun 04 15:31:29 EDT 2015] picard.sam.markduplicates.EstimateLibraryComplexity done. Elapsed time: 0.01 minutes.
+[Sun Jun 07 07:42:27 EDT 2015] picard.sam.markduplicates.EstimateLibraryComplexity INPUT=[/tmp/picardmetrics_ks38_46733/sample1.bam] OUTPUT=sample1.library_complexity VALIDATION_STRINGENCY=LENIENT    MIN_IDENTICAL_BASES=5 MAX_DIFF_RATE=0.03 MIN_MEAN_QUALITY=20 MAX_GROUP_RATIO=500 READ_NAME_REGEX=[a-zA-Z0-9]+:[0-9]:([0-9]+):([0-9]+):([0-9]+).* OPTICAL_DUPLICATE_PIXEL_DISTANCE=100 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=8352329 CREATE_INDEX=false CREATE_MD5_FILE=false
+[Sun Jun 07 07:42:27 EDT 2015] Executing as ks38@eris1n2.research.partners.org on Linux 2.6.32-431.29.2.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
+INFO	2015-06-07 07:42:27	EstimateLibraryComplexity	Will store 8352329 read pairs in memory before sorting.
+INFO	2015-06-07 07:42:27	EstimateLibraryComplexity	Finished reading - moving on to scanning for duplicates.
+[Sun Jun 07 07:42:27 EDT 2015] picard.sam.markduplicates.EstimateLibraryComplexity done. Elapsed time: 0.01 minutes.
 Runtime.totalMemory()=5145034752
