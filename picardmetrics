@@ -179,6 +179,10 @@ main_collate() {
   collate_insert_size_metrics "$prefix-insert-size-metrics.tsv" "$dir"
   collate_insert_size_histogram "$prefix-insert-size-histogram.tsv" "$dir"
 
+  # BaseDistributionByCycleMetrics
+  collate_base_distribution_by_cycle \
+    "$prefix-base-distribution-by-cycle-histogram.tsv" "$dir"
+
   # EstimateLibraryComplexity
   collate_library_complexity "$prefix-library-complexity.tsv" "$dir"
   collate_library_complexity_histogram \
@@ -717,6 +721,24 @@ collate_insert_size_histogram() {
     do
       local sample=$(sample_name "$f")
       grep -A1000000 '## HISTOGRAM' "$f" | tail -n+3 \
+        | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
+    done
+  ) > "$out"
+}
+
+collate_base_distribution_by_cycle() {
+  local out="$1" dir="$2"
+  local files=($dir/*.base_distribution_by_cycle_metrics)
+  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
+  warn -e "$(DATE)\tCollating ${#files[@]} base_distribution_by_cycle files"
+  (
+    echo -ne "SAMPLE\t"
+    grep -A1 '## METRICS' "${files[0]}" | tail -n1 | cut -f1-7
+    local f
+    for f in ${files[*]}
+    do
+      local sample=$(sample_name "$f")
+      grep -A1000000 '## METRICS' "$f" | tail -n+3 | cut -f1-7 \
         | grep -Pv '^$' | perl -pe 's{^}{'$sample'\t}'
     done
   ) > "$out"
