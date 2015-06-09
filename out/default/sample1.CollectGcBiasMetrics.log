@@ -1,33 +1,33 @@
-[Sun Jun 07 07:38:59 EDT 2015] picard.analysis.CollectGcBiasMetrics REFERENCE_SEQUENCE=/data/srlab/external-data/iGenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta/genome.fa INPUT=/tmp/picardmetrics_ks38_45813/sample1.bam OUTPUT=sample1.gc_bias_histogram CHART_OUTPUT=sample1.gc_bias_histogram.pdf SUMMARY_OUTPUT=sample1.gc_bias_metrics VALIDATION_STRINGENCY=LENIENT    WINDOW_SIZE=100 MINIMUM_GENOME_FRACTION=1.0E-5 ASSUME_SORTED=false IS_BISULFITE_SEQUENCED=false VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
-[Sun Jun 07 07:38:59 EDT 2015] Executing as ks38@eris1n2.research.partners.org on Linux 2.6.32-431.29.2.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
-INFO	2015-06-07 07:38:59	CollectGcBiasMetrics	Processed reference sequence: chrM
-INFO	2015-06-07 07:39:03	CollectGcBiasMetrics	Processed reference sequence: chr1
-INFO	2015-06-07 07:39:06	CollectGcBiasMetrics	Processed reference sequence: chr2
-INFO	2015-06-07 07:39:10	CollectGcBiasMetrics	Processed reference sequence: chr3
-INFO	2015-06-07 07:39:13	CollectGcBiasMetrics	Processed reference sequence: chr4
-INFO	2015-06-07 07:39:16	CollectGcBiasMetrics	Processed reference sequence: chr5
-INFO	2015-06-07 07:39:18	CollectGcBiasMetrics	Processed reference sequence: chr6
-INFO	2015-06-07 07:39:21	CollectGcBiasMetrics	Processed reference sequence: chr7
-INFO	2015-06-07 07:39:23	CollectGcBiasMetrics	Processed reference sequence: chr8
-INFO	2015-06-07 07:39:25	CollectGcBiasMetrics	Processed reference sequence: chr9
-INFO	2015-06-07 07:39:27	CollectGcBiasMetrics	Processed reference sequence: chr10
-INFO	2015-06-07 07:39:30	CollectGcBiasMetrics	Processed reference sequence: chr11
-INFO	2015-06-07 07:39:32	CollectGcBiasMetrics	Processed reference sequence: chr12
-INFO	2015-06-07 07:39:33	CollectGcBiasMetrics	Processed reference sequence: chr13
-INFO	2015-06-07 07:39:35	CollectGcBiasMetrics	Processed reference sequence: chr14
-INFO	2015-06-07 07:39:36	CollectGcBiasMetrics	Processed reference sequence: chr15
-INFO	2015-06-07 07:39:37	CollectGcBiasMetrics	Processed reference sequence: chr16
-INFO	2015-06-07 07:39:38	CollectGcBiasMetrics	Processed reference sequence: chr17
-INFO	2015-06-07 07:39:39	CollectGcBiasMetrics	Processed reference sequence: chr18
-INFO	2015-06-07 07:39:40	CollectGcBiasMetrics	Processed reference sequence: chr19
-INFO	2015-06-07 07:39:41	CollectGcBiasMetrics	Processed reference sequence: chr20
-INFO	2015-06-07 07:39:42	CollectGcBiasMetrics	Processed reference sequence: chr21
-INFO	2015-06-07 07:39:42	CollectGcBiasMetrics	Processed reference sequence: chr22
-INFO	2015-06-07 07:39:44	CollectGcBiasMetrics	Processed reference sequence: chrX
-INFO	2015-06-07 07:39:45	CollectGcBiasMetrics	Processed reference sequence: chrY
-INFO	2015-06-07 07:39:45	RExecutor	Executing R script via command: Rscript /tmp/ks38/script3693716330844828555.R /data/srlab/slowikow/src/picardmetrics/out/default/sample1.gc_bias_histogram /data/srlab/slowikow/src/picardmetrics/out/default/sample1.gc_bias_histogram.pdf sample1.bam Total clusters: 4,966, Aligned reads: 6,936 100
-ERROR	2015-06-07 07:39:45	ProcessExecutor	There were 37 warnings (use warnings() to see them)
-INFO	2015-06-07 07:39:45	ProcessExecutor	null device 
-INFO	2015-06-07 07:39:45	ProcessExecutor	          1 
-[Sun Jun 07 07:39:45 EDT 2015] picard.analysis.CollectGcBiasMetrics done. Elapsed time: 0.77 minutes.
+[Tue Jun 09 08:42:07 EDT 2015] picard.analysis.CollectGcBiasMetrics REFERENCE_SEQUENCE=/data/srlab/external-data/iGenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta/genome.fa INPUT=/tmp/picardmetrics_ks38_28544/sample1.bam OUTPUT=sample1.gc_bias_histogram CHART_OUTPUT=sample1.gc_bias_histogram.pdf SUMMARY_OUTPUT=sample1.gc_bias_metrics VALIDATION_STRINGENCY=LENIENT    WINDOW_SIZE=100 MINIMUM_GENOME_FRACTION=1.0E-5 ASSUME_SORTED=false IS_BISULFITE_SEQUENCED=false VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
+[Tue Jun 09 08:42:07 EDT 2015] Executing as ks38@eris1n2.research.partners.org on Linux 2.6.32-431.29.2.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
+INFO	2015-06-09 08:42:07	CollectGcBiasMetrics	Processed reference sequence: chrM
+INFO	2015-06-09 08:42:11	CollectGcBiasMetrics	Processed reference sequence: chr1
+INFO	2015-06-09 08:42:14	CollectGcBiasMetrics	Processed reference sequence: chr2
+INFO	2015-06-09 08:42:17	CollectGcBiasMetrics	Processed reference sequence: chr3
+INFO	2015-06-09 08:42:20	CollectGcBiasMetrics	Processed reference sequence: chr4
+INFO	2015-06-09 08:42:23	CollectGcBiasMetrics	Processed reference sequence: chr5
+INFO	2015-06-09 08:42:25	CollectGcBiasMetrics	Processed reference sequence: chr6
+INFO	2015-06-09 08:42:27	CollectGcBiasMetrics	Processed reference sequence: chr7
+INFO	2015-06-09 08:42:30	CollectGcBiasMetrics	Processed reference sequence: chr8
+INFO	2015-06-09 08:42:31	CollectGcBiasMetrics	Processed reference sequence: chr9
+INFO	2015-06-09 08:42:33	CollectGcBiasMetrics	Processed reference sequence: chr10
+INFO	2015-06-09 08:42:35	CollectGcBiasMetrics	Processed reference sequence: chr11
+INFO	2015-06-09 08:42:37	CollectGcBiasMetrics	Processed reference sequence: chr12
+INFO	2015-06-09 08:42:39	CollectGcBiasMetrics	Processed reference sequence: chr13
+INFO	2015-06-09 08:42:40	CollectGcBiasMetrics	Processed reference sequence: chr14
+INFO	2015-06-09 08:42:41	CollectGcBiasMetrics	Processed reference sequence: chr15
+INFO	2015-06-09 08:42:43	CollectGcBiasMetrics	Processed reference sequence: chr16
+INFO	2015-06-09 08:42:44	CollectGcBiasMetrics	Processed reference sequence: chr17
+INFO	2015-06-09 08:42:45	CollectGcBiasMetrics	Processed reference sequence: chr18
+INFO	2015-06-09 08:42:46	CollectGcBiasMetrics	Processed reference sequence: chr19
+INFO	2015-06-09 08:42:47	CollectGcBiasMetrics	Processed reference sequence: chr20
+INFO	2015-06-09 08:42:47	CollectGcBiasMetrics	Processed reference sequence: chr21
+INFO	2015-06-09 08:42:48	CollectGcBiasMetrics	Processed reference sequence: chr22
+INFO	2015-06-09 08:42:50	CollectGcBiasMetrics	Processed reference sequence: chrX
+INFO	2015-06-09 08:42:51	CollectGcBiasMetrics	Processed reference sequence: chrY
+INFO	2015-06-09 08:42:51	RExecutor	Executing R script via command: Rscript /tmp/ks38/script6675585660116735902.R /data/srlab/slowikow/src/picardmetrics/out/default/sample1.gc_bias_histogram /data/srlab/slowikow/src/picardmetrics/out/default/sample1.gc_bias_histogram.pdf sample1.bam Total clusters: 4,966, Aligned reads: 6,936 100
+ERROR	2015-06-09 08:42:51	ProcessExecutor	There were 37 warnings (use warnings() to see them)
+INFO	2015-06-09 08:42:51	ProcessExecutor	null device 
+INFO	2015-06-09 08:42:51	ProcessExecutor	          1 
+[Tue Jun 09 08:42:51 EDT 2015] picard.analysis.CollectGcBiasMetrics done. Elapsed time: 0.73 minutes.
 Runtime.totalMemory()=5145034752

@@ -1,17 +1,9 @@
-2015-06-07 07:38:08	START	test_default
-2015-06-07 07:38:08	Loading '/PHShome/ks38/picardmetrics.conf'
-Setting TEMP_DIR=/tmp
-Please ensure disk space is sufficient with 'df -h | grep /tmp'
-2015-06-07 07:39:46	Loading '/PHShome/ks38/picardmetrics.conf'
-Setting TEMP_DIR=/tmp
-Please ensure disk space is sufficient with 'df -h | grep /tmp'
+2015-06-09 08:41:36	START	test_default
+2015-06-09 08:41:36	Loading '/PHShome/ks38/picardmetrics.conf'
+2015-06-09 08:42:52	Loading '/PHShome/ks38/picardmetrics.conf'
 out/default-all-metrics.tsv: OK
-2015-06-07 07:41:04	START	test_rnaseq
-2015-06-07 07:41:05	Loading '/PHShome/ks38/picardmetrics.conf'
-Setting TEMP_DIR=/tmp
-Please ensure disk space is sufficient with 'df -h | grep /tmp'
-2015-06-07 07:42:27	Loading '/PHShome/ks38/picardmetrics.conf'
-Setting TEMP_DIR=/tmp
-Please ensure disk space is sufficient with 'df -h | grep /tmp'
+2015-06-09 08:44:08	START	test_rnaseq
+2015-06-09 08:44:08	Loading '/PHShome/ks38/picardmetrics.conf'
+2015-06-09 08:45:28	Loading '/PHShome/ks38/picardmetrics.conf'
 out/rnaseq-all-metrics.tsv: OK
-2015-06-07 07:44:00	DONE
+2015-06-09 08:46:56	DONE

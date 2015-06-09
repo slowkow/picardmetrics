@@ -1,5 +1,5 @@
-[Sun Jun 07 07:42:28 EDT 2015] picard.sam.SortSam INPUT=/tmp/picardmetrics_ks38_47108/sample2.bam OUTPUT=/tmp/picardmetrics_ks38_47108/sample2.SortSam.bam SORT_ORDER=coordinate VALIDATION_STRINGENCY=LENIENT    VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
-[Sun Jun 07 07:42:28 EDT 2015] Executing as ks38@eris1n2.research.partners.org on Linux 2.6.32-431.29.2.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
-INFO	2015-06-07 07:42:29	SortSam	Finished reading inputs, merging and writing to output now.
-[Sun Jun 07 07:42:29 EDT 2015] picard.sam.SortSam done. Elapsed time: 0.01 minutes.
+[Tue Jun 09 08:45:29 EDT 2015] picard.sam.SortSam INPUT=/tmp/picardmetrics_ks38_48410/sample2.bam OUTPUT=/tmp/picardmetrics_ks38_48410/sample2.SortSam.bam SORT_ORDER=coordinate VALIDATION_STRINGENCY=LENIENT    VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
+[Tue Jun 09 08:45:29 EDT 2015] Executing as ks38@eris1n2.research.partners.org on Linux 2.6.32-431.29.2.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
+INFO	2015-06-09 08:45:29	SortSam	Finished reading inputs, merging and writing to output now.
+[Tue Jun 09 08:45:30 EDT 2015] picard.sam.SortSam done. Elapsed time: 0.01 minutes.
 Runtime.totalMemory()=5145034752

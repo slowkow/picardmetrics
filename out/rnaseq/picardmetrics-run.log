@@ -1,18 +1,18 @@
-2015-06-07 07:41:05	START	/PHShome/ks38/src/picardmetrics/data/project1/sample1/sample1.bam
-2015-06-07 07:41:05	ReorderSam
-2015-06-07 07:41:05	SortSam
-2015-06-07 07:41:06	MarkDuplicates
-2015-06-07 07:41:09	CollectMultipleMetrics
-2015-06-07 07:41:29	CollectRnaSeqMetrics
-2015-06-07 07:41:40	CollectGcBiasMetrics
-2015-06-07 07:42:27	EstimateLibraryComplexity
-2015-06-07 07:42:27	DONE	/PHShome/ks38/src/picardmetrics/data/project1/sample1/sample1.bam
-2015-06-07 07:42:27	START	/PHShome/ks38/src/picardmetrics/data/project1/sample2/sample2.bam
-2015-06-07 07:42:27	ReorderSam
-2015-06-07 07:42:28	SortSam
-2015-06-07 07:42:29	MarkDuplicates
-2015-06-07 07:42:32	CollectMultipleMetrics
-2015-06-07 07:42:58	CollectRnaSeqMetrics
-2015-06-07 07:43:10	CollectGcBiasMetrics
-2015-06-07 07:43:58	EstimateLibraryComplexity
-2015-06-07 07:43:59	DONE	/PHShome/ks38/src/picardmetrics/data/project1/sample2/sample2.bam
+2015-06-09 08:44:08	START	/PHShome/ks38/src/picardmetrics/data/project1/sample1/sample1.bam
+2015-06-09 08:44:08	ReorderSam
+2015-06-09 08:44:09	SortSam
+2015-06-09 08:44:10	MarkDuplicates
+2015-06-09 08:44:13	CollectMultipleMetrics
+2015-06-09 08:44:35	CollectRnaSeqMetrics
+2015-06-09 08:44:44	CollectGcBiasMetrics
+2015-06-09 08:45:27	EstimateLibraryComplexity
+2015-06-09 08:45:28	DONE	/PHShome/ks38/src/picardmetrics/data/project1/sample1/sample1.bam
+2015-06-09 08:45:28	START	/PHShome/ks38/src/picardmetrics/data/project1/sample2/sample2.bam
+2015-06-09 08:45:28	ReorderSam
+2015-06-09 08:45:29	SortSam
+2015-06-09 08:45:30	MarkDuplicates
+2015-06-09 08:45:33	CollectMultipleMetrics
+2015-06-09 08:45:56	CollectRnaSeqMetrics
+2015-06-09 08:46:07	CollectGcBiasMetrics
+2015-06-09 08:46:55	EstimateLibraryComplexity
+2015-06-09 08:46:56	DONE	/PHShome/ks38/src/picardmetrics/data/project1/sample2/sample2.bam
