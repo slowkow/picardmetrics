@@ -6,6 +6,9 @@
 
 -   Add `PREFIX-insert-size-histogram.tsv` to the collated outputs.
 
+-   Add `PREFIX-base-distribution-by-cycle-histogram.tsv` to the collated
+	outputs.
+
 ## Changed
 
 -   Use `## METRICS` and `## HISTOGRAM` as landmarks to find the correct
