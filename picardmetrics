@@ -445,6 +445,7 @@ create_sequence_dictionary() {
       CreateSequenceDictionary
       REFERENCE="$1"
       OUTPUT="$dict"
+      TMP_DIR="$TEMP_DIR"
     )
     run_picard ${args[*]}
   fi
@@ -459,6 +460,7 @@ reorder_sam() {
     OUTPUT="$out"
     REFERENCE="${REFERENCE_SEQUENCE}"
     VALIDATION_STRINGENCY=LENIENT
+    TMP_DIR="$TEMP_DIR"
   )
   run_picard ${args[*]}
   if ! mv -f "$out" "$bam"; then
@@ -477,6 +479,7 @@ sort_sam() {
       OUTPUT="$out"
       SORT_ORDER=coordinate
       VALIDATION_STRINGENCY=LENIENT
+      TMP_DIR="$TEMP_DIR"
     )
     run_picard ${args[*]}
     if ! mv -f "$out" "$bam"; then
@@ -498,6 +501,7 @@ mark_duplicates() {
     REMOVE_DUPLICATES=false
     READ_NAME_REGEX=null
     VALIDATION_STRINGENCY=LENIENT
+    TMP_DIR="$TEMP_DIR"
   )
   run_picard ${args[*]}
   if ! mv -f "$out" "$bam"; then
@@ -518,6 +522,7 @@ multiple_metrics() {
     PROGRAM=CollectAlignmentSummaryMetrics
     PROGRAM=CollectInsertSizeMetrics
     PROGRAM=QualityScoreDistribution
+    TMP_DIR="$TEMP_DIR"
   )
   run_picard ${args[*]}
 }
@@ -545,6 +550,7 @@ rnaseq_metrics() {
     RIBOSOMAL_INTERVALS="$t"
     STRAND_SPECIFICITY=NONE
     VALIDATION_STRINGENCY=LENIENT
+    TMP_DIR="$TEMP_DIR"
   )
   run_picard ${args[*]}
   # Remove the temporary file after we're done with it.
@@ -564,6 +570,7 @@ gcbias_metrics() {
     SUMMARY_OUTPUT="${prefix}.gc_bias_metrics"
     REFERENCE_SEQUENCE="$REFERENCE_SEQUENCE"
     VALIDATION_STRINGENCY=LENIENT
+    TMP_DIR="$TEMP_DIR"
   )
   run_picard ${args[*]}
 }
@@ -576,6 +583,7 @@ library_complexity() {
     INPUT="$bam"
     OUTPUT="${prefix}.library_complexity"
     VALIDATION_STRINGENCY=LENIENT
+    TMP_DIR="$TEMP_DIR"
   )
   run_picard ${args[*]}
 }
