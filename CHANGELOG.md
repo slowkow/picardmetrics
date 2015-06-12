@@ -1,5 +1,11 @@
 # Change Log
 
+# 0.2.2 - 2015-06-12
+
+## Fixed
+
+-   Set `TMP_DIR` option in all invocations to Picard tools.
+
 # 0.2.1 - 2015-06-05
 
 ## Added
