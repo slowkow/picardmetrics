@@ -138,7 +138,7 @@ The `picardmetrics.conf` file must define the following envrionment variables:
 
     The sequence dictionary is taken from the BAM header and written to a
     .list file in this directory. This file is used as the header of the
-    RIBOSOMAL_INTERVALS file passed to CollectRnaSeqMetrics.
+    `RIBOSOMAL_INTERVALS` file passed to CollectRnaSeqMetrics.
     
     A copy of the input BAM file is written to the temporary directory. Then
     ReorderSam, SortSam, and MarkDuplicates are run on this copy. Use option
