@@ -96,6 +96,15 @@ If you wish, you can manually install the dependencies:
 
 [definitions]: https://broadinstitute.github.io/picard/picard-metric-definitions.html
 
+## Contributing
+
+Please [submit an issue][issues] to report bugs or ask questions.
+
+Please contribute bug fixes or new features with a [pull request][pull] to this repository.
+
+[issues]: https://github.com/slowkow/picardmetrics/issues
+[pull]: https://help.github.com/articles/using-pull-requests/
+
 ## Related work
 
 [RNA-SeQC][rnaseqc]
