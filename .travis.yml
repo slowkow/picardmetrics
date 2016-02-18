@@ -19,3 +19,8 @@ install:
     - cat ~/picardmetrics.conf
 
 script: ./test/test.sh
+
+cache:
+    directories:
+        - data
+
