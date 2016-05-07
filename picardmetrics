@@ -36,8 +36,8 @@ main_run() {
     return 0
   fi
 
-  # By default, look for the config file in the user's home directory.
-  PICARDMETRICS_CONFIG=~/picardmetrics.conf
+  # The configuration file for picardmetrics.
+  PICARDMETRICS_CONFIG=""
 
   # By default, write output to the user's current working directory.
   OUT_DIR="."
@@ -292,7 +292,7 @@ configure_run() {
   if [[ -f "$PICARDMETRICS_CONFIG" ]]; then
     PICARDMETRICS_CONFIG="$PICARDMETRICS_CONFIG"
   elif [[ -f picardmetrics.conf ]]; then
-    PICARDMETRICS_CONFIG=picardmetric.conf
+    PICARDMETRICS_CONFIG=picardmetrics.conf
   elif [[ -f ~/picardmetrics.conf ]]; then
     PICARDMETRICS_CONFIG=~/picardmetrics.conf
   else
