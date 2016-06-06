@@ -96,7 +96,7 @@ main_run() {
     exit 1
   fi
 
-  # Perform all actions in a folder inside the BAM file's directory.
+  # Perform all actions in the output directory.
   if ! cd "$OUT_DIR"; then
     warn "ERROR: cd '$OUT_DIR'"
     exit 1
@@ -106,6 +106,20 @@ main_run() {
 
   # Create a sequence dictionary needed for ReorderSam.
   create_sequence_dictionary "$REFERENCE_SEQUENCE"
+
+  # Temporary directory with intermediate files.
+  if [[ ! -d "$TEMP_DIR" ]]; then
+    warn "Setting TEMP_DIR=/tmp"
+    warn "Please ensure disk space is sufficient with 'df -h /tmp'"
+    TEMP_DIR=/tmp
+  fi
+
+  # Temporary directory mimics BAM file directory.
+  TEMP_DIR="$TEMP_DIR/picardmetrics_${USER}_${$}/$(dirname $bam)"
+  if ! mkdir -p "$TEMP_DIR"; then
+    warn "ERROR: mkdir -p '$TEMP_DIR'"
+    exit 1
+  fi
 
   # Temporary BAM file that is deleted by default.
   local temp_bam="$TEMP_DIR/$(basename $bam)"
@@ -126,8 +140,8 @@ main_run() {
     fi
   else
     # Otherwise, move it to the output folder.
-    if ! mv "$temp_bam" . ;then
-      warn "ERROR: mv '$temp_bam' ."
+    if ! mv "$temp_bam" "${temp_bam%.bam}.MarkDuplicates.bam" ;then
+      warn "ERROR: mv '$temp_bam' '${temp_bam%.bam}.MarkDuplicates.bam'"
       exit 1
     fi
   fi
@@ -153,6 +167,11 @@ main_collate() {
 
   if [[ ! -d "$dir" ]]; then
     warn "ERROR: Not a directory: '$dir'"
+    exit 1
+  fi
+
+  if ! mkdir -p $(dirname "$prefix"); then
+    warn "ERROR: mkdir -p '$(dirname $prefix)'"
     exit 1
   fi
 
@@ -300,17 +319,6 @@ configure_run() {
   fi
   warn -e "$(DATE)\tLoading '$PICARDMETRICS_CONFIG'"
   source "$PICARDMETRICS_CONFIG"
-
-  if [[ ! -d "$TEMP_DIR" ]]; then
-    warn "Setting TEMP_DIR=/tmp"
-    warn "Please ensure disk space is sufficient with 'df -h | grep /tmp'"
-    TEMP_DIR=/tmp
-  fi
-  TEMP_DIR="$TEMP_DIR/picardmetrics_${USER}_${$}"
-  if ! mkdir -p "$TEMP_DIR"; then
-    warn "ERROR: mkdir -p '$TEMP_DIR'"
-    exit 1
-  fi
 
   # All jobs will be launched with niceness=20 by default.
   if [[ -z "$NICENESS" ]]; then
@@ -592,7 +600,7 @@ library_complexity() {
 
 collate_alignment_metrics() {
   local out="$1" dir="$2"
-  local files=($dir/*.alignment_summary_metrics)
+  local files=($(find "$dir" -name '*.alignment_summary_metrics' | sort))
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} alignment_summary_metrics files"
   (
@@ -610,7 +618,7 @@ collate_alignment_metrics() {
 
 collate_rnaseq_metrics() {
   local out="$1" dir="$2"
-  local files=($dir/*.rnaseq_metrics)
+  local files=($(find "$dir" -name '*.rnaseq_metrics' | sort))
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} rnaseq_metrics files (summary)"
   (
@@ -628,7 +636,7 @@ collate_rnaseq_metrics() {
 
 collate_rnaseq_coverage() {
   local out="$1" dir="$2"
-  local files=($dir/*.rnaseq_metrics)
+  local files=($(find "$dir" -name '*.rnaseq_metrics' | sort))
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} rnaseq_metrics files (coverage)"
   (
@@ -646,7 +654,7 @@ collate_rnaseq_coverage() {
 
 collate_quality_metrics() {
   local out="$1" dir="$2"
-  local files=($dir/*.quality_distribution_metrics)
+  local files=($(find "$dir" -name '*.quality_distribution_metrics' | sort))
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} quality_distribution_metrics files"
   (
@@ -664,7 +672,7 @@ collate_quality_metrics() {
 
 collate_gc_bias_histogram() {
   local out="$1" dir="$2"
-  local files=($dir/*.gc_bias_histogram)
+  local files=($(find "$dir" -name '*.gc_bias_histogram' | sort))
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} gc_bias_histogram files"
   (
@@ -682,7 +690,7 @@ collate_gc_bias_histogram() {
 
 collate_gc_bias_metrics() {
   local out="$1" dir="$2"
-  local files=($dir/*.gc_bias_metrics)
+  local files=($(find "$dir" -name '*.gc_bias_metrics' | sort))
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} gc_bias_metrics files"
   (
@@ -700,7 +708,7 @@ collate_gc_bias_metrics() {
 
 collate_insert_size_metrics() {
   local out="$1" dir="$2"
-  local files=($dir/*.insert_size_metrics)
+  local files=($(find "$dir" -name '*.insert_size_metrics' | sort))
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} insert_size_metrics files"
   (
@@ -718,7 +726,7 @@ collate_insert_size_metrics() {
 
 collate_insert_size_histogram() {
   local out="$1" dir="$2"
-  local files=($dir/*.insert_size_metrics)
+  local files=($(find "$dir" -name '*.insert_size_metrics' | sort))
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} insert_size_metrics files (histogram)"
   (
@@ -736,7 +744,7 @@ collate_insert_size_histogram() {
 
 collate_base_distribution_by_cycle() {
   local out="$1" dir="$2"
-  local files=($dir/*.base_distribution_by_cycle_metrics)
+  local files=($(find "$dir" -name '*.base_distribution_by_cycle_metrics' | sort))
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} base_distribution_by_cycle files"
   (
@@ -754,7 +762,7 @@ collate_base_distribution_by_cycle() {
 
 collate_duplicate_metrics() {
   local out="$1" dir="$2"
-  local files=($dir/*.duplicate_metrics)
+  local files=($(find "$dir" -name '*.duplicate_metrics' | sort))
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} duplicate_metrics files"
   (
@@ -772,7 +780,7 @@ collate_duplicate_metrics() {
 
 collate_library_complexity() {
   local out="$1" dir="$2"
-  local files=($dir/*.library_complexity)
+  local files=($(find "$dir" -name '*.library_complexity' | sort))
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} library_complexity files"
   (
@@ -790,7 +798,7 @@ collate_library_complexity() {
 
 collate_library_complexity_histogram() {
   local out="$1" dir="$2"
-  local files=($dir/*.library_complexity)
+  local files=($(find "$dir" -name '*.library_complexity' | sort))
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} library_complexity files (histogram)"
   (
@@ -809,7 +817,7 @@ collate_library_complexity_histogram() {
 
 collate_mapq_stats() {
   local out="$1" dir="$2"
-  local files=($dir/*.mapq_stats)
+  local files=($(find "$dir" -name '*.mapq_stats' | sort))
   [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} mapq_stats files"
   (
@@ -854,13 +862,10 @@ read_tsv <- function(filename, ...) {
     return(NULL)
   }
   dat <- read.delim(filename, stringsAsFactors = FALSE, ...)
-  unlink(filename, force = TRUE)
   return(dat)
 }
 
 read_metrics <- function(prefix) {
-  is_rnaseq <- file.exists(sprintf("%s-rnaseq-metrics.tsv", prefix))
-
   dat_align_metrics = read_tsv(
     sprintf("%s-alignment-metrics.tsv", prefix)
   )
@@ -881,6 +886,7 @@ read_metrics <- function(prefix) {
   dat_library_complexity = read_tsv(
     sprintf("%s-library-complexity.tsv", prefix)
   )
+  is_rnaseq <- file.exists(sprintf("%s-rnaseq-metrics.tsv", prefix))
   if (is_rnaseq) {
     dat_rnaseq_metrics = read_tsv(
       sprintf("%s-rnaseq-metrics.tsv", prefix)
@@ -894,8 +900,6 @@ read_metrics <- function(prefix) {
   idx = !dat_align_metrics$CATEGORY %in% c("FIRST_OF_PAIR", "SECOND_OF_PAIR")
   dat_align_metrics = dat_align_metrics[idx, ]
 
-  dat <- dat_align_metrics
-
   if (is_rnaseq && !is.null(dat_rnaseq_metrics)) {
     # alignment_metrics and rnaseq_metrics both have this column.
     idx <- colnames(dat_rnaseq_metrics) == "PF_ALIGNED_BASES"
@@ -903,22 +907,22 @@ read_metrics <- function(prefix) {
 
     stopifnot( all(dat_align_metrics$SAMPLE == dat_rnaseq_metrics$SAMPLE) )
 
-    dat <- merge(dat, dat_rnaseq_metrics, by = "SAMPLE")
+    dat_align_metrics <- merge(dat_align_metrics, dat_rnaseq_metrics, by = "SAMPLE")
   }
 
   if (!is.null(dat_duplicate_metrics)) {
     stopifnot( all(dat_align_metrics$SAMPLE == dat_duplicate_metrics$SAMPLE) )
-    dat <- merge(dat, dat_duplicate_metrics, by = "SAMPLE")
+    dat_align_metrics <- merge(dat_align_metrics, dat_duplicate_metrics, by = "SAMPLE")
   }
 
   if (!is.null(dat_gcbias_metrics)) {
     stopifnot( all(dat_align_metrics$SAMPLE == dat_gcbias_metrics$SAMPLE) )
-    dat <- merge(dat, dat_gcbias_metrics, by = "SAMPLE")
+    dat_align_metrics <- merge(dat_align_metrics, dat_gcbias_metrics, by = "SAMPLE")
   }
 
   if (!is.null(dat_insert_size_metrics)) {
     stopifnot( all(dat_align_metrics$SAMPLE == dat_insert_size_metrics$SAMPLE) )
-    dat <- merge(dat, dat_insert_size_metrics, by = "SAMPLE")
+    dat_align_metrics <- merge(dat_align_metrics, dat_insert_size_metrics, by = "SAMPLE")
   }
 
   if (!is.null(dat_library_complexity)) {
@@ -931,15 +935,31 @@ read_metrics <- function(prefix) {
     colnames(dat_library_complexity) <- cnames
 
     stopifnot( all(dat_align_metrics$SAMPLE == dat_library_complexity$SAMPLE) )
-    dat <- merge(dat, dat_library_complexity, by = "SAMPLE")
+    dat_align_metrics <- merge(dat_align_metrics, dat_library_complexity, by = "SAMPLE")
   }
 
   if (!is.null(dat_mapq_stats)) {
     stopifnot( all(dat_align_metrics$SAMPLE == dat_mapq_stats$SAMPLE) )
-    dat <- merge(dat, dat_mapq_stats, by = "SAMPLE")
+    dat_align_metrics <- merge(dat_align_metrics, dat_mapq_stats, by = "SAMPLE")
   }
 
-  return(dat)
+  # Delete intermediate files that are merged into "%s-all-metrics.tsv".
+  filenames <- sprintf(c(
+    "%s-alignment-metrics.tsv",
+    "%s-duplicate-metrics.tsv",
+    "%s-gc-bias-metrics.tsv",
+    "%s-insert-size-metrics.tsv",
+    "%s-library-complexity.tsv",
+    "%s-rnaseq-metrics.tsv",
+    "%s-mapq-stats.tsv"
+  ), prefix)
+  sapply(filenames, function(filename) {
+    if (file.exists(filename)) {
+      unlink(filename, force = TRUE)
+    }
+  })
+
+  return(dat_align_metrics)
 } 
 
 main()
@@ -957,11 +977,8 @@ DATE() {
 }
 
 sample_name() {
-  # Remove the parent directories.
-  local sample=$(basename "$1")
-  # Remove everything following the first period.
-  sample=${sample%%.*}
-  echo "$sample"
+  # Remove the file extension.
+  echo "${1%.*}"
 }
 
 is_bam() {
