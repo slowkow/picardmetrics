@@ -1,7 +1,7 @@
 .\" generated with Ronn/v0.7.3
 .\" http://github.com/rtomayko/ronn/tree/0.7.3
 .
-.TH "PICARDMETRICS" "1" "June 2015" "picardmetrics-0.2.2" "picardmetrics manual"
+.TH "PICARDMETRICS" "1" "June 2016" "picardmetrics-0.2.3" "picardmetrics manual"
 .
 .SH "NAME"
 \fBpicardmetrics\fR \- Run Picard tools and collate multiple metrics files
@@ -205,7 +205,7 @@ A directory where temporary files will be written\.
 The sequence dictionary is taken from the BAM header and written to a \.list file in this directory\. This file is used as the header of the \fBRIBOSOMAL_INTERVALS\fR file passed to CollectRnaSeqMetrics\.
 .
 .IP
-A copy of the input BAM file is written to the temporary directory\. Then ReorderSam, SortSam, and MarkDuplicates are run on this copy\. Use option \fB\-k\fR to move the duplicated BAM file to the output folder \fB\-o\fR instead of deleting it\.
+A copy of the input BAM file is written to the temporary directory\. Then ReorderSam, SortSam, and MarkDuplicates are run on this copy\. Use option \fB\-k\fR to move the sorted and deduplicated BAM file to the output folder \fB\-o\fR instead of deleting it\.
 .
 .IP "\(bu" 4
 \fBNICENESS\fR

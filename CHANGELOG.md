@@ -1,5 +1,29 @@
 # Change Log
 
+# 0.2.3 - 2016-06-06
+
+## Fixed 
+
+-   Delete the intermediate collated files only after they are successfully
+    collated into one master file.
+
+-   Prefer `picardmetrics.conf` in the working directory if it exists.
+
+## Changed
+
+-   Increase compatibility:
+    
+    -   Sample name is now the filename without the file extension.
+    
+    -   Use `find` to discover Picard output files in directories.
+    
+    -   Use the BAM dirname as part of the `TEMP_DIR`.
+
+    -   Call the output BAM `file.MarkDuplicates.bam`
+
+    -   Search for `"rRNA"` instead of `gene_type "rRNA"` to find ribosomal
+        intervals in a GTF file.
+
 # 0.2.2 - 2015-06-12
 
 ## Fixed

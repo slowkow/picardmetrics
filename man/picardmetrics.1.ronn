@@ -142,8 +142,8 @@ The `picardmetrics.conf` file must define the following envrionment variables:
     
     A copy of the input BAM file is written to the temporary directory. Then
     ReorderSam, SortSam, and MarkDuplicates are run on this copy. Use option
-    `-k` to move the duplicated BAM file to the output folder `-o` instead of
-    deleting it.
+    `-k` to move the sorted and deduplicated BAM file to the output folder
+    `-o` instead of deleting it.
 
   * `NICENESS`
 
