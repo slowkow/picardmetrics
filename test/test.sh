@@ -44,8 +44,8 @@ test_default() {
   ./picardmetrics collate $out $out &> $collate_log
 
   # Confirm that the final output is correct.
-  if ! md5sum -c \
-    <(echo "244cffd02775ab1517578147aee39ab1 ${out}-all-metrics.tsv"); then
+  checksum=$(md5sum ${out}-all-metrics.tsv | cut -f1 -d' ')
+  if [[ ! "244cffd02775ab1517578147aee39ab1" = "$checksum" ]]; then
     cat $run_log >&2
     cat $collate_log >&2
     OK=0
@@ -70,8 +70,8 @@ test_rnaseq() {
   ./picardmetrics collate $out $out &> $collate_log
 
   # Confirm that the final output is correct.
-  if ! md5sum -c \
-    <(echo "3482de25bcf68887d71ed1803505ec66 ${out}-all-metrics.tsv"); then
+  checksum=$(md5sum ${out}-all-metrics.tsv | cut -f1 -d' ')
+  if [[ ! "3482de25bcf68887d71ed1803505ec66" = "$checksum" ]]; then
     cat $run_log >&2
     cat $collate_log >&2
     OK=0
