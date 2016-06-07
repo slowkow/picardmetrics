@@ -45,7 +45,8 @@ main_run() {
   # Assume the input .bam file does not come from an RNA-seq experiment.
   RNASEQ=""
 
-  # The newly created .bam file will be deleted after metrics are computed.
+  # By default, the sorted and deduplicated .bam file will be deleted after
+  # metrics are computed. This option allows you to keep it instead.
   KEEP=""
 
   while getopts ":f:o:rk" opt; do
@@ -102,7 +103,7 @@ main_run() {
     exit 1
   fi
 
-  echo -e "$(DATE)\tSTART\t$bam"
+  warn -e "$(DATE)\tSTART\t$bam"
 
   # Create a sequence dictionary needed for ReorderSam.
   create_sequence_dictionary "$REFERENCE_SEQUENCE"
@@ -151,7 +152,7 @@ main_run() {
     exit 1
   fi
 
-  echo -e "$(DATE)\tDONE\t$bam"
+  warn -e "$(DATE)\tDONE\t$bam"
 }
 
 main_collate() {
@@ -226,24 +227,28 @@ main_refFlat() {
   fi
 
   if ! which gtfToGenePred &> /dev/null; then
-    echo "ERROR: gtfToGenePred is not installed."
-    echo "  Install gtfToGenePred to a directory in your PATH"
-    echo "  http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/gtfToGenePred"
+    warn "ERROR: gtfToGenePred is not installed."
+    warn "  Install gtfToGenePred to a directory in your PATH"
+    warn "  http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/gtfToGenePred"
     exit 1
   fi
 
-  if [[ ! -s "$gtf" ]]; then
+  if [[ ! -f "$gtf" ]]; then
     warn "ERROR: File not found '$gtf'"
     exit 1
+  fi
+
+  local out="${gtf%.gtf*}.refFlat"
+  if [[ -f "$out" ]]; then
+    echo "$out"
+    return 0
   fi
 
   local in=$(mktemp)
 
   if [[ "$gtf" == *.gtf.gz ]] ; then
-    out="${gtf%.gtf.gz}.refFlat"
     gunzip -c "$gtf" > "$in"
   else
-    out="${gtf%.gtf}.refFlat"
     cat "$gtf" > "$in"
   fi
 
@@ -252,14 +257,12 @@ main_refFlat() {
     && rm -f "$in"
   local ERR=$?
 
-  if [[ -s "$out" ]]; then
-    echo "Successfully created '$out'"
-  fi
-
   if [[ "$ERR" != 0 && "$ERR" != 255 ]]; then
-      echo "Unexpected error $ERR from gtfToGenePred"
+      warn "Unexpected error $ERR from gtfToGenePred"
       exit 1
   fi
+
+  echo "$out"
 }
 
 main_rRNA() {
@@ -271,18 +274,22 @@ main_rRNA() {
     return 0
   fi
 
-  if [[ ! -s "$gtf" ]]; then
+  if [[ ! -f "$gtf" ]]; then
     warn "ERROR: File not found '$gtf'"
     exit 1
+  fi
+
+  local out="${gtf%.gtf*}.rRNA.list"
+  if [[ -f "$out" ]]; then
+    echo "$out"
+    return 0
   fi
 
   local in=$(mktemp)
 
   if [[ "$gtf" == *.gtf.gz ]] ; then
-    out="${gtf%.gtf.gz}.rRNA.list"
     gunzip -c "$gtf" > "$in"
   else
-    out="${gtf%.gtf}.rRNA.list"
     cat "$gtf" > "$in"
   fi
 
@@ -294,11 +301,16 @@ main_rRNA() {
           print join "\t", (@F[0,1,2,3], $1)
       ' | \
       sort -k1V -k2n -k3n \
-  > "$out"
+  > "$out" && \
+  rm -f "$in"
+  local ERR=$?
 
-  if [[ -s "$out" ]]; then
-    echo "Successfully created '$out'"
+  if [[ "$ERR" != 0 ]]; then
+      warn "Unexpected error $ERR while making '$out'"
+      exit 1
   fi
+
+  echo "$out"
 }
 
 # Check for correct configuration. -------------------------------------------
@@ -317,7 +329,7 @@ configure_run() {
   else
     warn "WARNING: Config file '$PICARDMETRICS_CONFIG' not found"
   fi
-  warn -e "$(DATE)\tLoading '$PICARDMETRICS_CONFIG'"
+  warn -e "$(DATE)\tpicardmetrics config: '$PICARDMETRICS_CONFIG'"
   source "$PICARDMETRICS_CONFIG"
 
   # All jobs will be launched with niceness=20 by default.
@@ -360,18 +372,18 @@ configure_run() {
 
   # If the input BAM file comes from an RNA-seq experiment.
   if [[ "$RNASEQ" ]]; then
-    if [[ ! -s "$REF_FLAT" ]]; then
+    if [[ "$REF_FLAT" && ! -f "$REF_FLAT" ]]; then
       warn "ERROR: refFlat file not found: '$REF_FLAT'"
-      warn "       Please define REF_FLAT"
-      warn '       For example: REF_FLAT=~/data/genes.refFlat'
       exit 1
+    elif [[ -f "$GTF" ]]; then
+      REF_FLAT=$(main_refFlat 1 "$GTF")
     fi
 
-    if [[ ! -s "$RIBOSOMAL_INTERVALS" ]]; then
-      warn "ERROR: Ribosomal intervals not found: '$RIBOSOMAL_INTERVALS'"
-      warn "       Please define RIBOSOMAL_INTERVALS"
-      warn '       For example: RIBOSOMAL_INTERVALS=~/data/rRNA.txt'
+    if [[ "$RIBOSOMAL_INTERVALS" && ! -f "$RIBOSOMAL_INTERVALS" ]]; then
+      warn "ERROR: Ribosomal intervals file not found: '$RIBOSOMAL_INTERVALS'"
       exit 1
+    elif [[ -f "$GTF" ]]; then
+      RIBOSOMAL_INTERVALS=$(main_rRNA 1 "$GTF")
     fi
   fi
 }
@@ -380,7 +392,7 @@ configure_run() {
 
 compute_metrics() {
   local bam="$1" rnaseq="$2"
-  if [[ ! -s "$bam" ]]; then
+  if [[ ! -f "$bam" ]]; then
     warn "BAM file not found '$bam'"
     return 1
   fi
@@ -395,7 +407,7 @@ compute_metrics() {
 
   # Check if the BAM file is newer or if the metrics file is absent.
   mapq_stats="${prefix}.mapq_stats"
-  if [[ "$bam" -nt "$mapq_stats" || ! -s "$mapq_stats" ]]; then
+  if [[ "$bam" -nt "$mapq_stats" || ! -f "$mapq_stats" ]]; then
     if ! ( $NICE samtools view "$bam" | cut -f5 | stats > "$mapq_stats" );
     then
       warn "ERROR: mapq_stats failed"
@@ -403,30 +415,30 @@ compute_metrics() {
   fi
 
   metrics="${prefix}.duplicate_metrics"
-  if [[ "$bam" -nt "$metrics" || ! -s "$metrics" ]]; then
+  if [[ "$bam" -nt "$metrics" || ! -f "$metrics" ]]; then
     # featureCounts can ignore the marked duplicate reads with --ignoreDup
     mark_duplicates "$bam"
   fi
 
   metrics="${prefix}.alignment_summary_metrics"
-  if [[ "$bam" -nt "$metrics" || ! -s "$metrics" ]]; then
+  if [[ "$bam" -nt "$metrics" || ! -f "$metrics" ]]; then
     multiple_metrics "$bam"
   fi
 
   if [[ "$rnaseq" ]]; then
     metrics="${prefix}.rnaseq_metrics"
-    if [[ "$bam" -nt "$metrics" || ! -s "$metrics" ]]; then
+    if [[ "$bam" -nt "$metrics" || ! -f "$metrics" ]]; then
       rnaseq_metrics "$bam"
     fi
   fi
 
   metrics="${prefix}.gc_bias_metrics"
-  if [[ "$bam" -nt "$metrics" || ! -s "$metrics" ]]; then
+  if [[ "$bam" -nt "$metrics" || ! -f "$metrics" ]]; then
     gcbias_metrics "$bam"
   fi
 
   metrics="${prefix}.library_complexity"
-  if [[ "$bam" -nt "$metrics" || ! -s "$metrics" ]]; then
+  if [[ "$bam" -nt "$metrics" || ! -f "$metrics" ]]; then
     library_complexity "$bam"
   fi
 }
@@ -438,7 +450,7 @@ run_picard() {
   local args=($@)
   local bam=${args[0]}
   local log=$(basename ${bam#*=} .bam).${tool}.log
-  echo -e "$(DATE)\t$tool"
+  warn -e "$(DATE)\t$tool"
   if ! $NICE $PICARD $tool ${args[*]} &> $log; then
     warn "ERROR: $tool failed. See: $(pwd)/$log"
     cat "$(pwd)/$log" >&2
@@ -601,7 +613,7 @@ library_complexity() {
 collate_alignment_metrics() {
   local out="$1" dir="$2"
   local files=($(find "$dir" -name '*.alignment_summary_metrics' | sort))
-  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
+  [[ ${#files[@]} -eq 0 ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} alignment_summary_metrics files"
   (
     echo -ne "SAMPLE\t"
@@ -619,7 +631,7 @@ collate_alignment_metrics() {
 collate_rnaseq_metrics() {
   local out="$1" dir="$2"
   local files=($(find "$dir" -name '*.rnaseq_metrics' | sort))
-  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
+  [[ ${#files[@]} -eq 0 ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} rnaseq_metrics files (summary)"
   (
     echo -ne "SAMPLE\t"
@@ -637,7 +649,7 @@ collate_rnaseq_metrics() {
 collate_rnaseq_coverage() {
   local out="$1" dir="$2"
   local files=($(find "$dir" -name '*.rnaseq_metrics' | sort))
-  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
+  [[ ${#files[@]} -eq 0 ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} rnaseq_metrics files (coverage)"
   (
     echo -ne "SAMPLE\t"
@@ -655,7 +667,7 @@ collate_rnaseq_coverage() {
 collate_quality_metrics() {
   local out="$1" dir="$2"
   local files=($(find "$dir" -name '*.quality_distribution_metrics' | sort))
-  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
+  [[ ${#files[@]} -eq 0 ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} quality_distribution_metrics files"
   (
     echo -ne "SAMPLE\t"
@@ -673,7 +685,7 @@ collate_quality_metrics() {
 collate_gc_bias_histogram() {
   local out="$1" dir="$2"
   local files=($(find "$dir" -name '*.gc_bias_histogram' | sort))
-  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
+  [[ ${#files[@]} -eq 0 ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} gc_bias_histogram files"
   (
     echo -ne "SAMPLE\t"
@@ -691,7 +703,7 @@ collate_gc_bias_histogram() {
 collate_gc_bias_metrics() {
   local out="$1" dir="$2"
   local files=($(find "$dir" -name '*.gc_bias_metrics' | sort))
-  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
+  [[ ${#files[@]} -eq 0 ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} gc_bias_metrics files"
   (
     echo -ne "SAMPLE\t"
@@ -709,7 +721,7 @@ collate_gc_bias_metrics() {
 collate_insert_size_metrics() {
   local out="$1" dir="$2"
   local files=($(find "$dir" -name '*.insert_size_metrics' | sort))
-  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
+  [[ ${#files[@]} -eq 0 ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} insert_size_metrics files"
   (
     echo -ne "SAMPLE\t"
@@ -727,7 +739,7 @@ collate_insert_size_metrics() {
 collate_insert_size_histogram() {
   local out="$1" dir="$2"
   local files=($(find "$dir" -name '*.insert_size_metrics' | sort))
-  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
+  [[ ${#files[@]} -eq 0 ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} insert_size_metrics files (histogram)"
   (
     echo -ne "SAMPLE\t"
@@ -745,7 +757,7 @@ collate_insert_size_histogram() {
 collate_base_distribution_by_cycle() {
   local out="$1" dir="$2"
   local files=($(find "$dir" -name '*.base_distribution_by_cycle_metrics' | sort))
-  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
+  [[ ${#files[@]} -eq 0 ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} base_distribution_by_cycle files"
   (
     echo -ne "SAMPLE\t"
@@ -763,7 +775,7 @@ collate_base_distribution_by_cycle() {
 collate_duplicate_metrics() {
   local out="$1" dir="$2"
   local files=($(find "$dir" -name '*.duplicate_metrics' | sort))
-  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
+  [[ ${#files[@]} -eq 0 ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} duplicate_metrics files"
   (
     echo -ne "SAMPLE\t"
@@ -781,7 +793,7 @@ collate_duplicate_metrics() {
 collate_library_complexity() {
   local out="$1" dir="$2"
   local files=($(find "$dir" -name '*.library_complexity' | sort))
-  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
+  [[ ${#files[@]} -eq 0 ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} library_complexity files"
   (
     echo -ne "SAMPLE\t"
@@ -799,7 +811,7 @@ collate_library_complexity() {
 collate_library_complexity_histogram() {
   local out="$1" dir="$2"
   local files=($(find "$dir" -name '*.library_complexity' | sort))
-  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
+  [[ ${#files[@]} -eq 0 ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} library_complexity files (histogram)"
   (
     echo -ne "SAMPLE\t"
@@ -818,7 +830,7 @@ collate_library_complexity_histogram() {
 collate_mapq_stats() {
   local out="$1" dir="$2"
   local files=($(find "$dir" -name '*.mapq_stats' | sort))
-  [[ ${#files[@]} == 1 && ! -f ${files[0]} ]] && return 1
+  [[ ${#files[@]} -eq 0 ]] && return 1
   warn -e "$(DATE)\tCollating ${#files[@]} mapq_stats files"
   (
     echo -e \
@@ -982,7 +994,7 @@ sample_name() {
 }
 
 is_bam() {
-  [[ -s "$1" && "$1" == *.bam ]]
+  [[ -f "$1" && "$1" == *.bam ]]
 }
 
 bam_incomplete() {
@@ -994,7 +1006,7 @@ bam_incomplete() {
 }
 
 bam_sorted() {
-  if [[ ! -s "$1" ]]; then
+  if [[ ! -f "$1" ]]; then
     return 1
   fi
   samtools view -H "$1" 2>&1 | grep -q 'SO:coordinate'
@@ -1006,12 +1018,12 @@ bash_realpath() {
     local f=$(basename "$1")
     local d=$(dirname "$1")
     if ! (cd "$d" && echo "$(pwd)/$f"); then
-      echo "ERROR: Failed to cd '$d'" 2>&1
+      warn "ERROR: Failed to cd '$d'"
       exit 1
     fi
   elif [[ -d "$1" ]]; then
     if ! (cd "$1" && echo "$(pwd)"); then
-      echo "ERROR: Failed to cd '$1'" 2>&1
+      warn "ERROR: Failed to cd '$1'"
       exit 1
     fi
   fi
