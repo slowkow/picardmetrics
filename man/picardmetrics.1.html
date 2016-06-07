@@ -63,7 +63,7 @@
     <a href="#SYNOPSIS">SYNOPSIS</a>
     <a href="#DESCRIPTION">DESCRIPTION</a>
     <a href="#COMMANDS-AND-OPTIONS">COMMANDS AND OPTIONS</a>
-    <a href="#ENVIRONMENT-VARIABLES">ENVIRONMENT VARIABLES</a>
+    <a href="#CONFIGURATION-FILE">CONFIGURATION FILE</a>
     <a href="#EXAMPLES">EXAMPLES</a>
     <a href="#SOURCE-CODE">SOURCE CODE</a>
     <a href="#BUGS">BUGS</a>
@@ -158,11 +158,11 @@ file with all metrics from all BAM files and all Picard tools.</p>
 <ul>
 <li><p><code>-f</code> <var>FILE</var></p>
 
-<p>The configuration file with specified environment variables. In order of
-preference, <code>picardmetrics</code> will use (1) the specified file, (2) a file
-named <code>picardmetrics.conf</code> in the current directory or (3) in the user's
-HOME directory. If no file is found, an error will be thrown and the
-program will exit.</p></li>
+<p>The configuration file with specified variables. In order of preference,
+<code>picardmetrics</code> will use (1) the specified file, (2) a file named
+<code>picardmetrics.conf</code> in the current directory or (3) in the user's HOME
+directory. If no file is found, an error will be thrown and the program
+will exit.</p></li>
 <li><p><code>-o</code> <var>DIR</var></p>
 
 <p>Write 21 output files in this directory. By default, write to the
@@ -176,9 +176,8 @@ current directory. The output files include:</p>
 
 <p>The BAM file is from an RNA-seq experiment. By default, this is not true.
 When this option is used, the CollectRnaSeqMetrics Picard tool is run.
-This option requires the environment variables <code>REF_FLAT</code> and
-<code>RIBOSOMAL_INTERVALS</code> to be set. You should specify them in the
-configuration file.</p></li>
+This option requires the variables <code>REF_FLAT</code> and <code>RIBOSOMAL_INTERVALS</code> to
+be set. You should specify them in the configuration file.</p></li>
 <li><p><code>-k</code></p>
 
 <p>Keep the output BAM file. By default, delete it after metrics are created.</p></li>
@@ -211,6 +210,9 @@ CollectRnaSeqMetrics tool. Run this command on your optionally gzipped GTF
 file, and the output file will be written to the same directory as the GTF
 file.</p>
 
+<p><code>picardmetrics run</code> will automatically create the .refFlat file for you if you
+define the <code>GTF</code> variable in the configuration file.</p>
+
 <h3 id="rRNA">rRNA</h3>
 
 <p><code>picardmetrics</code> rRNA &lt;file.gtf[.gz]></p>
@@ -220,9 +222,12 @@ CollectRnaSeqMetrics tool. Run this command on your optionally gzipped GTF
 file, and the output file will be written to the same directory as the GTF
 file.</p>
 
-<h2 id="ENVIRONMENT-VARIABLES">ENVIRONMENT VARIABLES</h2>
+<p><code>picardmetrics run</code> will automatically create the .rRNA.list file for you if
+you define the <code>GTF</code> variable in the configuration file.</p>
 
-<p>The <code>picardmetrics.conf</code> file must define the following envrionment variables:</p>
+<h2 id="CONFIGURATION-FILE">CONFIGURATION FILE</h2>
+
+<p>The <code>picardmetrics.conf</code> file must define the following variables:</p>
 
 <ul>
 <li><p><code>TEMP_DIR</code></p>
@@ -234,9 +239,9 @@ file.</p>
 <code>RIBOSOMAL_INTERVALS</code> file passed to CollectRnaSeqMetrics.</p>
 
 <p>A copy of the input BAM file is written to the temporary directory. Then
-ReorderSam, SortSam, and MarkDuplicates are run on this copy. Use option
-<code>-k</code> to move the sorted and deduplicated BAM file to the output folder
-<code>-o</code> instead of deleting it.</p></li>
+ReorderSam, SortSam, and MarkDuplicates are run on this copy. By default,
+it is deleted after <code>picardmetrics</code> is done. Use option <code>-k</code> to move the
+sorted and deduplicated BAM file to the output folder <code>-o</code> instead.</p></li>
 <li><p><code>NICENESS</code></p>
 
 <p>A number between 0 and 20 specifying the niceness to use for all jobs. Use
@@ -256,12 +261,16 @@ https://broadinstitute.github.io/picard/index.html</p></li>
 <p>The full path to the organism's genome sequence in FASTA format. Required
 for: <a href="https://broadinstitute.github.io/picard/command-line-overview.html#CollectMultipleMetrics">CollectMultipleMetrics</a>, <a href="https://broadinstitute.github.io/picard/command-line-overview.html#CollectRnaSeqMetrics">CollectRnaSeqMetrics</a>,
 <a href="https://broadinstitute.github.io/picard/command-line-overview.html#CollectGcBiasMetrics">CollectGcBiasMetrics</a>.</p></li>
-<li><p><code>REF_FLAT</code></p>
+<li><p><code>GTF</code></p>
+
+<p>Ful path to a .gtf or .gtf.gz file with gene annotations. <code>picardmetrics</code>
+will use this to automatically create a .refFlat file and .rRNA.list file.</p></li>
+<li><p><code>REF_FLAT</code> (overrides <code>GTF</code>)</p>
 
 <p>Full path to a text file with annotations of all gene features in UCSC
 format. Can be generated from a GFF or GTF file. Required for:
 <a href="https://broadinstitute.github.io/picard/command-line-overview.html#CollectRnaSeqMetrics">CollectRnaSeqMetrics</a>.</p></li>
-<li><p><code>RIBOSOMAL_INTERVALS</code></p>
+<li><p><code>RIBOSOMAL_INTERVALS</code> (overrides <code>GTF</code>)</p>
 
 <p>Full path to a text file with genomic coordinates of all ribosomal RNA
 genes in Picard format. Required for <a href="https://broadinstitute.github.io/picard/command-line-overview.html#CollectRnaSeqMetrics">CollectRnaSeqMetrics</a>.</p></li>

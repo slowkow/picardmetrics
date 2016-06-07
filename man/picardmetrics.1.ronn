@@ -65,11 +65,11 @@ Read about the meaning of each metric: [Picard metrics definitions][definitions]
 
   * `-f` <FILE>
 
-    The configuration file with specified environment variables. In order of
-    preference, `picardmetrics` will use (1) the specified file, (2) a file
-    named `picardmetrics.conf` in the current directory or (3) in the user's
-    HOME directory. If no file is found, an error will be thrown and the
-    program will exit.
+    The configuration file with specified variables. In order of preference,
+    `picardmetrics` will use (1) the specified file, (2) a file named
+    `picardmetrics.conf` in the current directory or (3) in the user's HOME
+    directory. If no file is found, an error will be thrown and the program
+    will exit.
 
   * `-o` <DIR>
 
@@ -85,9 +85,8 @@ Read about the meaning of each metric: [Picard metrics definitions][definitions]
 
     The BAM file is from an RNA-seq experiment. By default, this is not true.
     When this option is used, the CollectRnaSeqMetrics Picard tool is run.
-    This option requires the environment variables `REF_FLAT` and
-    `RIBOSOMAL_INTERVALS` to be set. You should specify them in the
-    configuration file.
+    This option requires the variables `REF_FLAT` and `RIBOSOMAL_INTERVALS` to
+    be set. You should specify them in the configuration file.
 
   * `-k`
 
@@ -119,6 +118,9 @@ CollectRnaSeqMetrics tool. Run this command on your optionally gzipped GTF
 file, and the output file will be written to the same directory as the GTF
 file.
 
+`picardmetrics run` will automatically create the .refFlat file for you if you
+define the `GTF` variable in the configuration file.
+
 ### rRNA
 
 `picardmetrics` rRNA <file.gtf[.gz]>
@@ -128,9 +130,12 @@ CollectRnaSeqMetrics tool. Run this command on your optionally gzipped GTF
 file, and the output file will be written to the same directory as the GTF
 file.
 
-## ENVIRONMENT VARIABLES
+`picardmetrics run` will automatically create the .rRNA.list file for you if
+you define the `GTF` variable in the configuration file.
 
-The `picardmetrics.conf` file must define the following envrionment variables:
+## CONFIGURATION FILE 
+
+The `picardmetrics.conf` file must define the following variables:
 
   * `TEMP_DIR`
 
@@ -141,9 +146,9 @@ The `picardmetrics.conf` file must define the following envrionment variables:
     `RIBOSOMAL_INTERVALS` file passed to CollectRnaSeqMetrics.
     
     A copy of the input BAM file is written to the temporary directory. Then
-    ReorderSam, SortSam, and MarkDuplicates are run on this copy. Use option
-    `-k` to move the sorted and deduplicated BAM file to the output folder
-    `-o` instead of deleting it.
+    ReorderSam, SortSam, and MarkDuplicates are run on this copy. By default,
+    it is deleted after `picardmetrics` is done. Use option `-k` to move the
+    sorted and deduplicated BAM file to the output folder `-o` instead.
 
   * `NICENESS`
 
@@ -168,13 +173,18 @@ The `picardmetrics.conf` file must define the following envrionment variables:
     for: [CollectMultipleMetrics], [CollectRnaSeqMetrics],
     [CollectGcBiasMetrics].
 
-  * `REF_FLAT`
+  * `GTF`
+    
+    Ful path to a .gtf or .gtf.gz file with gene annotations. `picardmetrics`
+    will use this to automatically create a .refFlat file and .rRNA.list file.
+
+  * `REF_FLAT` (overrides `GTF`)
 
     Full path to a text file with annotations of all gene features in UCSC
     format. Can be generated from a GFF or GTF file. Required for:
     [CollectRnaSeqMetrics].
 
-  * `RIBOSOMAL_INTERVALS`
+  * `RIBOSOMAL_INTERVALS` (overrides `GTF`)
 
     Full path to a text file with genomic coordinates of all ribosomal RNA
     genes in Picard format. Required for [CollectRnaSeqMetrics].
