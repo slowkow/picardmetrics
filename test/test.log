@@ -1,9 +1,43 @@
-2015-06-09 08:41:36	START	test_default
-2015-06-09 08:41:36	Loading '/PHShome/ks38/picardmetrics.conf'
-2015-06-09 08:42:52	Loading '/PHShome/ks38/picardmetrics.conf'
+2016-06-07 15:07:07	START	test_default
+2016-06-07 15:07:07	picardmetrics config: '/PHShome/ks38/picardmetrics.conf'
+2016-06-07 15:07:13	START	/PHShome/ks38/src/picardmetrics/data/project1/sample1/sample1.bam
+2016-06-07 15:07:14	ReorderSam
+2016-06-07 15:07:17	SortSam
+2016-06-07 15:07:18	MarkDuplicates
+2016-06-07 15:07:20	CollectMultipleMetrics
+2016-06-07 15:07:37	CollectGcBiasMetrics
+2016-06-07 15:08:16	EstimateLibraryComplexity
+2016-06-07 15:08:17	DONE	/PHShome/ks38/src/picardmetrics/data/project1/sample1/sample1.bam
+2016-06-07 15:08:17	picardmetrics config: '/PHShome/ks38/picardmetrics.conf'
+2016-06-07 15:08:17	START	/PHShome/ks38/src/picardmetrics/data/project1/sample2/sample2.bam
+2016-06-07 15:08:17	ReorderSam
+2016-06-07 15:08:18	SortSam
+2016-06-07 15:08:19	MarkDuplicates
+2016-06-07 15:08:21	CollectMultipleMetrics
+2016-06-07 15:08:36	CollectGcBiasMetrics
+2016-06-07 15:09:16	EstimateLibraryComplexity
+2016-06-07 15:09:16	DONE	/PHShome/ks38/src/picardmetrics/data/project1/sample2/sample2.bam
 out/default-all-metrics.tsv: OK
-2015-06-09 08:44:08	START	test_rnaseq
-2015-06-09 08:44:08	Loading '/PHShome/ks38/picardmetrics.conf'
-2015-06-09 08:45:28	Loading '/PHShome/ks38/picardmetrics.conf'
+2016-06-07 15:09:17	START	test_rnaseq
+2016-06-07 15:09:17	picardmetrics config: '/PHShome/ks38/picardmetrics.conf'
+2016-06-07 15:09:34	START	/PHShome/ks38/src/picardmetrics/data/project1/sample1/sample1.bam
+2016-06-07 15:09:34	ReorderSam
+2016-06-07 15:09:34	SortSam
+2016-06-07 15:09:35	MarkDuplicates
+2016-06-07 15:09:37	CollectMultipleMetrics
+2016-06-07 15:09:53	CollectRnaSeqMetrics
+2016-06-07 15:09:59	CollectGcBiasMetrics
+2016-06-07 15:10:38	EstimateLibraryComplexity
+2016-06-07 15:10:39	DONE	/PHShome/ks38/src/picardmetrics/data/project1/sample1/sample1.bam
+2016-06-07 15:10:39	picardmetrics config: '/PHShome/ks38/picardmetrics.conf'
+2016-06-07 15:10:39	START	/PHShome/ks38/src/picardmetrics/data/project1/sample2/sample2.bam
+2016-06-07 15:10:39	ReorderSam
+2016-06-07 15:10:39	SortSam
+2016-06-07 15:10:40	MarkDuplicates
+2016-06-07 15:10:42	CollectMultipleMetrics
+2016-06-07 15:10:59	CollectRnaSeqMetrics
+2016-06-07 15:11:05	CollectGcBiasMetrics
+2016-06-07 15:11:44	EstimateLibraryComplexity
+2016-06-07 15:11:44	DONE	/PHShome/ks38/src/picardmetrics/data/project1/sample2/sample2.bam
 out/rnaseq-all-metrics.tsv: OK
-2015-06-09 08:46:56	DONE
+2016-06-07 15:11:45	DONE

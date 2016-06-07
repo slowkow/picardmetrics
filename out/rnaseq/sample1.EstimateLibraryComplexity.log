@@ -1,6 +1,6 @@
-[Tue Jun 09 08:45:28 EDT 2015] picard.sam.markduplicates.EstimateLibraryComplexity INPUT=[/tmp/picardmetrics_ks38_42725/sample1.bam] OUTPUT=sample1.library_complexity VALIDATION_STRINGENCY=LENIENT    MIN_IDENTICAL_BASES=5 MAX_DIFF_RATE=0.03 MIN_MEAN_QUALITY=20 MAX_GROUP_RATIO=500 READ_NAME_REGEX=[a-zA-Z0-9]+:[0-9]:([0-9]+):([0-9]+):([0-9]+).* OPTICAL_DUPLICATE_PIXEL_DISTANCE=100 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=8352329 CREATE_INDEX=false CREATE_MD5_FILE=false
-[Tue Jun 09 08:45:28 EDT 2015] Executing as ks38@eris1n2.research.partners.org on Linux 2.6.32-431.29.2.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
-INFO	2015-06-09 08:45:28	EstimateLibraryComplexity	Will store 8352329 read pairs in memory before sorting.
-INFO	2015-06-09 08:45:28	EstimateLibraryComplexity	Finished reading - moving on to scanning for duplicates.
-[Tue Jun 09 08:45:28 EDT 2015] picard.sam.markduplicates.EstimateLibraryComplexity done. Elapsed time: 0.01 minutes.
+[Tue Jun 07 15:10:38 EDT 2016] picard.sam.markduplicates.EstimateLibraryComplexity INPUT=[/tmp/picardmetrics_ks38_16744/PHShome/ks38/src/picardmetrics/data/project1/sample1/sample1.bam] OUTPUT=sample1.library_complexity TMP_DIR=[/tmp/picardmetrics_ks38_16744/PHShome/ks38/src/picardmetrics/data/project1/sample1] VALIDATION_STRINGENCY=LENIENT    MIN_IDENTICAL_BASES=5 MAX_DIFF_RATE=0.03 MIN_MEAN_QUALITY=20 MAX_GROUP_RATIO=500 READ_NAME_REGEX=[a-zA-Z0-9]+:[0-9]:([0-9]+):([0-9]+):([0-9]+).* OPTICAL_DUPLICATE_PIXEL_DISTANCE=100 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=8352329 CREATE_INDEX=false CREATE_MD5_FILE=false
+[Tue Jun 07 15:10:38 EDT 2016] Executing as ks38@cn010.research.partners.org on Linux 2.6.32-431.29.2.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
+INFO	2016-06-07 15:10:38	EstimateLibraryComplexity	Will store 8352329 read pairs in memory before sorting.
+INFO	2016-06-07 15:10:39	EstimateLibraryComplexity	Finished reading - moving on to scanning for duplicates.
+[Tue Jun 07 15:10:39 EDT 2016] picard.sam.markduplicates.EstimateLibraryComplexity done. Elapsed time: 0.01 minutes.
 Runtime.totalMemory()=5145034752

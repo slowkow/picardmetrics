@@ -1,15 +1,19 @@
-[Tue Jun 09 08:44:13 EDT 2015] picard.analysis.CollectMultipleMetrics INPUT=/tmp/picardmetrics_ks38_42725/sample1.bam REFERENCE_SEQUENCE=/data/srlab/external-data/iGenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta/genome.fa OUTPUT=sample1 PROGRAM=[CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution, MeanQualityByCycle, CollectBaseDistributionByCycle, CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution] VALIDATION_STRINGENCY=LENIENT    ASSUME_SORTED=true STOP_AFTER=0 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
-[Tue Jun 09 08:44:13 EDT 2015] Executing as ks38@eris1n2.research.partners.org on Linux 2.6.32-431.29.2.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
-INFO	2015-06-09 08:44:18	RExecutor	Executing R script via command: Rscript /tmp/ks38/script4806203249373789363.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.base_distribution_by_cycle_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.base_distribution_by_cycle.pdf sample1.bam 
-INFO	2015-06-09 08:44:18	ProcessExecutor	null device 
-INFO	2015-06-09 08:44:18	ProcessExecutor	          1 
-INFO	2015-06-09 08:44:18	RExecutor	Executing R script via command: Rscript /tmp/ks38/script5249877425706217366.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_by_cycle_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_by_cycle.pdf sample1.bam 
-INFO	2015-06-09 08:44:18	ProcessExecutor	null device 
-INFO	2015-06-09 08:44:18	ProcessExecutor	          1 
-INFO	2015-06-09 08:44:35	RExecutor	Executing R script via command: Rscript /tmp/ks38/script6005446004728065259.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.insert_size_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.insert_size_Histogram.pdf sample1.bam
-INFO	2015-06-09 08:44:35	ProcessExecutor	[1] "Not creating insert size PDF as there are duplicated header names: All_Reads"
-INFO	2015-06-09 08:44:35	RExecutor	Executing R script via command: Rscript /tmp/ks38/script7379338511793696885.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_distribution_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_distribution.pdf sample1.bam 
-INFO	2015-06-09 08:44:35	ProcessExecutor	null device 
-INFO	2015-06-09 08:44:35	ProcessExecutor	          1 
-[Tue Jun 09 08:44:35 EDT 2015] picard.analysis.CollectMultipleMetrics done. Elapsed time: 0.37 minutes.
+[Tue Jun 07 15:09:38 EDT 2016] picard.analysis.CollectMultipleMetrics INPUT=/tmp/picardmetrics_ks38_16744/PHShome/ks38/src/picardmetrics/data/project1/sample1/sample1.bam REFERENCE_SEQUENCE=/data/srlab/external-data/iGenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta/genome.fa OUTPUT=sample1 PROGRAM=[CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution, MeanQualityByCycle, CollectBaseDistributionByCycle, CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution] TMP_DIR=[/tmp/picardmetrics_ks38_16744/PHShome/ks38/src/picardmetrics/data/project1/sample1] VALIDATION_STRINGENCY=LENIENT    ASSUME_SORTED=true STOP_AFTER=0 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
+[Tue Jun 07 15:09:38 EDT 2016] Executing as ks38@cn010.research.partners.org on Linux 2.6.32-431.29.2.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
+INFO	2016-06-07 15:09:41	RExecutor	Executing R script via command: Rscript /tmp/picardmetrics_ks38_16744/PHShome/ks38/src/picardmetrics/data/project1/sample1/script3006745937695279315.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_by_cycle_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_by_cycle.pdf sample1.bam 
+INFO	2016-06-07 15:09:41	ProcessExecutor	WARNING: ignoring environment value of R_HOME
+INFO	2016-06-07 15:09:41	ProcessExecutor	null device 
+INFO	2016-06-07 15:09:41	ProcessExecutor	          1 
+INFO	2016-06-07 15:09:53	RExecutor	Executing R script via command: Rscript /tmp/picardmetrics_ks38_16744/PHShome/ks38/src/picardmetrics/data/project1/sample1/script7944579238088175250.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.insert_size_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.insert_size_Histogram.pdf sample1.bam
+INFO	2016-06-07 15:09:53	ProcessExecutor	WARNING: ignoring environment value of R_HOME
+INFO	2016-06-07 15:09:53	ProcessExecutor	[1] "Not creating insert size PDF as there are duplicated header names: All_Reads"
+INFO	2016-06-07 15:09:53	RExecutor	Executing R script via command: Rscript /tmp/picardmetrics_ks38_16744/PHShome/ks38/src/picardmetrics/data/project1/sample1/script1209834979566852863.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.base_distribution_by_cycle_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.base_distribution_by_cycle.pdf sample1.bam 
+INFO	2016-06-07 15:09:53	ProcessExecutor	WARNING: ignoring environment value of R_HOME
+INFO	2016-06-07 15:09:53	ProcessExecutor	null device 
+INFO	2016-06-07 15:09:53	ProcessExecutor	          1 
+INFO	2016-06-07 15:09:53	RExecutor	Executing R script via command: Rscript /tmp/picardmetrics_ks38_16744/PHShome/ks38/src/picardmetrics/data/project1/sample1/script1118496335515661054.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_distribution_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_distribution.pdf sample1.bam 
+INFO	2016-06-07 15:09:53	ProcessExecutor	WARNING: ignoring environment value of R_HOME
+INFO	2016-06-07 15:09:53	ProcessExecutor	null device 
+INFO	2016-06-07 15:09:53	ProcessExecutor	          1 
+[Tue Jun 07 15:09:53 EDT 2016] picard.analysis.CollectMultipleMetrics done. Elapsed time: 0.26 minutes.
 Runtime.totalMemory()=5366546432

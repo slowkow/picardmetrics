@@ -6,6 +6,8 @@
 # data/project1/sample1.bam     10,000 paired-end 101 bp reads
 # data/project1/sample2.bam     similar reads, but the header is shuffled
 
+OK=1
+
 main() {
   # Clean up previous runs.
   rm -rf out
@@ -17,6 +19,11 @@ main() {
   test_rnaseq
 
   echo -e "$(DATE)\tDONE"
+
+  if [[ ! $OK = 1 ]];then
+    echo -e "$(DATE)\tFailed"
+    exit 1
+  fi
 }
 
 test_default() {
@@ -38,10 +45,10 @@ test_default() {
 
   # Confirm that the final output is correct.
   if ! md5sum -c \
-    <(echo "5f4a27b122a088730f144c93a2100a74  ${out}-all-metrics.tsv"); then
+    <(echo "244cffd02775ab1517578147aee39ab1 ${out}-all-metrics.tsv"); then
     cat $run_log >&2
     cat $collate_log >&2
-    exit 1
+    OK=0
   fi
 }
 
@@ -64,10 +71,10 @@ test_rnaseq() {
 
   # Confirm that the final output is correct.
   if ! md5sum -c \
-    <(echo "98887a74cfdec74cb60f11f8f69d281e  ${out}-all-metrics.tsv"); then
+    <(echo "3482de25bcf68887d71ed1803505ec66 ${out}-all-metrics.tsv"); then
     cat $run_log >&2
     cat $collate_log >&2
-    exit 1
+    OK=0
   fi
 }
 

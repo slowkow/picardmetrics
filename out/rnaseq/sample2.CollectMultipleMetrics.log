@@ -1,15 +1,19 @@
-[Tue Jun 09 08:45:33 EDT 2015] picard.analysis.CollectMultipleMetrics INPUT=/tmp/picardmetrics_ks38_48410/sample2.bam REFERENCE_SEQUENCE=/data/srlab/external-data/iGenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta/genome.fa OUTPUT=sample2 PROGRAM=[CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution, MeanQualityByCycle, CollectBaseDistributionByCycle, CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution] VALIDATION_STRINGENCY=LENIENT    ASSUME_SORTED=true STOP_AFTER=0 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
-[Tue Jun 09 08:45:33 EDT 2015] Executing as ks38@eris1n2.research.partners.org on Linux 2.6.32-431.29.2.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
-INFO	2015-06-09 08:45:37	RExecutor	Executing R script via command: Rscript /tmp/ks38/script567223585380657563.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.base_distribution_by_cycle_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.base_distribution_by_cycle.pdf sample2.bam 
-INFO	2015-06-09 08:45:37	ProcessExecutor	null device 
-INFO	2015-06-09 08:45:37	ProcessExecutor	          1 
-INFO	2015-06-09 08:45:37	RExecutor	Executing R script via command: Rscript /tmp/ks38/script4198751059814053760.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.quality_by_cycle_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.quality_by_cycle.pdf sample2.bam 
-INFO	2015-06-09 08:45:37	ProcessExecutor	null device 
-INFO	2015-06-09 08:45:37	ProcessExecutor	          1 
-INFO	2015-06-09 08:45:55	RExecutor	Executing R script via command: Rscript /tmp/ks38/script1064416732621205967.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.insert_size_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.insert_size_Histogram.pdf sample2.bam
-INFO	2015-06-09 08:45:56	ProcessExecutor	[1] "Not creating insert size PDF as there are duplicated header names: All_Reads"
-INFO	2015-06-09 08:45:56	RExecutor	Executing R script via command: Rscript /tmp/ks38/script5856113390122029054.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.quality_distribution_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.quality_distribution.pdf sample2.bam 
-INFO	2015-06-09 08:45:56	ProcessExecutor	null device 
-INFO	2015-06-09 08:45:56	ProcessExecutor	          1 
-[Tue Jun 09 08:45:56 EDT 2015] picard.analysis.CollectMultipleMetrics done. Elapsed time: 0.38 minutes.
-Runtime.totalMemory()=5366415360
+[Tue Jun 07 15:10:42 EDT 2016] picard.analysis.CollectMultipleMetrics INPUT=/tmp/picardmetrics_ks38_17095/PHShome/ks38/src/picardmetrics/data/project1/sample2/sample2.bam REFERENCE_SEQUENCE=/data/srlab/external-data/iGenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta/genome.fa OUTPUT=sample2 PROGRAM=[CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution, MeanQualityByCycle, CollectBaseDistributionByCycle, CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution] TMP_DIR=[/tmp/picardmetrics_ks38_17095/PHShome/ks38/src/picardmetrics/data/project1/sample2] VALIDATION_STRINGENCY=LENIENT    ASSUME_SORTED=true STOP_AFTER=0 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
+[Tue Jun 07 15:10:42 EDT 2016] Executing as ks38@cn010.research.partners.org on Linux 2.6.32-431.29.2.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
+INFO	2016-06-07 15:10:45	RExecutor	Executing R script via command: Rscript /tmp/picardmetrics_ks38_17095/PHShome/ks38/src/picardmetrics/data/project1/sample2/script3855130326403758359.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.quality_distribution_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.quality_distribution.pdf sample2.bam 
+INFO	2016-06-07 15:10:45	ProcessExecutor	WARNING: ignoring environment value of R_HOME
+INFO	2016-06-07 15:10:45	ProcessExecutor	null device 
+INFO	2016-06-07 15:10:45	ProcessExecutor	          1 
+INFO	2016-06-07 15:10:45	RExecutor	Executing R script via command: Rscript /tmp/picardmetrics_ks38_17095/PHShome/ks38/src/picardmetrics/data/project1/sample2/script1566935775068841491.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.quality_by_cycle_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.quality_by_cycle.pdf sample2.bam 
+INFO	2016-06-07 15:10:45	ProcessExecutor	WARNING: ignoring environment value of R_HOME
+INFO	2016-06-07 15:10:46	ProcessExecutor	null device 
+INFO	2016-06-07 15:10:46	ProcessExecutor	          1 
+INFO	2016-06-07 15:10:46	RExecutor	Executing R script via command: Rscript /tmp/picardmetrics_ks38_17095/PHShome/ks38/src/picardmetrics/data/project1/sample2/script8564555013896175991.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.base_distribution_by_cycle_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.base_distribution_by_cycle.pdf sample2.bam 
+INFO	2016-06-07 15:10:46	ProcessExecutor	WARNING: ignoring environment value of R_HOME
+INFO	2016-06-07 15:10:46	ProcessExecutor	null device 
+INFO	2016-06-07 15:10:46	ProcessExecutor	          1 
+INFO	2016-06-07 15:10:59	RExecutor	Executing R script via command: Rscript /tmp/picardmetrics_ks38_17095/PHShome/ks38/src/picardmetrics/data/project1/sample2/script6589756446489124722.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.insert_size_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample2.insert_size_Histogram.pdf sample2.bam
+INFO	2016-06-07 15:10:59	ProcessExecutor	WARNING: ignoring environment value of R_HOME
+INFO	2016-06-07 15:10:59	ProcessExecutor	[1] "Not creating insert size PDF as there are duplicated header names: All_Reads"
+[Tue Jun 07 15:10:59 EDT 2016] picard.analysis.CollectMultipleMetrics done. Elapsed time: 0.28 minutes.
+Runtime.totalMemory()=5366284288
