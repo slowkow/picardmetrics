@@ -25,8 +25,8 @@ picardmetrics collate out/rnaseq project1
 
 `picardmetrics` runs up to [12 Picard tools][manual] on each [BAM] file and
 collates all of the output files into a single table with up to [90 different
-metrics][definitions]. It also creates the two Picard files required for
-[CollectRnaSeqMetrics]  (`.refFlat` and `.rRNA.list`).
+metrics][definitions]. It also automatically creates the `.refFlat` and
+`.rRNA.list` files required for [CollectRnaSeqMetrics].
 
 See the [picardmetrics manual][manual] for more details.
 
