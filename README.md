@@ -8,28 +8,54 @@ your sequencing data.
 
 ## Summary
 
-`picardmetrics` runs up to [12 Picard tools][manual] on a [BAM] file and
+Run `picardmetrics` like this:
+
+```bash
+for bam in data/project1/sample?/sample?.bam
+do
+  # -k keeps the BAM file with marked duplicate reads
+  # -r runs RNA-seq Picard metrics
+  # -o specifies where to put the output files
+  picardmetrics run -k -r -o out/rnaseq $bam
+done
+
+# The final output file will be called "project1-all-metrics.tsv"
+picardmetrics collate out/rnaseq project1
+```
+
+`picardmetrics` runs up to [12 Picard tools][manual] on each [BAM] file and
 collates all of the output files into a single table with up to [90 different
 metrics][definitions]. It also creates the two Picard files required for
-CollectRnaSeqMetrics.
+[CollectRnaSeqMetrics] (`.refFlat` and `.rRNA.list`).
 
-See the [manual] for more details.
+See the [picardmetrics manual] for more details.
 
-After running `picardmetrics`, plot and explore the metrics:
+Next, plot and explore the metrics in R:
 
 ```r
 library(ggplot2)
 
-dat <- read.delim("out/rnaseq-all-metrics.tsv", stringsAsFactors = FALSE)
+dat <- read.delim("project1-all-metrics.tsv", stringsAsFactors = FALSE)
 
 ggplot(dat) +
   geom_point(aes(PF_READS, PF_ALIGNED_BASES))
 ```
 
-See two example BAM files in the [data/][data] folder. They are used to
-illustrate the usage of `picardmetrics` and to test that it functions
-correctly. See the outputs in the [out/][out] folder. Download the reference
-files used to test `picardmetrics` [here][reference].
+See two example BAM files in the [data/][data] folder. The [test script][test]
+illustrates the usage of `picardmetrics` and tests that it works correctly. See
+the outputs in the [out/][out] folder. Download the reference files used to
+test `picardmetrics` [here][reference].
+
+[scripts]: https://github.com/slowkow/picardmetrics/tree/master/scripts
+[data]: https://github.com/slowkow/picardmetrics/tree/master/data
+[test]: https://github.com/slowkow/picardmetrics/tree/master/test/test.sh
+[out]: https://github.com/slowkow/picardmetrics/tree/master/out
+
+[manual]: http://slowkow.com/picardmetrics/
+[reference]: http://dx.doi.org/10.5281/zenodo.18116
+
+[definitions]: https://broadinstitute.github.io/picard/picard-metric-definitions.html
+[CollectRnaSeqMetrics]: https://broadinstitute.github.io/picard/command-line-overview.html#CollectRnaSeqMetrics
 
 ## Example
 
@@ -86,15 +112,6 @@ If you wish, you can manually install the dependencies:
 [htslib]: https://github.com/samtools/htslib
 [stats]: https://github.com/arq5x/filo
 [gtfToGenePred]: http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/
-
-[scripts]: https://github.com/slowkow/picardmetrics/tree/master/scripts
-[data]: https://github.com/slowkow/picardmetrics/tree/master/data
-[out]: https://github.com/slowkow/picardmetrics/tree/master/out
-
-[manual]: http://slowkow.com/picardmetrics/
-[reference]: http://dx.doi.org/10.5281/zenodo.18116
-
-[definitions]: https://broadinstitute.github.io/picard/picard-metric-definitions.html
 
 ## Contributing
 
