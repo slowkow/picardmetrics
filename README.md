@@ -20,7 +20,7 @@ do
 done
 
 # The final output file will be called "project1-all-metrics.tsv"
-picardmetrics collate out/rnaseq project1
+picardmetrics collate project1 out/rnaseq
 ```
 
 `picardmetrics` runs up to [12 Picard tools][manual] on each [BAM] file and
