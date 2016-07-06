@@ -26,9 +26,9 @@ picardmetrics collate out/rnaseq project1
 `picardmetrics` runs up to [12 Picard tools][manual] on each [BAM] file and
 collates all of the output files into a single table with up to [90 different
 metrics][definitions]. It also creates the two Picard files required for
-[CollectRnaSeqMetrics] (`.refFlat` and `.rRNA.list`).
+[CollectRnaSeqMetrics]  (`.refFlat` and `.rRNA.list`).
 
-See the [picardmetrics manual] for more details.
+See the [picardmetrics manual][manual] for more details.
 
 Next, plot and explore the metrics in R:
 
@@ -41,10 +41,10 @@ ggplot(dat) +
   geom_point(aes(PF_READS, PF_ALIGNED_BASES))
 ```
 
-See two example BAM files in the [data/][data] folder. The [test script][test]
-illustrates the usage of `picardmetrics` and tests that it works correctly. See
-the outputs in the [out/][out] folder. Download the reference files used to
-test `picardmetrics` [here][reference].
+See two example BAM files in the [data/][data] folder. The
+[test/test.sh][test] script illustrates the usage of `picardmetrics` and tests
+that it works correctly. See the outputs in the [out/][out] folder. You can
+also download the [reference files][reference] used to test `picardmetrics`.
 
 [scripts]: https://github.com/slowkow/picardmetrics/tree/master/scripts
 [data]: https://github.com/slowkow/picardmetrics/tree/master/data
