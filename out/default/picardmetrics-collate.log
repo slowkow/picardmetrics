@@ -1,15 +1,15 @@
-2016-06-07 15:09:16	START	out/default
-2016-06-07 15:09:16	Collating 2 alignment_summary_metrics files
-2016-06-07 15:09:16	Collating 2 quality_distribution_metrics files
-2016-06-07 15:09:17	Collating 2 gc_bias_metrics files
-2016-06-07 15:09:17	Collating 2 gc_bias_histogram files
-2016-06-07 15:09:17	Collating 2 duplicate_metrics files
-2016-06-07 15:09:17	Collating 2 insert_size_metrics files
-2016-06-07 15:09:17	Collating 2 insert_size_metrics files (histogram)
-2016-06-07 15:09:17	Collating 2 base_distribution_by_cycle files
-2016-06-07 15:09:17	Collating 2 library_complexity files
-2016-06-07 15:09:17	Collating 2 library_complexity files (histogram)
-2016-06-07 15:09:17	Collating 2 mapq_stats files
-2016-06-07 15:09:17	Joining all files into 'out/default-all-metrics.tsv'
+2016-07-06 11:32:02	START	out/default
+2016-07-06 11:32:02	Collating 2 alignment_summary_metrics files
+2016-07-06 11:32:02	Collating 2 quality_distribution_metrics files
+2016-07-06 11:32:02	Collating 2 gc_bias_metrics files
+2016-07-06 11:32:02	Collating 2 gc_bias_histogram files
+2016-07-06 11:32:02	Collating 2 duplicate_metrics files
+2016-07-06 11:32:02	Collating 2 insert_size_metrics files
+2016-07-06 11:32:02	Collating 2 insert_size_metrics files (histogram)
+2016-07-06 11:32:02	Collating 2 base_distribution_by_cycle files
+2016-07-06 11:32:02	Collating 2 library_complexity files
+2016-07-06 11:32:02	Collating 2 library_complexity files (histogram)
+2016-07-06 11:32:02	Collating 2 mapq_stats files
+2016-07-06 11:32:02	Joining all files into 'out/default-all-metrics.tsv'
 WARNING: ignoring environment value of R_HOME
-2016-06-07 15:09:17	DONE	out/default
+2016-07-06 11:32:02	DONE	out/default

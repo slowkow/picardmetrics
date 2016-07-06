@@ -1,5 +1,11 @@
 # Change Log
 
+# 0.2.4 - 2016-07-06
+
+## Fixed
+
+-   Test that option `-k` works as it should.
+
 # 0.2.3 - 2016-06-06
 
 ## Fixed 

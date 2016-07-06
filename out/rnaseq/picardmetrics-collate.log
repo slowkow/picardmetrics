@@ -1,17 +1,17 @@
-2016-06-07 15:11:44	START	out/rnaseq
-2016-06-07 15:11:44	Collating 2 alignment_summary_metrics files
-2016-06-07 15:11:44	Collating 2 quality_distribution_metrics files
-2016-06-07 15:11:44	Collating 2 rnaseq_metrics files (summary)
-2016-06-07 15:11:45	Collating 2 rnaseq_metrics files (coverage)
-2016-06-07 15:11:45	Collating 2 gc_bias_metrics files
-2016-06-07 15:11:45	Collating 2 gc_bias_histogram files
-2016-06-07 15:11:45	Collating 2 duplicate_metrics files
-2016-06-07 15:11:45	Collating 2 insert_size_metrics files
-2016-06-07 15:11:45	Collating 2 insert_size_metrics files (histogram)
-2016-06-07 15:11:45	Collating 2 base_distribution_by_cycle files
-2016-06-07 15:11:45	Collating 2 library_complexity files
-2016-06-07 15:11:45	Collating 2 library_complexity files (histogram)
-2016-06-07 15:11:45	Collating 2 mapq_stats files
-2016-06-07 15:11:45	Joining all files into 'out/rnaseq-all-metrics.tsv'
+2016-07-06 11:34:44	START	out/rnaseq
+2016-07-06 11:34:44	Collating 2 alignment_summary_metrics files
+2016-07-06 11:34:44	Collating 2 quality_distribution_metrics files
+2016-07-06 11:34:44	Collating 2 rnaseq_metrics files (summary)
+2016-07-06 11:34:44	Collating 2 rnaseq_metrics files (coverage)
+2016-07-06 11:34:44	Collating 2 gc_bias_metrics files
+2016-07-06 11:34:44	Collating 2 gc_bias_histogram files
+2016-07-06 11:34:44	Collating 2 duplicate_metrics files
+2016-07-06 11:34:44	Collating 2 insert_size_metrics files
+2016-07-06 11:34:44	Collating 2 insert_size_metrics files (histogram)
+2016-07-06 11:34:44	Collating 2 base_distribution_by_cycle files
+2016-07-06 11:34:44	Collating 2 library_complexity files
+2016-07-06 11:34:44	Collating 2 library_complexity files (histogram)
+2016-07-06 11:34:44	Collating 2 mapq_stats files
+2016-07-06 11:34:44	Joining all files into 'out/rnaseq-all-metrics.tsv'
 WARNING: ignoring environment value of R_HOME
-2016-06-07 15:11:45	DONE	out/rnaseq
+2016-07-06 11:34:45	DONE	out/rnaseq

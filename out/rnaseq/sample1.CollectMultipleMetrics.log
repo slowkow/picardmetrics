@@ -1,19 +1,19 @@
-[Tue Jun 07 15:09:38 EDT 2016] picard.analysis.CollectMultipleMetrics INPUT=/tmp/picardmetrics_ks38_16744/PHShome/ks38/src/picardmetrics/data/project1/sample1/sample1.bam REFERENCE_SEQUENCE=/data/srlab/external-data/iGenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta/genome.fa OUTPUT=sample1 PROGRAM=[CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution, MeanQualityByCycle, CollectBaseDistributionByCycle, CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution] TMP_DIR=[/tmp/picardmetrics_ks38_16744/PHShome/ks38/src/picardmetrics/data/project1/sample1] VALIDATION_STRINGENCY=LENIENT    ASSUME_SORTED=true STOP_AFTER=0 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
-[Tue Jun 07 15:09:38 EDT 2016] Executing as ks38@cn010.research.partners.org on Linux 2.6.32-431.29.2.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
-INFO	2016-06-07 15:09:41	RExecutor	Executing R script via command: Rscript /tmp/picardmetrics_ks38_16744/PHShome/ks38/src/picardmetrics/data/project1/sample1/script3006745937695279315.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_by_cycle_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_by_cycle.pdf sample1.bam 
-INFO	2016-06-07 15:09:41	ProcessExecutor	WARNING: ignoring environment value of R_HOME
-INFO	2016-06-07 15:09:41	ProcessExecutor	null device 
-INFO	2016-06-07 15:09:41	ProcessExecutor	          1 
-INFO	2016-06-07 15:09:53	RExecutor	Executing R script via command: Rscript /tmp/picardmetrics_ks38_16744/PHShome/ks38/src/picardmetrics/data/project1/sample1/script7944579238088175250.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.insert_size_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.insert_size_Histogram.pdf sample1.bam
-INFO	2016-06-07 15:09:53	ProcessExecutor	WARNING: ignoring environment value of R_HOME
-INFO	2016-06-07 15:09:53	ProcessExecutor	[1] "Not creating insert size PDF as there are duplicated header names: All_Reads"
-INFO	2016-06-07 15:09:53	RExecutor	Executing R script via command: Rscript /tmp/picardmetrics_ks38_16744/PHShome/ks38/src/picardmetrics/data/project1/sample1/script1209834979566852863.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.base_distribution_by_cycle_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.base_distribution_by_cycle.pdf sample1.bam 
-INFO	2016-06-07 15:09:53	ProcessExecutor	WARNING: ignoring environment value of R_HOME
-INFO	2016-06-07 15:09:53	ProcessExecutor	null device 
-INFO	2016-06-07 15:09:53	ProcessExecutor	          1 
-INFO	2016-06-07 15:09:53	RExecutor	Executing R script via command: Rscript /tmp/picardmetrics_ks38_16744/PHShome/ks38/src/picardmetrics/data/project1/sample1/script1118496335515661054.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_distribution_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_distribution.pdf sample1.bam 
-INFO	2016-06-07 15:09:53	ProcessExecutor	WARNING: ignoring environment value of R_HOME
-INFO	2016-06-07 15:09:53	ProcessExecutor	null device 
-INFO	2016-06-07 15:09:53	ProcessExecutor	          1 
-[Tue Jun 07 15:09:53 EDT 2016] picard.analysis.CollectMultipleMetrics done. Elapsed time: 0.26 minutes.
-Runtime.totalMemory()=5366546432
+[Wed Jul 06 11:32:06 EDT 2016] picard.analysis.CollectMultipleMetrics INPUT=/tmp/picardmetrics_ks38_7189/PHShome/ks38/src/picardmetrics/data/project1/sample1/sample1.bam REFERENCE_SEQUENCE=/data/srlab/external-data/iGenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta/genome.fa OUTPUT=sample1 PROGRAM=[CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution, MeanQualityByCycle, CollectBaseDistributionByCycle, CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, QualityScoreDistribution] TMP_DIR=[/tmp/picardmetrics_ks38_7189/PHShome/ks38/src/picardmetrics/data/project1/sample1] VALIDATION_STRINGENCY=LENIENT    ASSUME_SORTED=true STOP_AFTER=0 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
+[Wed Jul 06 11:32:06 EDT 2016] Executing as ks38@rgs08.research.partners.org on Linux 2.6.32-573.12.1.el6.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.6.0_35-b10; Picard version: 1.126(4691ee611ac205d4afe2a1b7a2ea975a6f997426_1417447214) IntelDeflater
+INFO	2016-07-06 11:32:25	RExecutor	Executing R script via command: Rscript /tmp/picardmetrics_ks38_7189/PHShome/ks38/src/picardmetrics/data/project1/sample1/script4964015588545766145.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.insert_size_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.insert_size_Histogram.pdf sample1.bam
+INFO	2016-07-06 11:32:25	ProcessExecutor	WARNING: ignoring environment value of R_HOME
+INFO	2016-07-06 11:32:25	ProcessExecutor	[1] "Not creating insert size PDF as there are duplicated header names: All_Reads"
+INFO	2016-07-06 11:32:25	RExecutor	Executing R script via command: Rscript /tmp/picardmetrics_ks38_7189/PHShome/ks38/src/picardmetrics/data/project1/sample1/script802138903928255940.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_by_cycle_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_by_cycle.pdf sample1.bam 
+INFO	2016-07-06 11:32:25	ProcessExecutor	WARNING: ignoring environment value of R_HOME
+INFO	2016-07-06 11:32:25	ProcessExecutor	null device 
+INFO	2016-07-06 11:32:25	ProcessExecutor	          1 
+INFO	2016-07-06 11:32:25	RExecutor	Executing R script via command: Rscript /tmp/picardmetrics_ks38_7189/PHShome/ks38/src/picardmetrics/data/project1/sample1/script873496651905865846.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_distribution_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.quality_distribution.pdf sample1.bam 
+INFO	2016-07-06 11:32:25	ProcessExecutor	WARNING: ignoring environment value of R_HOME
+INFO	2016-07-06 11:32:25	ProcessExecutor	null device 
+INFO	2016-07-06 11:32:25	ProcessExecutor	          1 
+INFO	2016-07-06 11:32:26	RExecutor	Executing R script via command: Rscript /tmp/picardmetrics_ks38_7189/PHShome/ks38/src/picardmetrics/data/project1/sample1/script2354872419050788726.R /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.base_distribution_by_cycle_metrics /data/srlab/slowikow/src/picardmetrics/out/rnaseq/sample1.base_distribution_by_cycle.pdf sample1.bam 
+INFO	2016-07-06 11:32:26	ProcessExecutor	WARNING: ignoring environment value of R_HOME
+INFO	2016-07-06 11:32:26	ProcessExecutor	null device 
+INFO	2016-07-06 11:32:26	ProcessExecutor	          1 
+[Wed Jul 06 11:32:26 EDT 2016] picard.analysis.CollectMultipleMetrics done. Elapsed time: 0.32 minutes.
+Runtime.totalMemory()=5366480896

@@ -12,13 +12,13 @@ main() {
   # Clean up previous runs.
   rm -rf out
 
-  echo -e "$(DATE)\tSTART\ttest_default"
+  echo -e "$(DATE)\tSTART test_default"
   test_default
+  echo -e "$(DATE)\tDONE test_default\n"
 
-  echo -e "$(DATE)\tSTART\ttest_rnaseq"
+  echo -e "$(DATE)\tSTART test_rnaseq"
   test_rnaseq
-
-  echo -e "$(DATE)\tDONE"
+  echo -e "$(DATE)\tDONE test_rnaseq\n"
 
   if [[ ! $OK = 1 ]];then
     echo -e "$(DATE)\tFailed"
@@ -63,7 +63,14 @@ test_rnaseq() {
   # Run multiple metrics on each BAM file.
   for f in data/project1/sample?/sample?.bam
   do
-    ./picardmetrics run -r -f ~/picardmetrics.conf -o $out $f 2>&1 >> $run_log
+    ./picardmetrics run -k -r -f ~/picardmetrics.conf -o $out $f 2>&1 >> $run_log
+
+    # Ensure that the -k option worked.
+    dup_bam=$out/$(basename ${f%*.bam}.MarkDuplicates.bam)
+    if [[ ! -f $dup_bam ]]; then
+      echo "ERROR: Missing file '$dup_bam'" >&2
+      OK=0
+    fi
   done
 
   # Collate the generated tables.

@@ -2,9 +2,13 @@
 # picardmetrics
 # Kamil Slowikowski
 
+PICARDMETRICS_VERSION="0.2.3 2016-07-06"
+
 # Main functions. ------------------------------------------------------------
 
 main() {
+  echo "picardmetrics version $PICARDMETRICS_VERSION"
+
   if [[ "$1" == "collate" ]]; then
     shift
     main_collate $@
@@ -16,7 +20,6 @@ main() {
   elif [[ "$1" == "rRNA" ]]; then
     main_rRNA $@
   else
-    echo "picardmetrics v0.2.3 - 2016-06-06"
     echo "Usage: picardmetrics COMMAND"
     echo "  run         Run the Picard tools on a given BAM file."
     echo "  collate     Collate metrics files for multiple BAM files."
@@ -29,7 +32,7 @@ main_run() {
   # Ensure that the script was called with correct arguments.
   if [[ "$1" == "" ]]; then
     echo "Usage: picardmetrics run [-f FILE] [-o DIR] [-r] <file.bam>"
-    echo "  -f FILE     The configuration file. (Default: picardmetrics.conf)"
+    echo "  -f FILE     The configuration file. (Default: ./picardmetrics.conf)"
     echo "  -o DIR      Write output files in this directory. (Default: .)"
     echo "  -r          The BAM file has RNA-seq reads. (Default: false)"
     echo "  -k          Keep the output BAM file. (Default: false)"
@@ -93,7 +96,7 @@ main_run() {
 
   # Make the ouput directory if it does not exist.
   if ! mkdir -p "$OUT_DIR"; then
-    warn "ERROR: mkdir '$OUT_DIR'"
+    warn "ERROR: mkdir -p '$OUT_DIR'"
     exit 1
   fi
 
@@ -141,8 +144,9 @@ main_run() {
     fi
   else
     # Otherwise, move it to the output folder.
-    if ! mv "$temp_bam" "${temp_bam%.bam}.MarkDuplicates.bam" ;then
-      warn "ERROR: mv '$temp_bam' '${temp_bam%.bam}.MarkDuplicates.bam'"
+    dup_bam="$(basename ${bam%.bam}.MarkDuplicates.bam)"
+    if ! mv "$temp_bam" "$dup_bam" ;then
+      warn "ERROR: mv '$temp_bam' '$dup_bam'"
       exit 1
     fi
   fi
@@ -226,13 +230,6 @@ main_refFlat() {
     return 0
   fi
 
-  if ! which gtfToGenePred &> /dev/null; then
-    warn "ERROR: gtfToGenePred is not installed."
-    warn "  Install gtfToGenePred to a directory in your PATH"
-    warn "  http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/gtfToGenePred"
-    exit 1
-  fi
-
   if [[ ! -f "$gtf" ]]; then
     warn "ERROR: File not found '$gtf'"
     exit 1
@@ -250,6 +247,13 @@ main_refFlat() {
     gunzip -c "$gtf" > "$in"
   else
     cat "$gtf" > "$in"
+  fi
+
+  if ! which gtfToGenePred &> /dev/null; then
+    warn "ERROR: gtfToGenePred is not installed."
+    warn "  Install gtfToGenePred to a directory in your PATH"
+    warn "  http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/gtfToGenePred"
+    exit 1
   fi
 
   gtfToGenePred -ignoreGroupsWithoutExons "$in" "$out" \
@@ -306,7 +310,7 @@ main_rRNA() {
   local ERR=$?
 
   if [[ "$ERR" != 0 ]]; then
-      warn "Unexpected error $ERR while making '$out'"
+      warn "ERROR: Unexpected error $ERR while making '$out'"
       exit 1
   fi
 
@@ -989,7 +993,7 @@ DATE() {
 }
 
 sample_name() {
-  # Remove the file extension.
+  # Remove the file extension. 'a.b.c.def' -> 'a.b.c'
   echo "${1%.*}"
 }
 
