@@ -51,7 +51,7 @@ also download the [reference files][reference] used to test `picardmetrics`.
 [test]: https://github.com/slowkow/picardmetrics/tree/master/test/test.sh
 [out]: https://github.com/slowkow/picardmetrics/tree/master/out
 
-[manual]: http://slowkow.com/picardmetrics/
+[manual]: https://slowkow.github.io/picardmetrics
 [reference]: http://dx.doi.org/10.5281/zenodo.18116
 
 [definitions]: https://broadinstitute.github.io/picard/picard-metric-definitions.html
